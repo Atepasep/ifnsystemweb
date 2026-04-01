@@ -431,7 +431,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
                         <div class="tab-pane" id="tabs-home-1">
                           <div class="row">
-                            <div class="col-6">
+                            <div class="col-4">
                               <label class="form-check mb-1">
                                 <input class="form-check-input" id="master1" name="master1" type="checkbox">
                                 <span class="form-check-label">Satuan</span>
@@ -485,7 +485,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <span class="form-check-label">Data Grup</span>
                               </label>
                             </div>
-                            <div class="col-6">
+                            <div class="col-4">
                               <label class="form-check mb-1">
                                 <input class="form-check-input" id="master14" name="master14" type="checkbox">
                                 <span class="form-check-label">Harga cost division</span>
@@ -539,6 +539,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <span class="form-check-label">Referensi Division Price</span>
                               </label>
                               <!-- xx -->
+                            </div>
+                            <div class="col-4">
+                              <label class="form-check mb-1">
+                                <input class="form-check-input" id="master27" name="master27" type="checkbox">
+                                <span class="form-check-label">Kurs</span>
+                              </label>
                             </div>
                           </div>
                         </div>

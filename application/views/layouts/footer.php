@@ -171,6 +171,9 @@
 <script src="<?= base_url(); ?>assets/js/own/webcam/konfirm.js?<?= $updatejs ?>"></script>
 <script src="<?= base_url(); ?>assets/js/own/sublok.js?<?= $updatejs; ?>"></script>
 <?php } ?>
+<?php if (isset($fungsi) && $fungsi == 'kurs') { ?>
+	<script src="<?= base_url(); ?>assets/js/own/kurs.js?<?= $updatejs; ?>"></script>
+<?php } ?>
 <?php if (isset($fungsi) && $fungsi == 'main') { ?>
 	<script src="<?= base_url(); ?>assets/js/own/main.js?<?= $updatejs; ?>"></script>
 <?php } ?>
