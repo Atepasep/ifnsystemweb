@@ -46,7 +46,7 @@ class Pricinginv_model extends CI_Model
         // $this->db->order_by('stokinv.dept_id','stokinv.urut');
         $query1 = $this->db->get_compiled_select();
 
-        $kolom = "Select *,sum(pcs_akhir) over() as totalpcs,sum(round(kgs_akhir,6)) over() as totalkgs,sum(amount) over() as totalamount from (Select r1.*,LEFT(CONCAT(IFNULL(ydln,''),IFNULL(xdln,'')),1) AS mdln,LEFT(CONCAT(IFNULL(yidkategori,''),IFNULL(xidkategori,'')),4) AS id_kategori,kategori.nama_kategori,satuan.kodesatuan from (".$query1.") r1 ";
+        $kolom = "Select *,sum(pcs_akhir) over() as totalpcs,sum(round(kgs_akhir,6)) over() as totalkgs,sum(amount) over() as totalamount,kgs_akhir-kgsdet as selisih from (Select r1.*,LEFT(CONCAT(IFNULL(ydln,''),IFNULL(xdln,'')),1) AS mdln,LEFT(CONCAT(IFNULL(yidkategori,''),IFNULL(xidkategori,'')),4) AS id_kategori,kategori.nama_kategori,satuan.kodesatuan from (".$query1.") r1 ";
         $kolom .= "LEFT JOIN kategori on kategori.kategori_id = LEFT(CONCAT(IFNULL(yidkategori,''),IFNULL(xidkategori,'')),4) ";
         $kolom .= "LEFT JOIN satuan on satuan.id = id_satuan ";
         if($this->session->userdata('milik')!=''){
@@ -84,13 +84,13 @@ class Pricinginv_model extends CI_Model
             foreach ($where as $key => $value)
             {
                 if($key=='tgkosong'){
-                    $setWhere[] = "prod_date is null";
+                    $setWhere[] = "prod_date is null OR prod_date = '0000-00-00' ";
                 }else{
                     if($key=='missed'){
                         $setWhere[] = "pcs_bom = 0 AND kgs_bom = 0";
                     }else{
                         if($key=='missedplus'){
-                            $setWhere[] = "(round(kgsdet,2)-round(kgs_akhir,2)) > 0.02 ";
+                            $setWhere[] = "(round(kgsdet,2)-round(kgs_akhir,2)) > 0.03 ";
                         }else{
                             $setWhere[] = $key."='".$value."'";
                         }
@@ -218,12 +218,12 @@ class Pricinginv_model extends CI_Model
         $periode = cekperiodedaritgl($tglawal);
         $tgl = $this->session->userdata('tglpricinginv');
 
-        $this->db->select("stokinv_detail.*,stokinv.dept_id,stokinv.tgl,stokinv.po,stokinv.item,stokinv.dis,barang.kode,barang.nama_barang,stokinv.periode,stokinv.art_type");
+        $this->db->select("stokinv_detail.*,stokinv.prod_date as dateprod,stokinv.dept_id,stokinv.tgl,stokinv.po,stokinv.item,stokinv.dis,barang.kode,barang.nama_barang,stokinv.periode,stokinv.art_type");
         $this->db->select("stokinv.dln,stokinv.po as xpo,stokinv.nobontr as xnobontr,stokinv.insno as xinsno,headbarang.nama_barang as xnama_barang,tb_po.spek as xspek,headbarang.kode as xkode,CONCAT(trim(stokinv.po),'#',trim(stokinv.item),stokinv.dis) as sku");
         $this->db->select("(SELECT harga_akt FROM tb_hargamaterial WHERE tb_hargamaterial.id_barang = stokinv_detail.id_barang AND tb_hargamaterial.nobontr = stokinv_detail.nobontr AND (stokinv_detail.nomor_bc != '' OR stokinv_detail.nomor_bc is not null) LIMIT 1) AS harga_akt");
         $this->db->select("ubrg.id_kategori as xid_kategori,tb_po.id_kategori as yid_kategori");
         $this->db->select("LEFT(CONCAT(IFNULL(headbarang.dln,''),IFNULL(tb_po.dln,'')),1) as mdln");
-        $this->db->select('sum(round(stokinv_detail.kgs,2)) OVER(partition by stokinv_detail.id_stok) as xkgs');
+        $this->db->select('sum(stokinv_detail.kgs) OVER(partition by stokinv_detail.id_stok) as xkgs');
         $this->db->select('stokinv.kgs_akhir as akhirkgs');
         $this->db->from('stokinv_detail');
         $this->db->join('barang','barang.id = stokinv_detail.id_barang','left');
@@ -266,16 +266,20 @@ class Pricinginv_model extends CI_Model
             $setWhere = array();
             foreach ($where as $key => $value)
             {
-                if($key=='bcaneh'){
-                    $setWhere[] = '(trim(nomor_bc) = "" OR nomor_bc is null)';
+                if($key=='tgkosong'){
+                    $setWhere[] = "dateprod is NULL OR dateprod = '0000-00-00' ";
                 }else{
-                    if($key=='missed'){
-                        $setWhere[] = 'miss_bom = 1';
+                    if($key=='bcaneh'){
+                        $setWhere[] = '(trim(nomor_bc) = "" OR nomor_bc is null)';
                     }else{
-                        if($key=='missedplus'){
-                            $setWhere[] = '(round(xkgs,2)-round(akhirkgs,2)) > 0.02';
+                        if($key=='missed'){
+                            $setWhere[] = 'miss_bom = 1';
                         }else{
-                            $setWhere[] = $key."='".$value."'";
+                            if($key=='missedplus'){
+                                $setWhere[] = '(round(xkgs,2)-round(akhirkgs,2)) > 0.03';
+                            }else{
+                                $setWhere[] = $key."='".$value."'";
+                            }
                         }
                     }
                 }
@@ -422,6 +426,7 @@ class Pricinginv_model extends CI_Model
                 foreach($databom as $dbom){
                     $depas = $dbom['dept_asal'];
                     $prod = $dbom['prod_date'];
+                    $satt = $dbom['id_satuan'];
                 }
                 $artipe = '';
                 if($que['id_kategori']=='8189'){
@@ -450,7 +455,8 @@ class Pricinginv_model extends CI_Model
                     'nomor_bc' => '-',
                     'tgl_bc' => '-',
                     'harga_acct' => 0,
-                    'dept_asal' => $depas
+                    'dept_asal' => $depas,
+                    'prod_date' => $prod
                 ];
                 $this->db->insert('stokinv_detail',$hasil);
 
@@ -460,6 +466,68 @@ class Pricinginv_model extends CI_Model
                 $this->db->set('art_type',$artipe);
                 $this->db->where('id',$que['id']);
                 $this->db->update('stokinv');
+
+                $sp=0;$rr=0;$nt=0;$sn=0;$h1=0;$ko=0;$h2=0;$pa=0;$sh=0;
+                // Cari data Cost dept Price 
+                $tahun = $prod==null ? 1970 : date('Y',strtotime($prod));
+                $cekcost = $this->db->get_where('ref_jobcost',['tahun' => $tahun,'aktif'=>1]);
+                if($cekcost->num_rows() > 0){
+                    $nilaicekcost = $cekcost->row_array();
+                }
+
+                // Cari data pengenaan bagian apa saja 
+                $cekcostdept = $this->db->get_where('ref_jobcostdep',['dept_id' => $que['dept_id'],'id_kategori'=>$que['id_kategori'],'trim(sublok)'=>trim($que['sublok']),'asal' => $que['asal_waste']]);
+                if($cekcostdept->num_rows() > 0 && $cekcost->num_rows() > 0){
+                    $nilaicekcostdept = $cekcostdept->row_array();
+                    if($nilaicekcostdept['sp']==1){
+                        $sp = $nilaicekcost['sp'];
+                    }
+                    if($nilaicekcostdept['rr']==1){
+                        $rr = $nilaicekcost['rr'];
+                    }
+                    if($nilaicekcostdept['nt']==1){
+                        $nt = $nilaicekcost['nt'];
+                    }
+                    if($nilaicekcostdept['sn']==1){
+                        $sn = $nilaicekcost['sn'];
+                    }
+                    if($nilaicekcostdept['h1']==1){
+                        $h1 = $nilaicekcost['h1'];
+                    }
+                    if($nilaicekcostdept['ko']==1){
+                        $ko = $nilaicekcost['ko'];
+                    }
+                    if($nilaicekcostdept['h2']==1){
+                        $h2 = $nilaicekcost['h2'];
+                    }
+                    if($nilaicekcostdept['pa']==1){
+                        $pa = $nilaicekcost['pa'];
+                    }
+                    if($nilaicekcostdept['sh']==1){
+                        $sh = $nilaicekcost['sh'];
+                    }
+                }
+                $pengali = $satt==22 ? $que['kgs_akhir'] : (($que['pcs_akhir']==0) ? $que['kgs_akhir'] : $que['pcs_akhir']);
+
+                $mnt = ($sp+$rr+$nt+$sn+$h1+$ko+$h2+$pa+$sh)*$pengali;
+                $hrg = ($sp+$rr+$nt+$sn+$h1+$ko+$h2+$pa+$sh);
+                $datastokinv = [
+                    'harga' => $hrg,
+                    'amount' => round($mnt,2),
+                    'prod_date' => $prod,
+                    'spinning' => $sp,
+                    'ringrope' => $rr,
+                    'netting' => $nt,
+                    'senshoku' => $sn,
+                    'hoshu1' => $h1,
+                    'koatsu' => $ko,
+                    'hoshu2' => $h2,
+                    'packing' => $pa,
+                    'shitate' => $sh,
+                    'asal_waste' => $que['dept_id']=='GW' ? $que['asal_waste'] : ''
+                ];
+                $this->db->where('id',$que['id']);
+                $this->db->update('stokinv',$datastokinv);
             }else{
                 $databom = getdatabomcost($que);
                 if(count($databom) > 0){
@@ -483,10 +551,11 @@ class Pricinginv_model extends CI_Model
                         $amont += $dbom['price']*$pengali;
                         $jmpcdbom += $dbom['pcs'];
                         $jmkgdbom += $dbom['kgs'];
+                        $dbom['prod_date'] = $tglpr;
                         unset($dbom['harga_rm']);
                         unset($dbom['harga_sm']);
                         unset($dbom['price']);
-                        unset($dbom['prod_date']);
+                        // unset($dbom['prod_date']);
                         $this->db->insert('stokinv_detail',$dbom);
                         $ke++;
                     }

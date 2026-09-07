@@ -134,6 +134,7 @@ class Pricinginv extends CI_Controller
         $filter_tgl = $_POST['tgl'];
         $filter_periode = $_POST['periode'];
         $filter_ctgr = $_POST['ctgr'];
+        $filter_tgkosong = $_POST['tgkosong'];
         $filter_bcnotfound = $_POST['bcnotfound'];
         $filter_art = $_POST['arty'];
         $filter_missed = $_POST['missbom'];
@@ -156,6 +157,9 @@ class Pricinginv extends CI_Controller
         }
         if($filter_missedplus=='true'){
             $arrayu['missedplus'] = 1;
+        }
+        if($filter_tgkosong=='true'){
+            $arrayu['tgkosong'] = 1;
         }
         if($filter_milik!=''){
             $arrayu["dln"] = $filter_milik;
