@@ -88,7 +88,7 @@
                                         <?php if($dt['status_hikiai']==2): ?>
                                             <a href="#" data-href="<?= base_url().'ponet/terimahikiai/'.$dt['id'] ?>" class="btn btn-sm btn-success font-kecil" data-bs-toggle="modal" data-bs-target="#modal-info" data-message="Akan menerima Hikiai Ini (data tidak bisa diubah Marketing)">Terima Hikiai</a>
                                         <?php else: ?>
-                                            <a href="#" data-href="<?= base_url().'ponet/isiperkiraanhikiai/'.$dt['id'] ?>" class="btn btn-sm btn-primary font-kecil">Isi Hikiai</a>
+                                            <a href="<?= base_url().'ponet/isiperkiraanhikiai/'.$dt['id'] ?>" class="btn btn-sm btn-primary font-kecil">Isi Hikiai</a>
                                         <?php endif; ?>
                                     </td>
                                 </tr>

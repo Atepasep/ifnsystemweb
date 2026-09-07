@@ -1899,7 +1899,7 @@ class Ib extends CI_Controller
         $tmb = $mode == 1 ? '/1' : '';
         if ($databalik['status'] == 'OK') {
             $this->helpermodel->isilog("Kirim dokumen CEISA 40 BERHASIL" . $data['nomorAju']);
-            $this->session->set_flashdata('errorsimpan', 2);
+            $this->session->set_flashdata('errorsimpan', 1);
             $this->session->set_flashdata('pesanerror', $databalik['message']);
             $this->ibmodel->updatesendceisa($id,$data['nomorAju']);
             $url = base_url() . 'ib/isidokbc/' . $id . $tmb;
@@ -1912,7 +1912,7 @@ class Ib extends CI_Controller
             foreach($databalik['message'] as $det){
                 $hsl .= "\r".$det;
             }
-            $this->session->set_flashdata('errorsimpan', 1);
+            $this->session->set_flashdata('errorsimpan', 2);
             $this->session->set_flashdata('pesanerror', $hsl. '[SCREEN SHOT dan KIRIM PESAN INI KE Bagian IT bila diperlukan]' . var_dump($databalik['Exception']));
             // $this->session->set_flashdata('pesanerror',$databalik);
             $url = base_url() . 'ib/isidokbc/' . $id . $tmb;

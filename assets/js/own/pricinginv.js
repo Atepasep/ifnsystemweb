@@ -237,6 +237,7 @@ $(document).ready(function(){
 				d.bcnotfound = $('#ceklisbcnotfoundcek').is(':checked');
 				d.missbom = $('#ceklistmissedbom').is(':checked');
 				d.missbomplus = $('#ceklistmissedbomplus').is(':checked');
+				d.tgkosong = $('#ceklistgprodkosong').is(':checked');
 				// d.buyer = $('#idbuyer').val();
 				// d.exnet = $('#idexnet').val();
 				// d.dataneh = $('#dataneh').is(':checked');
@@ -348,8 +349,9 @@ $(document).ready(function(){
 		$(".loadered").removeClass('hilang');
 	})
 	$("#ceklistgprodkosong").on('change',function(){
-		jadi = 1;
+		jadi = 0;
 		table.ajax.reload();
+		tabledet.ajax.reload();
 		$(".loadered").removeClass('hilang');
 	})
 	$("#ceklistmissedbom").on('change',function(){
