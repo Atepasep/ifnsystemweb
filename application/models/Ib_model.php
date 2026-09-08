@@ -139,6 +139,8 @@ class Ib_model extends CI_Model
         $this->db->select("(select kgs from tb_detail b where b.id = a.id_minta) as kgsminta");
         if ($mode == 1) {
             $this->db->select("sum(round(a.kgs,2)) as kgsx,sum(a.pcs) as pcsx,a.exbc_cif as xcif,a.exbc_ndpbm as xndpbm");
+        }else{
+            $this->db->select('0 as kgsx,0 as pcsx,a.exbc_cif as xcif,a.exbc_ndpbm as xndpbm');
         }
         $this->db->from('tb_detail a');
         $this->db->join('satuan b', 'b.id = a.id_satuan', 'left');
