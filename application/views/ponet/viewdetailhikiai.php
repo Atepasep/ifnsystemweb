@@ -59,6 +59,38 @@
             </tr>
         </tbody>
     </table>
+    <h5 class="font-bold m-0 mt-2">Remark</h5>
+    <table class="table table-bordered m-0">
+        <!-- <thead class="bg-primary-lt">
+            <tr>
+                <th class="text-center text-black">Tgl/Kode</th>
+                <th class="text-center text-black">Nomor</th>
+                <th class="text-center text-black">Customer</th>
+                <th class="text-center text-black">Perihal</th>
+                <th class="text-center text-black">Status</th>
+            </tr>
+        </thead> -->
+        <tbody class="table-tbody">
+            <?php if(trim($data['remark_1'])!='' || trim($data['remark_2'])!='' || trim($data['remark_3'])!='' || trim($data['remark_4'])!=''): ?>
+                <tr>
+                    <td class="font-kecil font-bold text-end"><?= $data['remark_1'] ?></td>
+                    <td class="font-kecil" style="white-space: pre-line;"><?= $data['remark_teks_1'] ?></td>
+                    <td class="font-kecil font-bold text-end"><?= $data['remark_2'] ?></td>
+                    <td class="font-kecil" style="white-space: pre-line;"><?= $data['remark_teks_2'] ?></td>
+                </tr>
+                <tr> 
+                    <td class="font-kecil font-bold text-end"><?= $data['remark_3'] ?></td>
+                    <td class="font-kecil" style="white-space: pre-line;"><?= $data['remark_teks_3'] ?></td>
+                    <td class="font-kecil font-bold text-end"><?= $data['remark_4'] ?></td>
+                    <td class="font-kecil" style="white-space: pre-line;"><?= $data['remark_teks_4'] ?></td>
+                </tr>
+            <?php else: ?>
+                <tr>
+                    <td class="font-kecil text-center">-- Tidak ada Remark --</td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
 
     <div class="card mt-2">
         <div class="card-body p-1">

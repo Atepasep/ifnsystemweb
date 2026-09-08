@@ -569,7 +569,7 @@ class Ponet_model extends CI_Model
         $this->db->select('tb_hikiai.*,customer.nama_customer');
         $this->db->join('customer','customer.id = tb_hikiai.id_customer','left');
         $this->db->where('tb_hikiai.status_hikiai >= ',2);
-        $this->db->order_by('tb_hikiai.id');
+        $this->db->order_by('tb_hikiai.tgl_hikiai,tb_hikiai.id');
         return $this->db->get('tb_hikiai');
     }
     public function getdatahikiaibyid($id){
@@ -590,5 +590,8 @@ class Ponet_model extends CI_Model
         $this->db->where('id',$id);
         $qry =  $this->db->update('tb_hikiai',['diterima_oleh' => $this->session->userdata('id'),'diterima_pada' => date('Y-m-d H:i:s'),'status_hikiai' => 3]);
         return $qry;
+    }
+    public function isiperkiraanhikiai($id){
+        return true;
     }
 }

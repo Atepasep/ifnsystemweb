@@ -476,11 +476,22 @@ class Ponet extends CI_Controller
         $this->load->view('ponet/jawabhikiai',$data);
         $this->load->view('layouts/footer',$footer);
     }
-    	public function viewdetailhikiai($id){
+    public function viewdetailhikiai($id){
 		$data = [
 			'data' => $this->ponetmodel->getdatahikiaibyid($id),
 			'datadetail' => $this->ponetmodel->getdatadetailhikiai($id)
 		];
 		$this->load->view('ponet\viewdetailhikiai',$data);
 	}
+    public function isiperkiraanhikiai($id){
+        $header['header'] = 'other';
+        // $data['data'] = $this->ponetmodel->isiperkiraanhikiai($id);
+        $data['data'] = $this->ponetmodel->getdatahikiaibyid($id);
+        $data['datadetail'] = $this->ponetmodel->getdatadetailhikiai($id);
+        $footer['data'] = $this->helpermodel->getdatafooter()->row_array();
+        $footer['fungsi'] = 'ponet';
+        $this->load->view('layouts/header', $header);
+        $this->load->view('ponet/isiperkiraanhikiai',$data);
+        $this->load->view('layouts/footer',$footer);
+    }
 }

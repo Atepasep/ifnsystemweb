@@ -286,9 +286,9 @@ class inv_model extends CI_Model
         $this->db->or_where('tb_header.kode_dok','T');
         $this->db->group_end();
         $this->db->where('tb_header.ok_valid',1);
-        if($dept=='NT'){
-            $this->db->where('trim(tb_detail.po)','');
-        }
+        // if($dept=='NT'){
+        //     $this->db->where('trim(tb_detail.po)','');
+        // }
         if($mode==1){
             if($this->session->userdata('filterkat')!=""){
                 $this->db->group_start();
