@@ -69,11 +69,11 @@
                                 <td class="text-end"><?= rupiah($det['pcs'],0) ?></td>
                                 <td class="text-end"><?= rupiah($det['kgs'],2) ?></td>
                                 <td class="font-kecil text-center">
-                                    <a href="#" class="btn btn-sm btn-primary">Tambah Perkiraan</a>
+                                    <a href="<?= base_url().'ponet/isijawabperkiraan/'.$data['id'].'/'.$det['id'] ?>" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modal-large-loading" data-title="Add Estimasi Mulai Produksi">Tambah Perkiraan</a>
                                 </td>
                             </tr>
                             <tr class="font-kecil">
-                                <td class="text-end font-bold bg-cyan-lt">Hasil</td>
+                                <td class="text-end font-bold bg-cyan-lt">Hasil<br><span class="text-black"><?= limitmp($det['tgl_dt']) ?></span></td>
                                 <td class="bg-cyan-lt" colspan="5">
                                     <table class="table table-hover table-bordered cell-border mt-0 mb-0" style="width: 100% !important; border-collapse: collapse;">
                                         <thead>
@@ -81,28 +81,51 @@
                                                 <th>PO</th>
                                                 <th>Item</th>
                                                 <th>Dis</th>
+                                                <th>Insno</th>
                                                 <th>Pcs</th>
-                                                <th>No Machine</th>
-                                                <th>Start Date</th>
-                                                <th>End Date</th>
+                                                <th>Kgs</th>
+                                                <th>No Ms</th>
+                                                <th class="line-11">Start<br>Date (Net)</th>
+                                                <th class="line-11">End<br>Date (Net)</th>
+                                                <th>End FN</th>
                                                 <th>Act</th>
                                             </tr>
                                         </thead>
-                                        <tr>
-                                            <td>XXX</td>
-                                            <td>XXX</td>
-                                            <td>XXX</td>
-                                            <td>XXX</td>
-                                            <td>XXX</td>
-                                            <td>XXX</td>
-                                            <td>XXX</td>
-                                        </tr>
+                                        <tbody>
+                                            <?php if($dataeps->num_rows() > 0): foreach($dataeps->result_array() as $dateps): if($dateps['id_hikiai_detail']==$det['id']): ?>
+                                                <tr class="text-primary">
+                                                    <td><?= $dateps['po'] ?></td>
+                                                    <td><?= $dateps['item'] ?></td>
+                                                    <td><?= $dateps['dis'] ?></td>
+                                                    <td><?= $dateps['insno'] ?></td>
+                                                    <td class="text-end"><?= rupiah($dateps['pcs'],0) ?></td>
+                                                    <td class="text-end"><?= rupiah($dateps['kgs'],2) ?></td>
+                                                    <td class="text-center"><?= $dateps['machno'] ?></td>
+                                                    <td><?= tglmysql($dateps['tgl_mulai']) ?></td>
+                                                    <td><?= tglmysql($dateps['tgl_akhir']) ?></td>
+                                                    <td><?= tglmysql($dateps['tgl_kirim_gudang']) ?></td>
+                                                    <td class="text-center text-black">
+                                                        <a href="#" class="text-primary font-kecil">Edit</a> |
+                                                        <a href="#" data-href="<?= base_url().'ponet/hapusjawabperkiraan/'.$data['id'].'/'.$det['id'].'/'.$dateps['id'] ?>" class="text-danger font-kecil" data-bs-toggle="modal" data-bs-target="#modal-danger" data-message="Anda akan menghapus data ini ?">Hapus</a>
+                                                    </td>
+                                                </tr>                   
+                                            <?php endif; endforeach; else: ?>
+                                                <tr>
+                                                    <td colspan="11" class="text-center font-kecil">--Belum ada Data Estimasi Produksi--</td>
+                                                </tr>
+                                            <?php endif; ?>
+                                        </tbody>
                                     </table>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+                <hr class="m-1">    
+                <div class="text-end">
+                    <a href="#" data-href="<?= base_url().'ponet/simpanperkiraanhikiai/'.$data['id'] ?>" class="btn btn-sm btn-primary font-kecil" data-bs-toggle="modal" data-bs-target="#modal-info" data-message="Akan menyimpan Estimasi ini">Simpan Estimasi Produksi</a>
+                    <a href="#" class="btn btn-sm btn-danger font-kecil" data-bs-toggle="modal" data-bs-target="#modal-danger" data-message="Akan me-reset data Estimasi ini (data akan hilang)" data-tombol="Reset">Reset Estimasi</a>
+                </div>
             </div>
         </div>
     </div>
