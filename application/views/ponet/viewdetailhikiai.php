@@ -74,15 +74,15 @@
             <?php if(trim($data['remark_1'])!='' || trim($data['remark_2'])!='' || trim($data['remark_3'])!='' || trim($data['remark_4'])!=''): ?>
                 <tr>
                     <td class="font-kecil font-bold text-end"><?= $data['remark_1'] ?></td>
-                    <td class="font-kecil" style="white-space: pre-line;"><?= $data['remark_teks_1'] ?></td>
+                    <td class="font-kecil font-10 line-11" style="white-space: pre-line;"><?= $data['remark_teks_1'] ?></td>
                     <td class="font-kecil font-bold text-end"><?= $data['remark_2'] ?></td>
-                    <td class="font-kecil" style="white-space: pre-line;"><?= $data['remark_teks_2'] ?></td>
+                    <td class="font-kecil font-10 line-11" style="white-space: pre-line;"><?= $data['remark_teks_2'] ?></td>
                 </tr>
                 <tr> 
                     <td class="font-kecil font-bold text-end"><?= $data['remark_3'] ?></td>
-                    <td class="font-kecil" style="white-space: pre-line;"><?= $data['remark_teks_3'] ?></td>
+                    <td class="font-kecil font-10 line-11" style="white-space: pre-line;"><?= $data['remark_teks_3'] ?></td>
                     <td class="font-kecil font-bold text-end"><?= $data['remark_4'] ?></td>
-                    <td class="font-kecil" style="white-space: pre-line;"><?= $data['remark_teks_4'] ?></td>
+                    <td class="font-kecil font-10 line-11" style="white-space: pre-line;"><?= $data['remark_teks_4'] ?></td>
                 </tr>
             <?php else: ?>
                 <tr>
@@ -110,15 +110,39 @@
                     <?php $jmlrek = 0; $jmlpcs=0; $jmlkgs=0; foreach($datadetail->result_array() as $det): $jmlrek++; $jmlpcs += $det['pcs']; $jmlkgs += $det['kgs']; ?>
                         <tr>
                             <td class="font-kecil text-center font-bold">#<?= $det['item'] ?></td>
-                            <td class="font-kecil"><?= $det['spesifikasi'] ?></td>
+                            <td class="font-kecil line-11"><?= $det['spesifikasi'] ?>
+                                <?php if($data['status_hitung']==1): if($dataeps->num_rows() > 0): foreach($dataeps->result_array() as $eps): if($eps['id_hikiai_detail']==$det['id']): ?>
+                                    <br>
+                                    <hr class="m-0 mt-1">
+                                    <div class="row">
+                                        <div class="col-9">
+                                            <span class="font-10 text-pink">SKU :</span>
+                                            <span class="font-10 text-primary"><?= viewsku($eps['po'],$eps['item'],$eps['dis']) ?></span><br>
+                                            <span class="font-10 text-pink">Instruksi :</span>
+                                            <span class="font-10 text-primary"><?= $eps['insno'] ?></span><br>
+                                            <span class="font-10 text-pink">Produksi Netting :</span>
+                                            <span class="font-10 text-primary"><?= tglmysql($eps['tgl_mulai']).' s/d '.tglmysql($eps['tgl_akhir']) ?></span><span class="font-10 text-primary"> (<?= hitunghari($eps['tgl_mulai'],$eps['tgl_akhir']) ?> Hari)</span><br>
+                                            <span class="font-10 text-pink">Kirim ke Gudang :</span>
+                                            <span class="font-10 text-primary"><?= tglmysql($eps['tgl_kirim_gudang']) ?></span>
+                                        </div>
+                                        <div class="col-3">
+                                            <span class="font-10 text-pink">Pcs :</span>
+                                            <span class="font-10 text-primary"><?= rupiah($eps['pcs'],0) ?></span><br>
+                                            <span class="font-10 text-pink">Kgs :</span>
+                                            <span class="font-10 text-primary"><?= rupiah($eps['kgs'],2) ?></span>
+                                        </div>
+                                    </div>
+                                    
+                                <?php endif; endforeach; endif; endif; ?>
+                            </td>
                             <td class="font-kecil"><?= $det['kodesatuan'] ?></td>
                             <td class="font-kecil text-end"><?= rupiah($det['pcs'],0) ?></td>
                             <td class="font-kecil text-end"><?= rupiah($det['kgs'],2) ?></td>
-                            <td class="font-kecil text-red">-</td>
+                            <td class="font-kecil text-center text-red font-bold"><?= limitmp($det['tgl_dt']) ?></td>
                         </tr>
                     <?php endforeach; ?>
                     <tr>
-                        <td class="font-kecil"> Total Item : <?= $jmlrek ?></td>
+                        <td class="font-kecil text-center"> Total Item : <?= $jmlrek ?></td>
                         <td colspan="2" class="font-kecil font-bold text-end">Total</td>
                         <td class="font-kecil text-end"><?= rupiah($jmlpcs,0) ?></td>
                         <td class="font-kecil text-end"><?= rupiah($jmlkgs,2) ?></td>

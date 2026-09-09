@@ -586,6 +586,11 @@ class Ponet_model extends CI_Model
         $this->db->order_by('tb_hikiai_detail.item');
         return $this->db->get('tb_hikiai_detail');
     }
+    public function getdatahikiaieps($id){
+        $this->db->where('tb_hikiai_eps.id_hikiai',$id);
+        $this->db->order_by('tb_hikiai_eps.item');
+        return $this->db->get('tb_hikiai_eps');
+    }
     public function terimahikiai($id){
         $this->db->where('id',$id);
         $qry =  $this->db->update('tb_hikiai',['diterima_oleh' => $this->session->userdata('id'),'diterima_pada' => date('Y-m-d H:i:s'),'status_hikiai' => 3]);
@@ -593,5 +598,50 @@ class Ponet_model extends CI_Model
     }
     public function isiperkiraanhikiai($id){
         return true;
+    }
+    public function getmesinnet(){
+        $this->db->where('idle',0);
+        return $this->db->order_by('mach_no')->get('tb_msn_netting');
+    }
+    public function simpanjawabperkiraan($data){
+        $this->db->trans_start();
+        $idhik = $data['id_hikiai'];
+        $data['tgl_dt'] = date('Y-m-d',strtotime($data['tgl_kirim_gudang'].'+ 10 days'));
+        $this->db->insert('tb_hikiai_eps',$data);
+
+        $datadetail = $this->db->order_by('tgl_dt DESC')->get_where('tb_hikiai_eps',['id_hikiai_detail' => $data['id_hikiai_detail']])->row_array();
+        
+        $this->db->set('tgl_dt',$datadetail['tgl_dt']);
+        $this->db->where('id_hikiai',$idhik);
+        $this->db->update('tb_hikiai_detail');
+        return $this->db->trans_complete();
+    }
+    public function hapusjawabperkiraan($det,$id){
+        // $this->db->trans_start();
+        $this->db->where('id',$id);
+        $this->db->delete('tb_hikiai_eps');
+
+        $datadetail = $this->db->order_by('tgl_dt DESC')->get_where('tb_hikiai_eps',['id_hikiai_detail' => $det]);
+
+        if($datadetail->num_rows() > 0){
+            $xdatdetail = $datadetail->row_array();
+
+            $this->db->set('tgl_dt',$xdatdetail['tgl_dt']);
+            $this->db->where('id',$det);
+            $this->db->update('tb_hikiai_detail');
+        }else{
+            $this->db->set('tgl_dt',NULL);
+            $this->db->where('id',$det);
+            $this->db->update('tb_hikiai_detail');
+        }
+        return true;
+    }
+    public function editperkiraanhikiai($id){
+        $this->db->where('id',$id);
+        return $this->db->update('tb_hikiai',['status_hitung' => 0]);
+    }
+    public function simpanperkiraanhikiai($id){
+        $this->db->where('id',$id);
+        return $this->db->update('tb_hikiai',['status_hitung' => 1]);
     }
 }

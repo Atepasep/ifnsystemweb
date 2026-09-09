@@ -84,11 +84,16 @@
                                     <td class="font-kecil"><?= $dt['perihal'] ?></td>
                                     <td class="text-end"><?= rupiah($dt['pcs'],0) ?></td>
                                     <td class="text-end"><?= rupiah($dt['kgs'],2) ?></td>
-                                    <td class="font-kecil text-center">
+                                    <td class="font-kecil text-end">
                                         <?php if($dt['status_hikiai']==2): ?>
                                             <a href="#" data-href="<?= base_url().'ponet/terimahikiai/'.$dt['id'] ?>" class="btn btn-sm btn-success font-kecil" data-bs-toggle="modal" data-bs-target="#modal-info" data-message="Akan menerima Hikiai Ini (data tidak bisa diubah Marketing)">Terima Hikiai</a>
                                         <?php else: ?>
-                                            <a href="<?= base_url().'ponet/isiperkiraanhikiai/'.$dt['id'] ?>" class="btn btn-sm btn-primary font-kecil">Isi Hikiai</a>
+                                            <?php if($dt['status_hitung']==0): ?>
+                                                <a href="<?= base_url().'ponet/isiperkiraanhikiai/'.$dt['id'] ?>" class="btn btn-smx btn-flat btn-primary font-kecil">Isi Hikiai</a>
+                                            <?php else: ?>
+                                                <a href="<?= base_url().'ponet/editperkiraanhikiai/'.$dt['id'] ?>" class="btn btn-smx btn-flat btn-primary font-kecil">Edit</a>
+                                                <a href="<?= base_url().'ponet/kirihikiaikemarketing/'.$dt['id'] ?>" class="btn btn-smx btn-flat btn-success font-kecil">Kirim Hikiai</a>
+                                            <?php endif; ?>
                                         <?php endif; ?>
                                     </td>
                                 </tr>

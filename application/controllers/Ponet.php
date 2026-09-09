@@ -479,19 +479,63 @@ class Ponet extends CI_Controller
     public function viewdetailhikiai($id){
 		$data = [
 			'data' => $this->ponetmodel->getdatahikiaibyid($id),
-			'datadetail' => $this->ponetmodel->getdatadetailhikiai($id)
+			'datadetail' => $this->ponetmodel->getdatadetailhikiai($id),
+            'dataeps' => $this->ponetmodel->getdatahikiaieps($id)
 		];
-		$this->load->view('ponet\viewdetailhikiai',$data);
+		$this->load->view('ponet/viewdetailhikiai',$data);
 	}
     public function isiperkiraanhikiai($id){
         $header['header'] = 'other';
         // $data['data'] = $this->ponetmodel->isiperkiraanhikiai($id);
         $data['data'] = $this->ponetmodel->getdatahikiaibyid($id);
         $data['datadetail'] = $this->ponetmodel->getdatadetailhikiai($id);
+        $data['dataeps'] = $this->ponetmodel->getdatahikiaieps($id);
         $footer['data'] = $this->helpermodel->getdatafooter()->row_array();
         $footer['fungsi'] = 'ponet';
         $this->load->view('layouts/header', $header);
         $this->load->view('ponet/isiperkiraanhikiai',$data);
         $this->load->view('layouts/footer',$footer);
+    }
+    public function isijawabperkiraan($hik,$id){
+        $data = ['id_hikiai' => $hik, 'id_hikiai_detail' => $id,'datamesin' => $this->ponetmodel->getmesinnet()];
+		$this->load->view('ponet/isijawabperkiraan',$data);
+    }
+    public function simpanjawabperkiraan(){
+        $data = [
+            'id_hikiai' => $_POST['idhik'],
+            'id_hikiai_detail' => $_POST['idhikdet'],
+            'po' => $_POST['po'],
+            'item' => $_POST['item'],
+            'dis' => $_POST['dis'],
+            'insno' => $_POST['insno'],
+            'pcs' => toAngka($_POST['pcs']),
+            'kgs' => toAngka($_POST['kgs']),
+            'machno' => $_POST['machno'],
+            'tgl_mulai' => tglmysql($_POST['tgl_mulai']),
+            'tgl_akhir' => tglmysql($_POST['tgl_akhir']),
+            'tgl_kirim_gudang' => tglmysql($_POST['tgl_gudang'])
+        ];
+        return $this->ponetmodel->simpanjawabperkiraan($data);
+    }
+    public function hapusjawabperkiraan($de,$det,$id){
+        $query =  $this->ponetmodel->hapusjawabperkiraan($det,$id);
+        if($query){
+            $url = base_url().'ponet/isiperkiraanhikiai/'.$de;
+            redirect($url);
+        }
+    }
+    public function simpanperkiraanhikiai($id){
+        $query =  $this->ponetmodel->simpanperkiraanhikiai($id);
+        if($query){
+            $url = base_url().'ponet/jawabhikiai';
+            redirect($url);
+        }
+    }
+    public function editperkiraanhikiai($id){
+        $query =  $this->ponetmodel->editperkiraanhikiai($id);
+        if($query){
+            $url = base_url().'ponet/isiperkiraanhikiai/'.$id;
+            redirect($url);
+        }
     }
 }
