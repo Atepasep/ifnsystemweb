@@ -335,12 +335,16 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                                             echo "selected";
                                                           } ?>>User Export Domestik</option>
                                         <option value="99" <?php if ($user['rolecrm'] == 99) {
-                                                            echo "selected";
-                                                          } ?>>Administrator CRM</option>
+                                                              echo "selected";
+                                                            } ?>>Administrator CRM</option>
                                       </select>
                                     </div>
                                   </div>
                                 </span>
+                              </label>
+                              <label class="form-check mb-1">
+                                <input class="form-check-input" id="hakprogram7" name="hakprogram7" type="checkbox" <?= cekceklis($user['hakprogram'], 7); ?>>
+                                <span class="form-check-label">Utility</span>
                               </label>
                             </div>
                           </div>
@@ -1117,7 +1121,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
               </div>
             </div>
           </div>
-        </div>
+      </div>
       </form>
     </div>
   </div>

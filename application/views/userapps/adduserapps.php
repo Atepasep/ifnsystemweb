@@ -191,6 +191,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                   </div>
                                 </span>
                               </label>
+                              <label class="form-check mb-1">
+                                <input class="form-check-input" id="hakprogram7" name="hakprogram7" type="checkbox">
+                                <span class="form-check-label">Utility</span>
+                              </label>
                             </div>
                           </div>
                         </div>
