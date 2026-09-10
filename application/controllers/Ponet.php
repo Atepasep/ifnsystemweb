@@ -538,4 +538,18 @@ class Ponet extends CI_Controller
             redirect($url);
         }
     }
+    public function resetperkiraanhikiai($id){
+        $query =  $this->ponetmodel->resetperkiraanhikiai($id);
+        if($query){
+            $url = base_url().'ponet/isiperkiraanhikiai/'.$id;
+            redirect($url);
+        }
+    }
+    public function kirimhikiaikemarketing($id){
+        $query =  $this->ponetmodel->kirimhikiaikemarketing($id);
+        if($query){
+            $url = base_url().'ponet/jawabhikiai';
+            redirect($url);
+        }
+    }
 }
