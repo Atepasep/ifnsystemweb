@@ -124,7 +124,7 @@
                 <hr class="m-1">    
                 <div class="text-end">
                     <a href="#" data-href="<?= base_url().'ponet/simpanperkiraanhikiai/'.$data['id'] ?>" class="btn btn-sm btn-primary font-kecil" data-bs-toggle="modal" data-bs-target="#modal-info" data-message="Akan menyimpan Estimasi ini">Simpan Estimasi Produksi</a>
-                    <a href="#" class="btn btn-sm btn-danger font-kecil" data-bs-toggle="modal" data-bs-target="#modal-danger" data-message="Akan me-reset data Estimasi ini (data akan hilang)" data-tombol="Reset">Reset Estimasi</a>
+                    <a href="#" data-href="<?= base_url().'ponet/resetperkiraanhikiai/'.$data['id'] ?>" class="btn btn-sm btn-danger font-kecil" data-bs-toggle="modal" data-bs-target="#modal-danger" data-message="Akan me-reset data Estimasi ini (data akan hilang)" data-tombol="Reset">Reset Estimasi</a>
                 </div>
             </div>
         </div>

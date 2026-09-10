@@ -87,13 +87,15 @@
                                     <td class="font-kecil text-end">
                                         <?php if($dt['status_hikiai']==2): ?>
                                             <a href="#" data-href="<?= base_url().'ponet/terimahikiai/'.$dt['id'] ?>" class="btn btn-sm btn-success font-kecil" data-bs-toggle="modal" data-bs-target="#modal-info" data-message="Akan menerima Hikiai Ini (data tidak bisa diubah Marketing)">Terima Hikiai</a>
-                                        <?php else: ?>
+                                        <?php elseif($dt['status_hikiai']==3): ?>
                                             <?php if($dt['status_hitung']==0): ?>
                                                 <a href="<?= base_url().'ponet/isiperkiraanhikiai/'.$dt['id'] ?>" class="btn btn-smx btn-flat btn-primary font-kecil">Isi Hikiai</a>
                                             <?php else: ?>
                                                 <a href="<?= base_url().'ponet/editperkiraanhikiai/'.$dt['id'] ?>" class="btn btn-smx btn-flat btn-primary font-kecil">Edit</a>
-                                                <a href="<?= base_url().'ponet/kirihikiaikemarketing/'.$dt['id'] ?>" class="btn btn-smx btn-flat btn-success font-kecil">Kirim Hikiai</a>
+                                                <a href="#" data-href="<?= base_url().'ponet/kirimhikiaikemarketing/'.$dt['id'] ?>" class="btn btn-smx btn-flat btn-success font-kecil" data-bs-toggle="modal" data-bs-target="#modal-info" data-message="Akan Mengirim Hikiai Ke Marketing"><i class="fa fa-paper-plane mr-1"></i>Kirim Hikiai</a>
                                             <?php endif; ?>
+                                        <?php else: ?>
+                                            <span class="text-cyan">Data Sudah Dikirim</span>
                                         <?php endif; ?>
                                     </td>
                                 </tr>

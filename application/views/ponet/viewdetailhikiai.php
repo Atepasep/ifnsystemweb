@@ -153,6 +153,19 @@
         </div>
     </div>
 </div>
+<h5 class="text-dark bg-cyan-lt p-1 my-1">History</h5>
+<div class="line-11">
+    <?php $nox=0; if($data['dikirim_oleh']!=0): $nox++; ?>
+        <span class="font-kecil"><?= $nox.'. ' ?>Dikirim : <?= datauser($data['dikirim_oleh']) ?>, Pada <?= tglmysql2($data['dikirim_pada']) ?></span><br>
+    <?php endif; ?>
+    <?php if($data['diterima_oleh']!=0): $nox++; ?>
+        <span class="font-kecil"><?= $nox.'. ' ?>Diterima : <?= datauser($data['diterima_oleh']) ?>, Pada <?= tglmysql2($data['diterima_pada']) ?></span><br>
+    <?php endif; ?>
+    <?php if($data['hikiai_oleh']!=0): $nox++; ?>
+        <span class="font-kecil"><?= $nox.'. ' ?>Reply Hikiai : <?= datauser($data['hikiai_oleh']) ?>, Pada <?= tglmysql2($data['hikiai_pada']) ?></span><br>
+    <?php endif; ?>
+</div>
+<div class="mt-2"></div>
 <script>
     
 </script>

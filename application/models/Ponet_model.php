@@ -612,7 +612,7 @@ class Ponet_model extends CI_Model
         $datadetail = $this->db->order_by('tgl_dt DESC')->get_where('tb_hikiai_eps',['id_hikiai_detail' => $data['id_hikiai_detail']])->row_array();
         
         $this->db->set('tgl_dt',$datadetail['tgl_dt']);
-        $this->db->where('id_hikiai',$idhik);
+        $this->db->where('id',$datadetail['id_hikiai_detail']);
         $this->db->update('tb_hikiai_detail');
         return $this->db->trans_complete();
     }
@@ -641,7 +641,47 @@ class Ponet_model extends CI_Model
         return $this->db->update('tb_hikiai',['status_hitung' => 0]);
     }
     public function simpanperkiraanhikiai($id){
+        $this->db->select('sum(kgs) as xkgs');
+        $this->db->from('tb_hikiai_detail');
+        $this->db->where('id_hikiai',$id);
+        $jmlkgs = $this->db->get();
+        if($jmlkgs->num_rows() > 0){
+            $datakgs = $jmlkgs->row_array();
+            $kgs = $datakgs['xkgs'];
+        }else{
+            $kgs = 0;
+        }
+
         $this->db->where('id',$id);
-        return $this->db->update('tb_hikiai',['status_hitung' => 1]);
+        return $this->db->update('tb_hikiai',['status_hitung' => 1,'kgs' => $kgs]);
+    }
+    public function resetperkiraanhikiai($id){
+        $this->db->trans_start();
+        $data = $this->db->get_where('tb_hikiai_eps',['id_hikiai' => $id]);
+        foreach($data->result_array() as $de){
+            $this->db->where('id',$de['id_hikiai_detail']);
+            $this->db->update('tb_hikiai_detail',['tgl_dt' => NULL]);
+
+            $this->db->where('id',$de['id']);
+            $this->db->delete('tb_hikiai_eps');
+        }
+        return $this->db->trans_complete();
+    }
+    public function kirimhikiaikemarketing($id){
+        $data = [
+            'hikiai_oleh' => $this->session->userdata('id'),
+            'hikiai_pada' => date('Y-m-d H:i:s'),
+            'status_hikiai' => 4
+        ];
+        $this->db->where('id',$id);
+        $qry = $this->db->update('tb_hikiai',$data);
+        if($qry){
+            $this->session->set_flashdata('errorsimpan',1);
+            $this->session->set_flashdata('pesanerror','Data berhasil disimpan !');
+        }else{
+            $this->session->set_flashdata('errorsimpan',2);
+            $this->session->set_flashdata('pesanerror','Ada kesalahan Simpan data !');
+        }
+        return $qry;
     }
 }
