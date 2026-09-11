@@ -2,7 +2,7 @@
 <div class="page-header d-print-none m-2">
     <div class="container-xl d-flex justify-content-between">
         <h2 class="page-title p-2">
-            Jawab Hikiai
+            Jawab Hikiai (Marketing)
         </h2>
         <div class="col-md-6" style="text-align: right;">
             <a href="<?= base_url().'ponet' ?>" class="btn btn-primary btn-sm"><i class="fa fa-arrow-left"></i><span class="ml-1">Kembali</span></a>
