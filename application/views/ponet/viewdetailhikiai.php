@@ -30,7 +30,7 @@
                         $badgestat = 'badge badge-outline text-pink';
                         break;
                     case 3:
-                        $strstat = 'Hitung PPIC';
+                        $strstat = 'Proses Hitung PPIC '."\r\n";
                         $badgestat = 'badge bg-pink text-pink-fg';
                         break;
                     case 4:
@@ -38,10 +38,18 @@
                         $badgestat = 'badge bg-green text-green-fg';
                         break;
                     case 5:
-                        $strstat = 'Closed';
-                        $badgestat = 'badge';
+                        $strstat = 'Sudah dijawab Marketing';
+                        $badgestat = 'badge bg-yellow text-black';
                         break;
                     case 6:
+                        $strstat = 'Proses Produksi';
+                        $badgestat = 'badge bg-azure text-azure-fg';
+                        break;
+                    case 6:
+                        $strstat = 'Close';
+                        $badgestat = 'badge bg-azure text-azure-fg';
+                        break;
+                    case 99:
                         $strstat = 'Cancel';
                         $badgestat = 'badge bg-red text-red-fg';
                         break;

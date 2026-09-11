@@ -1058,6 +1058,8 @@ class Akb_model extends CI_Model
             }
         } else {
             $this->db->select("*,'' as ketprc,barang.kode");
+            $this->db->select("ROUND((tb_detail.sp_disc/IF(tb_detail.id_satuan=22,tb_detail.kgs,tb_detail.pcs)),2) AS sp_disc_sat");
+            $this->db->select("ROUND((tb_detail.cash_disc/IF(tb_detail.id_satuan=22,tb_detail.kgs,tb_detail.pcs)),2) AS cash_disc_sat");
             $this->db->from('tb_detail');
             $this->db->join('barang', 'barang.id = tb_detail.id_barang', 'left');
             $this->db->where('id_header', $id);
@@ -1110,7 +1112,7 @@ class Akb_model extends CI_Model
             $arrbom = showbomjf($hsl['po'], $hsl['item'], $hsl['dis'], $hsl['id_barang'], $hsl['insno'], $hsl['nobontr'], round($hsl['kgs'], 2), $no++, $hsl['pcs'], $mode);
             if (count($arrbom) > 0) {
                 foreach ($arrbom as $hasilshowbom) {
-                    $hasilshowbom['harga_satuan'] = $hsl['harga_satuan'];
+                    $hasilshowbom['harga_satuan'] = $hsl['harga_satuan']-($hsl['sp_disc_sat']+$hsl['cash_disc_sat']);
                     array_push($arrhasil, $hasilshowbom);
                 }
             } else {
@@ -1324,7 +1326,7 @@ class Akb_model extends CI_Model
                                 if ($header['jns_bc'] == '25') {
                                     $hargaperolehan = $cekjenisbc['price'] * $hasilshowbom['kgs_asli'];
                                 } else {
-                                    $hargaperolehan = $hasilshowbom['harga_satuan'] * $hasilshowbom['kgs_asli'];
+                                    $hargaperolehan = ($hasilshowbom['harga_satuan'] * $hasilshowbom['kgs_asli']);
                                 }
                                 $datasimpan['hargaperolehan'] = round($hargaperolehan, 0);
                                 $datasimpan['ppn'] = $cekjenisbc['ppn'];

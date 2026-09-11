@@ -552,4 +552,16 @@ class Ponet extends CI_Controller
             redirect($url);
         }
     }
+    public function viewjawabhikiai($id){
+        $header['header'] = 'other';
+        // $data['data'] = $this->ponetmodel->isiperkiraanhikiai($id);
+        $data['data'] = $this->ponetmodel->getdatahikiaibyid($id);
+        $data['datadetail'] = $this->ponetmodel->getdatadetailhikiai($id);
+        $data['dataeps'] = $this->ponetmodel->getdatahikiaieps($id);
+        $footer['data'] = $this->helpermodel->getdatafooter()->row_array();
+        $footer['fungsi'] = 'ponet';
+        $this->load->view('layouts/header', $header);
+        $this->load->view('ponet/viewjawabhikiai',$data);
+        $this->load->view('layouts/footer',$footer);
+    }
 }
