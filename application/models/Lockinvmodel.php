@@ -12,7 +12,7 @@ class Lockinvmodel extends CI_Model
             }
         }
         $this->db->where('right(trim(periode),4)',$this->session->userdata('thlock'));
-        $this->db->order_by('periode','AS');
+        $this->db->order_by('periode ASC, dept_id ASC');
         return $this->db->get()->result_array();
     }
     public function tambah($data){

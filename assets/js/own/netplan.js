@@ -7,6 +7,7 @@ $(document).ready(function () {
 		$("#firstrec").addClass('disabled');
 		$("#prevrec").addClass('disabled');
 	}
+	var isInitialLoad = true;
 	table = $('#tabelnya').DataTable({
 		// "processing": true,
 		// "responsive":true,
@@ -57,6 +58,10 @@ $(document).ready(function () {
 				// $("#sopcs").text('0');
 				// $("#jumlahrekod").text('0');
 			}
+			// if (isInitialLoad) {
+			// 	isInitialLoad = false; // Prevent an infinite loop
+			// 	api.page('last').draw(false);
+			// }
 		},
 		"ajax":
 		{
@@ -157,6 +162,9 @@ $(document).ready(function () {
 			 },
 		],
 	});
+	// table.ajax.reload(function() {
+	// 	table.page('last').draw(false);
+	// }, false);
 });
 $("#cekitem").on('click',function(){
 	// pesan('Dalam tahap Pembuatan','info');
