@@ -325,7 +325,7 @@ class Ponet_model extends CI_Model
         $this->db->join('tb_po','tb_po.ind_po = concat(tb_netinstr.po,tb_netinstr.item,tb_netinstr.dis)','left');
         $this->db->where('tb_netinstr.machno',$msno);
         $this->db->order_by('urt desc, dateplan desc');
-        $this->db->limit(50);
+        $this->db->limit(100);
         $query1 = $this->db->get_compiled_select();
 
         $kolom = "Select * from (Select * from (".$query1.") r1 order by dateplan) r2";

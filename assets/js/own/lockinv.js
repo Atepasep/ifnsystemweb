@@ -1,9 +1,9 @@
 $(window).on("load", function () {
-	NProgress.start();
-	NProgress.inc(0.5);
+	// NProgress.start();
+	// NProgress.inc(0.5);
 });
 $(document).ready(function () {
-	NProgress.done();
+	// NProgress.done();
 });
 $("#setperiode").click(function () {
 	var blx = $("#bl").val();
