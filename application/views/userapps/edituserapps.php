@@ -355,6 +355,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <input class="form-check-input" id="hakprogram8" name="hakprogram8" type="checkbox" <?= cekceklis($user['hakprogram'], 8); ?>>
                                 <span class="form-check-label">Jasa Teknik</span>
                               </label>
+                              <label class="form-check mb-1">
+                                <input class="form-check-input" id="hakprogram9" name="hakprogram9" type="checkbox" <?= cekceklis($user['hakprogram'], 9); ?>>
+                                <span class="form-check-label">Memo</span>
+                              </label>
                             </div>
 
                           </div>
@@ -1154,6 +1158,22 @@ defined('BASEPATH') or exit('No direct script access allowed');
                           <label class="form-check form-check-single form-switch">
                             <?php $pcaktif = $user['cekjastek_verifikasi'] == 1 ? 'checked' : ''; ?>
                             <input class="form-check-input" name="cekjastek_verifikasi" id="cekjastek_verifikasi" type="checkbox" <?= $pcaktif; ?>>
+                          </label>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="mb-1 row ml-1" style="background-color: #C8B48A;">
+                  <label class="col-2 col-form-label"></label>
+                  <div class="col mt-2">
+                    <div class="col-11">
+                      <label class="row" title="Akses Sub Lokasi">
+                        <span class="col font-bold  " style="color: #1E3B2F;">Konfirmasi Memo</span>
+                        <span class="col-auto">
+                          <label class="form-check form-check-single form-switch">
+                            <?php $pcaktif = $user['cekmemo'] == 1 ? 'checked' : ''; ?>
+                            <input class="form-check-input" name="cekmemo" id="cekmemo" type="checkbox" <?= $pcaktif; ?>>
                           </label>
                         </span>
                       </label>
