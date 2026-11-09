@@ -16,6 +16,7 @@ class Po extends CI_Controller
         $this->load->model('dept_model', 'deptmodel');
         $this->load->model('satuanmodel');
         $this->load->model('supplier_model', 'suppliermodel');
+        $this->load->model('customer_model', 'customermodel');
         $this->load->model('userappsmodel', 'usermodel');
         $this->load->model('mtuangmodel');
         $this->load->model('helper_model', 'helpermodel');
@@ -251,6 +252,25 @@ class Po extends CI_Controller
                 $hasil .= "<td class='text-primary'>" . $data['nama_supplier'] . "</td>";
                 $hasil .= "<td>" . substr($data['alamat'], 0, 35) . "</td>";
                 $hasil .= "<td><a href='#' class='btn btn-sm btn-success' rel='" . $data['id'] . "' id='pilihsupplier'>Pilih</a></td></tr>";
+            }
+        } else {
+            $hasil .= "<tr>";
+            $hasil .= '<td colspan="3" class="text-center">No Data / Cari dahulu data</td></tr>';
+        }
+        $cocok = array('datagroup' => $hasil);
+        echo json_encode($cocok);
+    }
+    public function getcustomerbyname()
+    {
+        $nama = $_POST['data'];
+        $hasil = '';
+        $query = $this->customermodel->getdatabyname($nama);
+        if ($query->num_rows() > 0) {
+            foreach ($query->result_array() as $data) {
+                $hasil .= "<tr>";
+                $hasil .= "<td class='text-primary line-11'>" . $data['nama_customer'] . "<br><span class='text-cyan font-11'>".$data['country']."</span></td>";
+                $hasil .= "<td>" . substr($data['alamat'], 0, 35) . "</td>";
+                $hasil .= "<td><a href='#' class='btn btn-sm btn-success' style='padding: 3px 5px !important;' rel='" . $data['id'] . "' id='pilihcustomer'>Pilih</a></td></tr>";
             }
         } else {
             $hasil .= "<tr>";

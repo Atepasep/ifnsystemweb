@@ -20,6 +20,7 @@ class Ib extends CI_Controller
         $this->load->model('dept_model', 'deptmodel');
         $this->load->model('satuanmodel');
         $this->load->model('supplier_model', 'suppliermodel');
+        $this->load->model('customer_model', 'customermodel');
         $this->load->model('userappsmodel', 'usermodel');
         $this->load->model('mtuangmodel');
         $this->load->model('helper_model', 'helpermodel');
@@ -84,6 +85,27 @@ class Ib extends CI_Controller
             redirect($url);
         }
     }
+    public function adddataibret40(){
+        $data['mode'] = 'isidokbc';
+        $this->load->view('ib/addcustomerret40',$data);
+    }
+    public function tambahdataibret40($stat = 0)
+    {
+        $buyer = $_POST['rel'];
+        if ($this->session->userdata('depttuju') == 'GF') {
+            $kode = $this->ibmodel->tambahdataibret40($buyer);
+            // if ($kode) {
+            //     $url = base_url() . 'ib/isidokbc/' . $kode.'/1';
+            //     redirect($url);
+            // }
+            echo $kode;
+        } else {
+            $this->session->set_flashdata('pesanerror', 'BC 4.0 Return harus di Departemen FINISHED GOODS !');
+            $this->session->set_flashdata('errorsimpan', 1);
+            $url = base_url() . 'ib';
+            redirect($url); 
+        }
+    }
     public function cekbc()
     {
         $header['header'] = 'transaksi';
@@ -126,6 +148,18 @@ class Ib extends CI_Controller
         $this->load->view('ib/dataib', $data);
         $this->load->view('layouts/footer', $footer);
     }
+    public function dataibret40($kode)
+    {
+        $header['header'] = 'transaksi';
+        $data['data'] = $this->ibmodel->getdatabyid($kode);
+        $data['mtuang'] = $this->mtuangmodel->getdata();
+        $data['jnsbc'] = $this->ibmodel->getdokbcmasuk();
+        $footer['data'] = $this->helpermodel->getdatafooter()->row_array();
+        $footer['fungsi'] = 'ib';
+        $this->load->view('layouts/header', $header);
+        $this->load->view('ib/dataibret40', $data);
+        $this->load->view('layouts/footer', $footer);
+    }
     public function updatebykolom($kolom)
     {
         $data = [
@@ -165,13 +199,37 @@ class Ib extends CI_Controller
             $this->load->view('ib/getbarangib', $data);
         }
     }
-    public function editsupplier()
+    public function getbarangibret40($sup = '')
     {
+        if ($sup == '') {
+            $data['datadetail'] = $this->ibmodel->getbarangibl();
+            $this->load->view('ib/getbarangibX', $data);
+        } else {
+            $data['header'] = $this->customermodel->getdatabyid($sup);
+            $data['datadetail'] = $this->ibmodel->getbarangib($sup);
+            $this->load->view('ib/getbarangibret40', $data);
+        }
+    }
+    public function editsupplier(){
         $this->load->view('ib/editsupplier');
     }
-    public function edittgl()
+    public function editcustomer($mode = ''){
+        $data['mode'] = $mode;
+        $this->load->view('ib/editcustomer',$data);
+    }
+    public function updatecustomer()
     {
-        $this->load->view('ib/edit_tgl');
+        $data = [
+            'id' => $_POST['id'],
+            'id_buyer' => $_POST['rel']
+        ];
+        $hasil = $this->ibmodel->updatecustomer($data);
+        echo $hasil;
+    }
+    public function edittgl($mode='')
+    {
+        $data['mode'] = $mode;
+        $this->load->view('ib/edit_tgl',$data);
     }
     public function adddetailib()
     {
@@ -196,10 +254,12 @@ class Ib extends CI_Controller
             $no++;
             $tampil = $que['pcs'] == 0 ? $que['kgs'] : $que['pcs'];
             $tampil2 = $que['pcsmintaa'] == 0 ? $que['kgsmintaa'] : $que['pcsmintaa'];
+            $spek = $que['id_barang']==0 ? $que['spek'] : $que['nama_barang'];
+            $sku = $que['id_barang']==0 ? $que['sku'] : $que['brg_id'];
             $hasil .= "<tr>";
             $hasil .= "<td>" . $no . "</td>";
-            $hasil .= "<td>" . $que['nama_barang'] . "</td>";
-            $hasil .= "<td>" . $que['brg_id'] . "</td>";
+            $hasil .= "<td>" . $spek . "</td>";
+            $hasil .= "<td>" . $sku . "</td>";
             $hasil .= "<td>" . $que['namasatuan'] . "</td>";
             $hasil .= "<td>" . rupiah($tampil2, 0) . "</td>";
             $hasil .= "<td>" . rupiah($tampil, 0) . "</td>";
@@ -221,6 +281,14 @@ class Ib extends CI_Controller
         $hasil = $this->ibmodel->hapusdetailib($id);
         if ($hasil) {
             $url = base_url() . 'ib/dataib/' . $detid;
+            redirect($url);
+        }
+    }
+    public function hapusdetaildokbc($id, $detid)
+    {
+        $hasil = $this->ibmodel->hapusdetailib($id);
+        if ($hasil) {
+            $url = base_url() . 'ib/isidokbc/' . $detid.'/1';
             redirect($url);
         }
     }
@@ -322,6 +390,7 @@ class Ib extends CI_Controller
         $data['refmtuang'] = $this->ibmodel->refmtuang();
         $data['refbendera'] = $this->ibmodel->refbendera();
         $data['refincoterm'] = $this->ibmodel->refincoterm();
+        $data['tujuterima'] = $this->ibmodel->gettujuterima($data['datheader']['jns_bc']);
         // $data['refpelabuhan'] = $this->ibmodel->refpelabuhan();
         $data['datatoken'] = $this->ibmodel->gettokenbc()->row_array();
         $footer['data'] = $this->helpermodel->getdatafooter()->row_array();
@@ -1211,7 +1280,7 @@ class Ib extends CI_Controller
             "jumlahKontainer" => 0,
             "kodeDokumen" => $data['jns_bc'],
             "kodeKantor" => "050500",
-            "kodeTujuanPengiriman" => $isMakloon ? "5" : "1",
+            "kodeTujuanPengiriman" => $data['tujuan_pemasukan']=='' ? "5" : $data['tujuan_pemasukan'],
             "kotaTtd" => "BANDUNG",
             "namaTtd" => strtoupper($data['tg_jawab']),
             "netto" => (float) $data['netto'],
@@ -1608,7 +1677,7 @@ class Ib extends CI_Controller
             "jabatanTtd" => strtoupper($data['jabat_tg_jawab']),
             "kodeDokumen" => $data['jns_bc'],
             "kodeKantor" => "050500",
-            "kodeTujuanPemasukan" =>  $data['dept_id'] == 'SU' ? "1" : (str_contains($data['nomor_dok'],"MSN") ? "3" : "2"),
+            "kodeTujuanPemasukan" =>  $data['tujuan_pemasukan'] == '' ? "2" : $data['tujuan_pemasukan'],
             "kodeValuta" => "USD",
             "kotaTtd" => "BANDUNG",
             "namaTtd" => strtoupper($data['tg_jawab']),
@@ -2102,6 +2171,83 @@ class Ib extends CI_Controller
     public function carikurs261(){
         $tgl = tglmysql($_POST['tg']);
         echo $this->ibmodel->carikurs261($tgl);
+    }
+    public function cariporeturn(){
+        $key = $_POST['key'];
+        $cekhasil = $this->ibmodel->cariporeturn($key);
+        if($cekhasil->num_rows() > 0){
+            if($cekhasil->num_rows() == 1){
+                $hasil = $cekhasil->row_array();
+                $cocok = array('datagroup' => $hasil, 'jmlrek' => $cekhasil->num_rows());
+                echo json_encode($cocok);
+            }else{
+                $html = '';
+                foreach($cekhasil->result_array() as $dt):
+                    $html .= '<tr>';
+                    $html .= '<td>'.viewsku($dt['po'],$dt['item'],$dt['dis']).'</td>';
+                    $html .= '<td>'.$dt['spek'].'</td>';
+                    $html .= '<td>-</td>';
+                    $html .= '<td>-</td>';
+                    $html .= '<td class="text-center"><a href="#" id="pilihpo" rel="'.$dt['po'].'" rel2="'.$dt['item'].'" rel3="'.$dt['dis'].'" class="btn btn-sm btn-success" style="padding: 0 !important">Pilih</a></td>';
+                    $html .= '</tr>';
+                endforeach;
+                $cocok = array('datagroup' => $html, 'jmlrek' => $cekhasil->num_rows());
+                echo json_encode($cocok);
+            }
+        }else{
+            echo json_encode(array());
+        }
+    }
+    public function cariporeturndis(){
+        $daata = [
+            'po' => $_POST['po'],
+            'item' => $_POST['item'],
+            'dis' => $_POST['dis'],
+        ];
+        $cekhasil = $this->ibmodel->cariporeturndis($daata);
+        if($cekhasil->num_rows() > 0){
+            if($cekhasil->num_rows() == 1){
+                $hasil = $cekhasil->row_array();
+                $cocok = array('datagroup' => $hasil, 'jmlrek' => $cekhasil->num_rows());
+                echo json_encode($cocok);
+            }else{
+                $html = '';
+                foreach($cekhasil->result_array() as $dt):
+                    $html .= '<tr>';
+                    $html .= '<td>'.viewsku($dt['po'],$dt['item'],$dt['dis']).'</td>';
+                    $html .= '<td>'.$dt['spek'].'</td>';
+                    $html .= '<td>-</td>';
+                    $html .= '<td>-</td>';
+                    $html .= '<td class="text-center"><a href="#" id="pilihpo" rel="'.$dt['po'].'" rel2="'.$dt['item'].'" rel3="'.$dt['dis'].'" class="btn btn-sm btn-success" style="padding: 0 !important">Pilih</a></td>';
+                    $html .= '</tr>';
+                endforeach;
+                $cocok = array('datagroup' => $html, 'jmlrek' => $cekhasil->num_rows());
+                echo json_encode($cocok);
+            }
+        }else{
+            echo json_encode(array());
+        }
+    }
+    public function adddetailibret(){
+        $data = [
+            'id_header' => $_POST['id'],
+            'id_akb' => $_POST['id'],
+            'po' => $_POST['po'],
+            'item' => $_POST['item'],
+            'dis' => $_POST['dis'],
+            'nobale' => $_POST['nobale'],
+            'stok' => $_POST['stok'],
+            'pcs' => toAngka($_POST['pcs']),
+            'kgs' => toAngka($_POST['kgs']),
+            'keterangan' => $_POST['keterangan'],
+            'id_satuan' => $_POST['id_satuan'],
+        ];
+        $query = $this->ibmodel->adddetailibret($data);
+        // if($query){
+        //     $this->session->set_flashdata('errorsimpan',1);
+        //     $this->session->set_flashdata('pesanerror','Data berhasil di Simpan !');
+        // }
+        echo $query;
     }
     //End IB Controller
 

@@ -101,7 +101,7 @@
                     <hr class="m-0">
                     <hr class="m-0">
                     <div class="col-sm-6 d-flex justify-content-between">
-                        <div class="bg-teal-lt px-2 py-1 mt-1">
+                        <div class="bg-teal-lt px-2 py-1 mt-1 w-100">
                             <div class="mb-1 mt-2 row">
                                 <label class="col-3 col-form-label font-kecil">Jenis DOK BC</label>
                                 <div class="col font-kecil">
@@ -134,6 +134,21 @@
                                 </div>
                                 <div class="col">
                                     <input type="text" class="form-control font-kecil" id="tgl_bc" name="tgl_bc" value="<?= tglmysql($datheader['tgl_bc']); ?>" aria-describedby="emailHelp" placeholder="Tgl BC" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 d-flex justify-content-between">
+                        <div class="px-2 py-1 mt-1 w-100">
+                            <div class="mb-1 mt-2 row">
+                                <label class="col-3 col-form-label font-kecil text-black">Tujuan Pengeluaran</label>
+                                <div class="col font-kecil">
+                                    <select class="form-select font-kecil font-bold" name="tujuan_pengeluaran" id="tujuan_pengeluaran" <?= $selectnonaktif; ?>>
+                                        <option value="">Pilih Tujuan Pengeluaran</option>
+                                        <?php foreach($tujukeluar->result_array() as $tjkeluar): ?>
+                                            <option value="<?= $tjkeluar['kode'] ?>" <?= $datheader['tujuan_pengeluaran']==$tjkeluar['kode'] ? 'selected' : ''; ?>><?= $tjkeluar['keterangan'] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
                             </div>
                         </div>

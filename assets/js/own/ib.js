@@ -11,8 +11,14 @@ $(document).ready(function () {
 		if (pisah[5] == "dataib") {
 			getdatadetailib();
 		}
+		if (pisah[5] == "dataibret40") {
+			getdatadetailib();
+		}
 	} else {
 		if (pisah[5] == "dataib") {
+			getdatadetailib();
+		}
+		if (pisah[5] == "dataibret40") {
 			getdatadetailib();
 		}
 	}
@@ -26,23 +32,23 @@ $(document).ready(function () {
 		$("#tgldtbt").attr("disabled", false);
 	}
 	var value_old = 0;
-	var errosimpan = $("#errorsimpan").val();
-	var pesanerr = $("#pesanerror").val();
-	if (errosimpan == 1) {
-		var pesan1 =
-			"Pilih departemen penerima Input Barang (tekan tombol 'GO' dahulu)";
-		var cekpesan = pesanerr == "" ? pesan1 : pesanerr;
-		pesan(cekpesan, "error");
-	}
-	if (errosimpan == 2) {
-		pesan("Ada Error Program, Hubungi Administrator Aplikasi !", "error");
-	}
-	if (errosimpan == 3) {
-		pesan("Tidak terjadi perubahan pada data X !", "error");
-	}
-	if (errosimpan == 4) {
-		pesan("Ada Pcs, Kgs atau Harga yang masih kosong !", "error");
-	}
+	// var errosimpan = $("#errorsimpan").val();
+	// var pesanerr = $("#pesanerror").val();
+	// if (errosimpan == 1) {
+	// 	var pesan1 =
+	// 		"Pilih departemen penerima Input Barang (tekan tombol 'GO' dahulu)";
+	// 	var cekpesan = pesanerr == "" ? pesan1 : pesanerr;
+	// 	pesan(cekpesan, "error");
+	// }
+	// if (errosimpan == 2) {
+	// 	pesan("Ada Error Program, Hubungi Administrator Aplikasi !", "error");
+	// }
+	// if (errosimpan == 3) {
+	// 	pesan("Tidak terjadi perubahan pada data X !", "error");
+	// }
+	// if (errosimpan == 4) {
+	// 	pesan("Ada Pcs, Kgs atau Harga yang masih kosong !", "error");
+	// }
 	// Set the date we're counting down to
 	var countDownDate = new Date($("#updateon").val()).getTime();
 
@@ -270,6 +276,9 @@ $("#cekbarang").click(function () {
 $("#jns_bc").change(function () {
 	updatekolom($("#id_header").val(), "tb_header", "jns_bc", $(this).val());
 	generatekode();
+});
+$("#tujuan_pemasukan").change(function () {
+	updatekolom($("#id_header").val(), "tb_header", "tujuan_pemasukan", $(this).val());
 });
 function generatekode() {
 	var nol = "0";

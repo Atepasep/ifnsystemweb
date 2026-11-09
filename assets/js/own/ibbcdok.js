@@ -162,6 +162,12 @@ $("#jns_bc").change(function () {
 		}, 500);
 	}
 });
+$("#tujuan_pemasukan").change(function(){
+	savedata("tujuan_pemasukan", $(this).val());
+});
+$("#tujuan_pengeluaran").change(function(){
+	savedata("tujuan_pengeluaran", $(this).val());
+});
 $("#nomor_sj").change(function () {
 	savedata("nomor_sj", $(this).val());
 	if ($("#jns_bc").val() == "261" || $("#jns_bc").val() == "262") {
@@ -524,6 +530,10 @@ function cekkolom(mode) {
 	}
 	// Untuk cek BC 261
 	if ($("#jns_bc").val() == "261") {
+		if ($("#tujuan_pengeluaran").val() == "") {
+			pesan("Tujuan Pengeluaran harus di isi", "error");
+			return false;
+		}
 		if ($("#sumdetailbc").val() != $("#nilai_pab").val()) {
 			pesan("Cek Nilai Pabean (CIF) dengan Detail Harga BC !", "error");
 			return false;
@@ -652,6 +662,10 @@ function cekkolom(mode) {
 	}
 	// Untuk cek BC 262
 	if ($("#jns_bc").val() == "262") {
+		if ($("#tujuan_pemasukan").val() == "") {
+			pesan("Tujuan Pemasukan harus di isi", "error");
+			return false;
+		}
 		if ($("#exnomor_bc").val() == "") {
 			pesan("Nomor Ex BC harus di isi", "error");
 			return false;
@@ -677,6 +691,10 @@ function cekkolom(mode) {
 				return false;
 			}
 		}else{
+			if ($("#tujuan_pemasukan").val() == "") {
+				pesan("Tujuan Penerimaan Harus di isi", "error");
+				return false;
+			}
 			if ($("#kode_faktur_pajak").val() == "") {
 				pesan("Kode Faktur Pajak Harus di isi", "error");
 				return false;

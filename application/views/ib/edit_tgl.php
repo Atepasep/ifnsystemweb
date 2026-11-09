@@ -1,4 +1,5 @@
 <div class="container-xl font-kecil">
+    <input type="text" class="hilang" name="mode" id="mode" value="<?= isset($mode) ? $mode : ''; ?>">
     <div class="row">
         <div class="col-12">
             <div class="mb-1 row">
@@ -50,7 +51,9 @@
             },
             success: function(data) {
                 // alert('berhasil');
-                window.location.href = base_url + "ib/dataib/" + $("#id_header").val();
+                var xid = $("#mode").val();
+                var jadi = xid=='' ? 'dataib' : xid;
+                window.location.href = base_url + "ib/"+jadi+"/" + $("#id_header").val();
                 $("#butbatal").click();
             },
             error: function(xhr, ajaxOptions, thrownError) {

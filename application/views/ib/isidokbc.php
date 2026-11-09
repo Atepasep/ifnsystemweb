@@ -1,6 +1,7 @@
 <div class="container-xl">
+    <?php $rtn = $datheader['rtn']==1 ? ' (RETURN)' : ''; ?>
     <div class="mx-2 font-bold">AJU MASUK BARANG</div>
-    <div class="mx-2 mb-2 font-bold">DATA BC - IB NO <span class="text-blue"><?= $datheader['nomor_dok']; ?></span></div>
+    <div class="mx-2 mb-2 font-bold">DATA BC - IB NO <span class="text-blue"><?= $datheader['nomor_dok']; ?></span><span class="text-pink"><?= $rtn ?></span></div>
     <div class="col-md-3">
         <?= $this->session->flashdata('message'); ?>
     </div>
@@ -43,6 +44,7 @@
                             <?php $hilangbc40 = $datheader['jns_bc'] == 40 ? "hilang" : ""; ?>
                             <?php $hilangbc262 = $datheader['jns_bc'] == 262 ? "hilang" : ""; ?>
                             <?php $selectnonaktif = $datheader['send_ceisa'] == 1 ? "disabled" : ""; ?>
+                            <?php $selectrtn = $datheader['rtn'] == 1 ? "disabled" : ""; ?>
                             <a href="<?= base_url() . 'ib/ceisa40excel/' . $datheader['id']; ?>" id="keexcel" style="border-right: 1px solid black;" class="btn btn-sm btn-success mr-0"><i class="fa fa-file-excel-o mr-1"></i> Excel CEISA 4.0</a><a href="<?= base_url() . 'ib/getresponhost/' . $datheader['id']; ?>" style="border-right: 1px solid white;" id="responh2h" class="btn btn-sm btn-info <?= $hilang; ?>"><i class="fa fa-cloud mr-1"></i>Respon H2H</a><a href="#" id="cekdata" class="btn btn-sm btn-yellow text-black <?= $hilang2; ?>"><i class="fa fa-cloud mr-1"></i>Kirim H2H</a><a id="kirimkeceisax" href="<?= base_url() . 'ib/getresponpdf/' . $datheader['id']; ?>" style="border-right: 1px solid white;" class="btn btn-sm btn-danger <?= $hilang3; ?>"><i class="fa fa-file-pdf-o mr-1"></i>GET PDF SPPB</a><a id="kirimkeceisax" href="<?= base_url() . 'ib/getdokbc/' . $datheader['id']; ?>" style="border-right: 1px solid white;" class="btn btn-sm btn-info <?= $hilang3; ?>"><i class="fa fa-file-pdf-o mr-1"></i>GET DOK BC</a>
                             <!-- <a href="<?= base_url() . 'ib/hosttohost/' . $datheader['id']; ?>" style="border-left: 1px solid black;" class="btn btn-sm btn-yellow"><i class="fa fa-cloud mr-1"></i> H2H Token</a> -->
                             <?php if ($datheader['send_ceisa'] == 0 || $datheader['nomor_bc'] == '') { ?>
@@ -67,11 +69,15 @@
                                 Nama Rekanan : <?= datasupplier($datheader['id_pemasok'], 'nama_supplier'); ?><br>
                                 Alamat : <?= datasupplier($datheader['id_pemasok'], 'alamat'); ?></br>
                                 NPWP : <?= datasupplier($datheader['id_pemasok'], 'npwp'); ?>
-                            <?php }else{ ?>
+                            <?php }else{ if($datheader['rtn']==0){  ?>
                                 Nama Subkontrak : <?= datadepartemen($datheader['dept_id'], 'nama_subkon'); ?><br>
                                 Alamat : <?= datadepartemen($datheader['dept_id'], 'alamat_subkon'); ?></br>
                                 NPWP : <?= datadepartemen($datheader['dept_id'], 'npwp'); ?>
-                            <?php } } ?>
+                            <?php }else{  ?>
+                                Nama Customer : <?= datacustomer($datheader['id_buyer'], 'nama_customer'); ?><br>
+                                Alamat : <?= datacustomer($datheader['id_buyer'], 'alamat'); ?></br>
+                                NPWP : <?= datacustomer($datheader['id_buyer'], 'npwp'); ?>
+                            <?php } } } ?>
                             <button href="#" id="kirimkeceisa" data-href="<?= base_url() . 'ib/kirimdatakeceisa' . $datheader['jns_bc'] . '/' . $datheader['id']; ?>" data-bs-toggle="modal" data-bs-target="#modal-info" data-message="Akan mengirim data ini ke CIESA 40" style="border-right: 1px solid white;" class="btn btn-sm btn-yellow hilang"><i class="fa fa-cloud mr-1"></i>Kirim H2H</button>
                         </div>
                         <div style="margin: auto 0;" class="font-bold text-pink" id="cirimakloon"><?php if($datheader['bc_makloon']==1){ echo 'MAKLOON'; } ?></div>
@@ -79,11 +85,11 @@
                     <hr class="m-0">
                     <hr class="m-0">
                     <div class="col-sm-6 d-flex justify-content-between">
-                        <div class="bg-teal-lt px-2 py-1 mt-1">
+                        <div class="bg-teal-lt px-2 py-1 mt-1 w-100">
                             <div class="mb-1 mt-2 row">
-                                <label class="col-3 col-form-label font-kecil">Jenis DOK BC</label>
+                                <label class="col-3 col-form-label font-kecil text-black">Jenis DOK BC</label>
                                 <div class="col font-kecil">
-                                    <select class="form-select font-kecil font-bold" name="jns_bc" id="jns_bc" <?= $selectnonaktif; ?>>
+                                    <select class="form-select font-kecil font-bold" name="jns_bc" id="jns_bc" <?= $selectnonaktif.' '.$selectrtn; ?>>
                                         <option value="">Pilih Jenis BC</option>
                                         <?php foreach ($bcmasuk->result_array() as $bcmas) { ?>
                                             <?php $selek = $datheader['jns_bc'] == $bcmas['jns_bc'] ? 'selected' : ''; ?>
@@ -93,7 +99,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <label class="col-3 col-form-label font-kecil">No/Tgl AJU</label>
+                                <label class="col-3 col-form-label font-kecil text-black">No/Tgl AJU</label>
                                 <div class="col">
                                     <div class="input-group mb-1">
                                         <input type="text" class="form-control font-kecil" id="nomor_aju" name="nomor_aju" value="<?= $datheader['nomor_aju']; ?>" placeholder="Nomor Aju" <?= $nonaktif; ?> <?php if($datheader['jns_bc'] == 40){ echo "readonly"; } ?>>
@@ -106,7 +112,7 @@
                                 </div>
                             </div>
                             <div class="mb-1 row">
-                                <label class="col-3 col-form-label font-kecil">No/Tgl BC</label>
+                                <label class="col-3 col-form-label font-kecil text-black">No/Tgl BC</label>
                                 <div class="col">
                                     <input type="text" class="form-control font-kecil" id="nomor_bc" name="nomor_bc" value="<?= $datheader['nomor_bc']; ?>" aria-describedby="emailHelp" placeholder="No BC" readonly>
                                 </div>
@@ -116,6 +122,22 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-sm-6 d-flex justify-content-between">
+                        <div class="px-2 py-1 mt-1 w-100">
+                            <div class="mb-1 mt-2 row">
+                                <label class="col-3 col-form-label font-kecil text-black">Tujuan Penerimaan</label>
+                                <div class="col font-kecil">
+                                    <select class="form-select font-kecil font-bold" name="tujuan_pemasukan" id="tujuan_pemasukan" <?= $selectnonaktif.' '.$selectrtn; ?>>
+                                        <option value="">Pilih Tujuan Pemasukan</option>
+                                            <?php foreach($tujuterima->result_array() as $tjterima): ?>
+                                                <option value="<?= $tjterima['kode'] ?>" <?= $datheader['tujuan_pemasukan']==$tjterima['kode'] ? 'selected' : ''; ?>><?= $tjterima['keterangan'] ?></option>
+                                            <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row <?= $hilangbc40; ?><?= $hilangbc262; ?>">
                         <div class="col-sm-12">
                             <div class="card font-kecil mt-1">
@@ -691,6 +713,7 @@
                         <?php $hilangbc40kustom = $datheader['jns_bc'] == "40" && trim($datheader['nomor_bc']) != '' ? "" : "hilang" ?>
                         <a href="<?= base_url() . 'ib/getbcasal/' . $datheader['id'] . '/1'; ?>" id="tombolgetbcasal" data-bs-toggle="modal" data-bs-target="#modal-scroll" data-message="Akan menghitung nilai BOM " data-title="BC Asal Default" class="btn btn-sm btn-primary hilang <?= $hilangbc23 . ' ' . $hilangbc40 ?>"><i class="fa fa-calculator mr-1"></i> BC Asal Default</a>
                         <a href="#" data-href="<?= base_url() . 'ib/simpankehargamaterial/' . $datheader['id'] . '/1'; ?>" id="tombolexpmaterial" data-bs-toggle="modal" data-bs-target="#modal-info" data-message="Akan mengexport data ke Harga Material" data-title="Export Harga Material" class="btn btn-sm btn-primary <?= $hilangbc40kustom ?>"><i class="fa fa-cloud mr-1"></i> Export ke Harga Material</a>
+                        <a href="<?= base_url() . 'ib/getbarangibret40/' . $datheader['id_buyer']; ?>" data-bs-toggle="modal" data-bs-target="#modal-large" data-title="Get Data" id="getbarang" data-title="Get Data" class="btn btn-sm btn-primary"><i class="fa fa-plus mr-1"></i> Get Data Barang</a>
                     </div>
                 </div>
                 <div class="card card-lg font-kecil">
@@ -738,7 +761,11 @@
                                                 <a href="<?= base_url() . 'ib/viewbcasal/' . $data['id']; ?>" data-bs-toggle="modal" data-bs-target="#modal-large-loading" data-title="View BC ASAL"><?= $no . '. ' . $spekbarang; ?></a><br><span class="text-teal font-11"><?= $data['insno'] . $data['nobontr'] ?></span>
                                             <?php } ?>
                                         </td>
-                                        <td class="text-left"><?= $sku ?></td>
+                                        <?php if($datheader['rtn']==1): ?>
+                                            <td class="text-left line-11"><?= $sku ?><br><span class="text-pink font-11"><?= 'No Bale. '.$data['nobale'] ?></span></td>
+                                        <?php else: ?>
+                                            <td class="text-left"><?= $sku ?></td>
+                                        <?php endif; ?>
                                         <td class="text-left"><?= $nohs; ?></td>
                                         <td><?= $data['kodesatuan']; ?></td>
                                         <?php if ($mode == 0) { ?>
@@ -754,13 +781,19 @@
                                             <td class="text-right"><?= rupiah($data['xcif'] * $data['xndpbm'], 2); ?></td>
                                         <?php } ?>
                                         <?php if ($mode == 1){ if($datheader['send_ceisa']==0){ ?>
-                                            <td class="text-center">
-                                                <?php $warnatombol = $data['id_seri_exbc'] != 0 ? 'btn-primary' : 'btn-success'; ?>
-                                                <a href="<?= base_url() . 'ib/editbcasal/' . $datheader['id'] . '/' . $data['id']; ?>" id="tomboleditbcasal<?= $data['id'] ?>" class="btn btn-sm <?= $warnatombol ?> font-bold" style="padding: 0px 2px !important;" data-bs-toggle="modal" data-bs-target="#modal-large-loading" data-title="Edit Data BC ASAL 261">EDIT</a>
-                                                <a href="#" data-href="<?= base_url() . 'ib/resetbcasal/' . $datheader['id'] . '/' . $data['id']; ?>" class="btn btn-sm btn-danger font-bold" style="padding: 0px 2px !important;" data-bs-toggle="modal" data-bs-target="#modal-info" data-message="Me-reset BC ASAL 261">RESET</a>
-                                                <a href="<?= base_url() . 'ib/editkgsbcasal/' . $datheader['id'] . '/' . $data['id']; ?>" class="btn btn-sm btn-info font-bold" style="padding: 0px 2px !important;" data-bs-toggle="modal" data-bs-target="#modal-large-loading" data-title="Edit Data BC KGS ASAL 261">EDIT KGS</a>
-                                            </td>
-                                            <?php }else{ echo "<td></td>"; } }else{ ?>
+                                            <?php if($datheader['rtn']==0){ ?>
+                                                <td class="text-center">
+                                                    <?php $warnatombol = $data['id_seri_exbc'] != 0 ? 'btn-primary' : 'btn-success'; ?>
+                                                    <a href="<?= base_url() . 'ib/editbcasal/' . $datheader['id'] . '/' . $data['id']; ?>" id="tomboleditbcasal<?= $data['id'] ?>" class="btn btn-sm <?= $warnatombol ?> font-bold" style="padding: 0px 2px !important;" data-bs-toggle="modal" data-bs-target="#modal-large-loading" data-title="Edit Data BC ASAL 261">EDIT</a>
+                                                    <a href="#" data-href="<?= base_url() . 'ib/resetbcasal/' . $datheader['id'] . '/' . $data['id']; ?>" class="btn btn-sm btn-danger font-bold" style="padding: 0px 2px !important;" data-bs-toggle="modal" data-bs-target="#modal-info" data-message="Me-reset BC ASAL 261">RESET</a>
+                                                    <a href="<?= base_url() . 'ib/editkgsbcasal/' . $datheader['id'] . '/' . $data['id']; ?>" class="btn btn-sm btn-info font-bold" style="padding: 0px 2px !important;" data-bs-toggle="modal" data-bs-target="#modal-large-loading" data-title="Edit Data BC KGS ASAL 261">EDIT KGS</a>
+                                                </td>
+                                            <?php }else{ ?>
+                                                <td class="text-center">    
+                                                    <a href='#' data-href="<?= base_url() . 'ib/hapusdetaildokbc/' . $data['id'] . '/' . $data['id_header'] ?>" class='btn btn-sm btn-danger' style='padding: 3px 5px !important;' data-bs-toggle='modal' data-message='Akan menghapus data ini ' data-bs-target='#modal-danger' data-title='Ubah data Detail'>Hapus</a>
+                                                </td>
+                                            <?php } ?>
+                                        <?php }else{ echo "<td></td>"; } }else{ ?>
                                             <td>
                                                 <a href="<?= base_url() . 'ib/editkgspo/' . $datheader['id'] . '/' . $data['id']; ?>" class="btn btn-sm btn-info font-bold" style="padding: 0px 2px !important;" data-bs-toggle="modal" data-bs-target="#modal-large-loading" data-title="Edit Data KGS/PCS">EDIT KGS/PCS</a>
                                             </td>

@@ -22,8 +22,10 @@ class Ib_model extends CI_Model
             ];
         }
         $this->db->select('tb_header.*,supplier.nama_supplier as namasupplier');
+        $this->db->select('customer.nama_customer');
         $this->db->select('(Select sum(tb_detail.kgs) from tb_detail where id_akb = tb_header.id) as jmlkgstot');
         $this->db->join('supplier', 'supplier.id = tb_header.id_pemasok', 'left');
+        $this->db->join('customer', 'customer.id = tb_header.id_buyer', 'left');
         $this->db->where($arrkondisi);
         // Lanjutan #kodeib1
         if ($kode == 'FG') {
@@ -31,7 +33,12 @@ class Ib_model extends CI_Model
         }
 
         if ($bc != 'Y') {
-            $this->db->where("tb_header.jns_bc", (int)$bc);
+            if($bc=='40X'){
+                $this->db->where("tb_header.jns_bc", '40');
+                $this->db->where("tb_header.rtn", 1);
+            }else{
+                $this->db->where("tb_header.jns_bc", $bc);
+            }
         } 
         // else {
         //     $this->db->where_in("tb_header.jns_bc", [23, 262, 40]);
@@ -102,10 +109,12 @@ class Ib_model extends CI_Model
     {
         $this->db->select('tb_header.*,supplier.nama_supplier as namasupplier,supplier.alamat,supplier.kontak,supplier.npwp,supplier.nik,supplier.jns_pkp,supplier.nama_di_ceisa as namaceisa,supplier.alamat_di_ceisa as alamatceisa,supplier.kode_negara as kodenegara,ref_mt_uang.mt_uang,ref_jns_angkutan.angkutan as angkutlewat,ref_negara.kode_negara');
         $this->db->select('tb_kontrak.nomor as nomorkontrak,tb_kontrak.tgl as tglkontrak,tb_kontrak.tgl_kep,tb_kontrak.nomor_kep,tb_kontrak.id as idkontrak');
+        $this->db->select('customer.nama_customer,customer.alamat as alamatcus,customer.kontak as kontakcus,customer.npwp as npwpcus');
         $this->db->select("(select uraian_pelabuhan from ref_pelabuhan where ref_pelabuhan.kode_pelabuhan = tb_header.pelabuhan_muat) as pelmuat");
         $this->db->select("(select uraian_pelabuhan from ref_pelabuhan where ref_pelabuhan.kode_pelabuhan = tb_header.pelabuhan_bongkar) as pelbongkar");
         $this->db->join('dept', 'dept.dept_id=tb_header.dept_id', 'left');
         $this->db->join('supplier', 'supplier.id=tb_header.id_pemasok', 'left');
+        $this->db->join('customer', 'customer.id=tb_header.id_buyer', 'left');
         $this->db->join('ref_mt_uang', 'ref_mt_uang.id=tb_header.mtuang', 'left');
         $this->db->join('ref_jns_angkutan', 'ref_jns_angkutan.id=tb_header.jns_angkutan', 'left');
         $this->db->join('ref_negara', 'ref_negara.id=tb_header.bendera_angkutan', 'left');
@@ -137,6 +146,7 @@ class Ib_model extends CI_Model
         $this->db->select("a.*,b.namasatuan,g.spek,b.kodesatuan,b.kodebc as satbc,c.kode,c.nama_barang,c.nohs,c.kode as brg_id,e.keterangan as keter,d.pcs as pcsmintaa,d.kgs as kgsmintaa,f.nama_kategori,f.kategori_id,'56081100' as hsx");
         $this->db->select("(select pcs from tb_detail b where b.id = a.id_minta) as pcsminta");
         $this->db->select("(select kgs from tb_detail b where b.id = a.id_minta) as kgsminta");
+        $this->db->select("CONCAT(trim(a.po),'#',trim(a.item),IF(a.dis=0,'',CONCAT(' dis ',a.dis))) AS sku");
         if ($mode == 1) {
             $this->db->select("sum(round(a.kgs,2)) as kgsx,sum(a.pcs) as pcsx,a.exbc_cif as xcif,a.exbc_ndpbm as xndpbm");
         }else{
@@ -154,8 +164,8 @@ class Ib_model extends CI_Model
             $this->db->order_by('a.seri_barang');
         } else {
             $this->db->where('a.id_akb', $data);
-            $this->db->group_by('a.po,a.item,a.dis,a.id_barang,a.insno,a.nobontr');
-            $this->db->order_by('a.po,a.item,a.dis,c.kode,a.insno');
+            $this->db->group_by('a.po,a.item,a.dis,a.id_barang,a.insno,a.nobontr,a.nobale');
+            $this->db->order_by('a.po,a.item,a.dis,c.kode,a.insno,a.nobale');
         }
         return $this->db->get()->result_array();
     }
@@ -207,6 +217,12 @@ class Ib_model extends CI_Model
         WHERE kode_dok = 'IB' AND dept_tuju = '" . $this->session->userdata('depttuju') . "' AND nomor_dok like '%PROFORMA%' ORDER BY id DESC LIMIT 1 ")->row_array();
         return $hasil;
     }
+    public function getnomorreturn40($bl, $th)
+    {
+        $hasil = $this->db->query("SELECT substr(nomor_dok,13,3) AS maxkode FROM tb_header 
+        WHERE kode_dok = 'IB' AND dept_tuju = '" . $this->session->userdata('depttuju') . "' AND month(tgl)='".$bl."' AND year(tgl)='".$th."' AND nomor_dok like '%RTN/GF%' ORDER BY id DESC LIMIT 1 ")->row_array();
+        return $hasil;
+    }
     public function isiadditionaldetail($id){
         $this->db->trans_start();
         $header = $this->getdatabyid($id);
@@ -247,6 +263,28 @@ class Ib_model extends CI_Model
             'dept_tuju' => $this->session->userdata('depttuju'),
             'nomor_dok' => $nomordok,
             'tgl' => $date
+        ];
+        $this->db->insert('tb_header', $tambah);
+        $hasil = $this->db->insert_id();
+        $this->helpermodel->isilog($this->db->last_query());
+        $this->db->trans_complete();
+        return $hasil;
+    }
+    public function tambahdataibret40($buy='')
+    {
+        $this->db->trans_start();
+        $date = $this->session->userdata('th') . '-' . $this->session->userdata('bl') . '-' . date('d');
+        $nomordok = nomorreturn40();
+        $tambah = [
+            'id_perusahaan' => IDPERUSAHAAN,
+            'id_buyer' => $buy,
+            'kode_dok' => 'IB',
+            'dept_id' => 'SU',
+            'dept_tuju' => $this->session->userdata('depttuju'),
+            'nomor_dok' => $nomordok,
+            'tgl' => $date,
+            'jns_bc' => '40',
+            'rtn' => 1
         ];
         $this->db->insert('tb_header', $tambah);
         $hasil = $this->db->insert_id();
@@ -747,6 +785,12 @@ class Ib_model extends CI_Model
     {
         $this->db->where('id', $data['id']);
         $hasil = $this->db->update('tb_header', ['id_pemasok' => $data['id_supplier']]);
+        return $hasil;
+    }
+    public function updatecustomer($data)
+    {
+        $this->db->where('id', $data['id']);
+        $hasil = $this->db->update('tb_header', ['id_buyer' => $data['id_buyer']]);
         return $hasil;
     }
 
@@ -1471,5 +1515,35 @@ class Ib_model extends CI_Model
             $hasil = $hasilkurs['usd'];
         }
         return $hasil;
+    }
+    public function cariporeturn($key){
+        $this->db->select("*,CONCAT(trim(po),'#',trim(item),IF(dis=0,'',CONCAT(' dis ',dis))) AS sku");
+        $this->db->like('po',$key);
+        $this->db->where('stat_po',1);
+        $this->db->order_by('po ASC, item ASC');
+        return $this->db->get('tb_po');
+    }
+    public function cariporeturndis($key){
+        $this->db->select("*,CONCAT(trim(po),'#',trim(item),IF(dis=0,'',CONCAT(' dis ',dis))) AS sku");
+        $this->db->where('po',$key['po']);
+        $this->db->where('item',$key['item']);
+        $this->db->where('dis',$key['dis']);
+        $this->db->where('stat_po',1);
+        $this->db->order_by('po ASC, item ASC');
+        return $this->db->get('tb_po');
+    }
+    public function adddetailibret($data){
+        $id = $data['id_header'];
+        $this->db->trans_start();
+        $this->db->insert('tb_detail',$data);
+
+        $itembarang = $this->db->where('id_header', $id)->get('tb_detail')->num_rows();
+        $this->db->where('id', $id)->update('tb_header', ['jumlah_barang' => $itembarang]);
+        return $this->db->trans_complete();
+    }
+    public function gettujuterima($jns){
+        $this->db->where('jns_bc',$jns);
+        $this->db->order_by('kode');
+        return $this->db->get('ref_tujuan_pemasukan');
     }
 }
