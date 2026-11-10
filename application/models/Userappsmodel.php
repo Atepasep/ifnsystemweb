@@ -309,6 +309,20 @@ class Userappsmodel extends CI_Model
                 unset($data[$dept['dept_id']]);
             }
         }
+        $hakdepartemen_memo = '';
+        if (isset($data['memo'])) {
+            foreach ($data['memo'] as $deptid) {
+                $hakdepartemen_memo .= $deptid;
+            }
+            unset($data['memo']);
+        }
+        $hakdepartemen_jastek = '';
+        if (isset($data['jastek'])) {
+            foreach ($data['jastek'] as $deptid) {
+                $hakdepartemen_jastek .= $deptid;
+            }
+            unset($data['jastek']);
+        }
         // Set hak departemen STOK OPNAME
         $hakstokopname = '';
         if (isset($data['stokopname'])) {
@@ -363,6 +377,8 @@ class Userappsmodel extends CI_Model
         $data['hakdowntime'] = $hakdowntime;
         $data['hakjastek'] = $hakjastek;
         $data['hakdepartemen'] = $hakdepartemen;
+        $data['hakdepartemen_memo'] = $hakdepartemen_memo;
+        $data['hakdepartemen_jastek'] = $hakdepartemen_jastek;
         $data['hakstokopname'] = $hakstokopname;
         $data['cekpb'] = $cekpb;
         // $data['cekpc'] = $cekpc;
@@ -405,6 +421,7 @@ class Userappsmodel extends CI_Model
             $this->session->set_userdata('hakdowntime', $cek['hakdowntime']);
             $this->session->set_userdata('hakjastek', $cek['hakjastek']);
             $this->session->set_userdata('hakdepartemen', $cek['hakdepartemen']);
+            $this->session->set_userdata('hakdepartemen_memo', $cek['hakdepartemen_memo']);
             $this->session->set_userdata('hakstokopname', $cek['hakstokopname']);
             $this->session->set_userdata('arrdep', arrdep($cek['hakdepartemen']));
             $this->session->set_userdata('hak_ttd_pb', arrdep($cek['cekpb']));
