@@ -127,7 +127,7 @@
                             <div class="mb-1 mt-2 row">
                                 <label class="col-3 col-form-label font-kecil text-black">Tujuan Penerimaan</label>
                                 <div class="col font-kecil">
-                                    <select class="form-select font-kecil font-bold" name="tujuan_pemasukan" id="tujuan_pemasukan" <?= $selectnonaktif.' '.$selectrtn; ?>>
+                                    <select class="form-select font-kecil font-bold" name="tujuan_pemasukan" id="tujuan_pemasukan" <?= $selectnonaktif; ?>>
                                         <option value="">Pilih Tujuan Pemasukan</option>
                                             <?php foreach($tujuterima->result_array() as $tjterima): ?>
                                                 <option value="<?= $tjterima['kode'] ?>" <?= $datheader['tujuan_pemasukan']==$tjterima['kode'] ? 'selected' : ''; ?>><?= $tjterima['keterangan'] ?></option>
@@ -777,8 +777,13 @@
                                             <?php $datkgs = $data['kgsx'] == 0 ? 1 : $data['kgsx']; ?>
                                             <td class="text-right"><?= rupiah($data['pcsx'], 0); ?></td>
                                             <td class="text-right" id="kgss<?= $data['id'] ?>"><?= rupiah($data['kgsx'], 2); ?></td>
-                                            <td id="jumlahcif<?= $data['id'] ?>" class="text-right line-12"><?= rupiah(($data['xcif'] / $datkgs) * $data['xndpbm'], 2); ?><br><span class="font-11 text-pink"><?= rupiah($data['xcif'], 2) ?></span></td>
-                                            <td class="text-right"><?= rupiah($data['xcif'] * $data['xndpbm'], 2); ?></td>
+                                            <?php if($datheader['rtn']==1): ?>
+                                                <td id="jumlahcif<?= $data['id'] ?>" class="text-right"><?= rupiah($data['harga_satuan'], 2); ?></td>
+                                                <td class="text-right"><?= rupiah($data['harga'], 2); ?></td>
+                                            <?php else: ?>
+                                                <td id="jumlahcif<?= $data['id'] ?>" class="text-right line-12"><?= rupiah(($data['xcif'] / $datkgs) * $data['xndpbm'], 2); ?><br><span class="font-11 text-pink"><?= rupiah($data['xcif'], 2) ?></span></td>
+                                                <td class="text-right"><?= rupiah($data['xcif'] * $data['xndpbm'], 2); ?></td>
+                                            <?php endif; ?>
                                         <?php } ?>
                                         <?php if ($mode == 1){ if($datheader['send_ceisa']==0){ ?>
                                             <?php if($datheader['rtn']==0){ ?>
@@ -790,6 +795,7 @@
                                                 </td>
                                             <?php }else{ ?>
                                                 <td class="text-center">    
+                                                    <a href="<?= base_url() . 'ib/editdetaildokbcret40/' . $data['id'] . '/' . $data['id_header'] ?>" class='btn btn-sm btn-info' style='padding: 3px 5px !important;' data-bs-toggle='modal' data-bs-target='#modal-large' data-title='Ubah data Detail'>Edit</a>
                                                     <a href='#' data-href="<?= base_url() . 'ib/hapusdetaildokbc/' . $data['id'] . '/' . $data['id_header'] ?>" class='btn btn-sm btn-danger' style='padding: 3px 5px !important;' data-bs-toggle='modal' data-message='Akan menghapus data ini ' data-bs-target='#modal-danger' data-title='Ubah data Detail'>Hapus</a>
                                                 </td>
                                             <?php } ?>

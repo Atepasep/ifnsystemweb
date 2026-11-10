@@ -98,6 +98,16 @@
                         </div>
                     </div>
                     <div class="row">
+                        <label class="col-3 col-form-label font-kecil font-bold">Satuan</label>
+                        <div class="col mb-1">
+                            <select name="id_satuan" id="id_satuan" class="form-control form-select btn-flat font-kecil">
+                                <option value="">Pilih Satuan</option>
+                                <option value="21">Pcs</option>
+                                <option value="22">Kgs</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
                         <label class="col-3 col-form-label font-kecil font-bold">Pcs</label>
                         <div class="col mb-1">
                             <input type="text" name="pcs" id="pcs" class="form-control btn-flat font-bold font-kecil inputangka text-right" value="">
@@ -107,6 +117,12 @@
                         <label class="col-3 col-form-label font-kecil font-bold">Kgs</label>
                         <div class="col mb-1">
                             <input type="text" name="kgs" id="kgs" class="form-control btn-flat font-bold font-kecil inputangka text-right" value="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-3 col-form-label font-kecil font-bold">Harga Satuan</label>   
+                        <div class="col mb-1">
+                            <input type="text" name="harga_satuan" id="harga_satuan" class="form-control btn-flat font-bold font-kecil inputangka text-right" value="">
                         </div>
                     </div>
                     <div class="row">
@@ -307,6 +323,10 @@
             pesan('Pilih data PO dahulu !','info');
             return false;
         }
+        if($("#id_satuan").val()==''){
+            pesan('Pilih Satuan dahulu !','info');
+            return false;
+        }
         // if($("#nobale").val()==''){
         //     pesan('Nomor Bale Harus di Isi !','info');
         //     return false;
@@ -324,11 +344,12 @@
                 po: $("#po").val(),
                 item: $("#item").val(),
                 dis: $("#dis").val(),
-                id_satuan: 21,
+                id_satuan: $("#id_satuan").val(),
                 nobale: $("#nobale").val(),
                 stok: $("#stok").val(),
                 pcs: $("#pcs").val(),
                 kgs: $("#kgs").val(),
+                harga_satuan: $("#harga_satuan").val(),
                 keterangan: $("#ket").val()   
             },
             success: function(data) {

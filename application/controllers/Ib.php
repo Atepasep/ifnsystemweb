@@ -210,6 +210,12 @@ class Ib extends CI_Controller
             $this->load->view('ib/getbarangibret40', $data);
         }
     }
+    public function editdetaildokbcret40($iddet,$idhead)
+    {
+        $data['header'] = $this->ibmodel->getdatabyid($idhead);
+        $data['datadetail'] = $this->ibmodel->getdatadetailbyid($iddet)->row_array();
+        $this->load->view('ib/editbarangibret40', $data);
+    }
     public function editsupplier(){
         $this->load->view('ib/editsupplier');
     }
@@ -1681,7 +1687,7 @@ class Ib extends CI_Controller
             "kodeValuta" => "USD",
             "kotaTtd" => "BANDUNG",
             "namaTtd" => strtoupper($data['tg_jawab']),
-            "ndpbm" => (float) $kurs['usd'],
+            "ndpbm" => (float) $data['kurs_usd'], // $kurs['usd'],
             "netto" => (float) $data['netto'],
             "nik" => "",
             "nilaiBarang" => (float) $data['nilai_pab'],
@@ -2241,8 +2247,32 @@ class Ib extends CI_Controller
             'kgs' => toAngka($_POST['kgs']),
             'keterangan' => $_POST['keterangan'],
             'id_satuan' => $_POST['id_satuan'],
+            'harga_satuan' => toAngka($_POST['harga_satuan']),
         ];
         $query = $this->ibmodel->adddetailibret($data);
+        // if($query){
+        //     $this->session->set_flashdata('errorsimpan',1);
+        //     $this->session->set_flashdata('pesanerror','Data berhasil di Simpan !');
+        // }
+        echo $query;
+    }
+    public function editdetailibret(){
+        $data = [
+            'id_header' => $_POST['id'],
+            'id' => $_POST['iddet'],
+            'id_akb' => $_POST['id'],
+            'po' => $_POST['po'],
+            'item' => $_POST['item'],
+            'dis' => $_POST['dis'],
+            'nobale' => $_POST['nobale'],
+            'stok' => $_POST['stok'],
+            'pcs' => toAngka($_POST['pcs']),
+            'kgs' => toAngka($_POST['kgs']),
+            'keterangan' => $_POST['keterangan'],
+            'id_satuan' => $_POST['id_satuan'],
+            'harga_satuan' => toAngka($_POST['harga_satuan']),
+        ];
+        $query = $this->ibmodel->editdetailibret($data);
         // if($query){
         //     $this->session->set_flashdata('errorsimpan',1);
         //     $this->session->set_flashdata('pesanerror','Data berhasil di Simpan !');

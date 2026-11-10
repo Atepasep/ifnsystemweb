@@ -124,7 +124,8 @@ class Ib_model extends CI_Model
     }
     public function getdatadetailbyid($id)
     {
-        $this->db->select('tb_detail.*,barang.kode');
+        $this->db->select('tb_detail.*,barang.kode,tb_po.spek as spekpo,tb_po.color');
+        $this->db->select("CONCAT(trim(tb_detail.po),'#',trim(tb_detail.item),IF(tb_detail.dis=0,'',CONCAT(' dis ',tb_detail.dis))) AS sku");
         $this->db->from('tb_detail');
         $this->db->join('barang', 'barang.id = tb_detail.id_barang', 'left');
         $this->db->join('tb_po', 'trim(tb_po.po)=trim(tb_detail.po) and trim(tb_po.item) = trim(tb_detail.item) and tb_po.dis = tb_detail.dis', 'left');
@@ -1535,7 +1536,20 @@ class Ib_model extends CI_Model
     public function adddetailibret($data){
         $id = $data['id_header'];
         $this->db->trans_start();
+        $data['harga'] = $data['id_satuan']==22 ? $data['kgs']*$data['harga_satuan'] : $data['pcs']*$data['harga_satuan']; 
         $this->db->insert('tb_detail',$data);
+
+        $itembarang = $this->db->where('id_header', $id)->get('tb_detail')->num_rows();
+        $this->db->where('id', $id)->update('tb_header', ['jumlah_barang' => $itembarang]);
+        return $this->db->trans_complete();
+    }
+    public function editdetailibret($data){
+        $id = $data['id_header'];
+        unset($data['id_header']);
+        $this->db->trans_start();
+        $data['harga'] = $data['id_satuan']==22 ? $data['kgs']*$data['harga_satuan'] : $data['pcs']*$data['harga_satuan']; 
+        $this->db->where('id',$data['id']);
+        $this->db->update('tb_detail',$data);
 
         $itembarang = $this->db->where('id_header', $id)->get('tb_detail')->num_rows();
         $this->db->where('id', $id)->update('tb_header', ['jumlah_barang' => $itembarang]);
