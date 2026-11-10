@@ -154,6 +154,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         <li class="nav-item">
                           <a href="#tabs-cekterima" class="nav-link text-blue mb-1" data-bs-toggle="tab">Konfirm Jastek</a>
                         </li>
+                        <li class="nav-item">
+                          <a href="#tabs-memo" class="nav-link text-blue mb-1" data-bs-toggle="tab">Memo Departemen</a>
+                        </li>
+                        <li class="nav-item">
+                          <a href="#tabs-jastek" class="nav-link text-blue mb-1" data-bs-toggle="tab">Jastek Departemen</a>
+                        </li>
                       </ul>
                     </div>
                     <div class="card-body">
@@ -766,6 +772,46 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <input class="form-check-input" id="hakjastek4" name="hakjastek4" type="checkbox" <?= cekceklis($user['hakjastek'], 4); ?>>
                                 <span class="form-check-label">UTILITY</span>
                               </label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="tab-pane" id="tabs-memo">
+                          <div class="row">
+                            <div class="col-6">
+                              <?php $no = 0;
+                              $nox = 0;
+                              $jml = $jmldept / 2;
+                              foreach ($daftardept as $dept) : $no++; ?>
+                                <?php if ($no % $jml == 0 && $nox == 0) {
+                                  $nox = 1; ?>
+                            </div>
+                            <div class="col-6">
+                            <?php } ?>
+                            <label class="form-check mb-1">
+                              <input class="form-check-input" type="checkbox" name="memo[]" value="<?= $dept['dept_id']; ?>" <?= cekceklisdep($user['hakdepartemen_memo'], $dept['dept_id']); ?>>
+                              <span class="form-check-label"><?= $dept['departemen']; ?></span>
+                            </label>
+                          <?php endforeach; ?>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="tab-pane" id="tabs-jastek">
+                          <div class="row">
+                            <div class="col-6">
+                              <?php $no = 0;
+                              $nox = 0;
+                              $jml = $jmldept / 2;
+                              foreach ($daftardept as $dept) : $no++; ?>
+                                <?php if ($no % $jml == 0 && $nox == 0) {
+                                  $nox = 1; ?>
+                            </div>
+                            <div class="col-6">
+                            <?php } ?>
+                            <label class="form-check mb-1">
+                              <input class="form-check-input" type="checkbox" name="jastek[]" value="<?= $dept['dept_id']; ?>" <?= cekceklisdep($user['hakdepartemen_jastek'], $dept['dept_id']); ?>>
+                              <span class="form-check-label"><?= $dept['departemen']; ?></span>
+                            </label>
+                          <?php endforeach; ?>
                             </div>
                           </div>
                         </div>

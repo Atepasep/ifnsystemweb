@@ -65,6 +65,7 @@ class Userapps extends CI_Controller
 		$data['level'] = $this->db->get('level_user')->result_array();
 		$data['dept'] = $this->db->order_by('departemen')->get('dept')->result_array();
 		$data['dept_opname'] = $this->userappsmodel->dept_Stok_Opname();
+		$data['dept_memo'] = $this->userappsmodel->dept_Stok_Opname();
 		$data['jabat'] = $this->db->order_by('nojab', 'ASC')->get('jabatan')->result_array();
 		$footer['data'] = $this->helpermodel->getdatafooter()->row_array();
 		$footer['fungsi'] = 'userapps';
@@ -72,20 +73,22 @@ class Userapps extends CI_Controller
 		$this->load->view('userapps/edituserapps', $data);
 		$this->load->view('layouts/footer', $footer);
 	}
-	public function editprofile($id){
+	public function editprofile($id)
+	{
 		$header['header'] = 'manajemen';
-		$data['user'] = $this->userappsmodel->getdatabyid(decrypto($id)/121)->row_array();
+		$data['user'] = $this->userappsmodel->getdatabyid(decrypto($id) / 121)->row_array();
 		$footer['data'] = $this->helpermodel->getdatafooter()->row_array();
 		$footer['fungsi'] = 'userapps';
 		$this->load->view('layouts/header', $header);
-		$this->load->view('userapps/editprofile',$data);
+		$this->load->view('userapps/editprofile', $data);
 		$this->load->view('layouts/footer', $footer);
 	}
-	public function updateprofile(){
+	public function updateprofile()
+	{
 		$hasil = $this->userappsmodel->updateprofile();
-		if($hasil){
-			$kodeuser = $this->session->userdata('id')*121;
-			$uri = base_url().'userapps/editprofile/'.encrypto($kodeuser);
+		if ($hasil) {
+			$kodeuser = $this->session->userdata('id') * 121;
+			$uri = base_url() . 'userapps/editprofile/' . encrypto($kodeuser);
 			redirect($uri);
 		}
 	}
