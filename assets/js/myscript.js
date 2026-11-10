@@ -29,12 +29,10 @@ $(document).ready(function () {
 	if (errosimpan == 1) {
 		pesan("PESAN : "+xpesan, "info");
 		// alert("PESAN : " + pesan);
-	}
-	if (errosimpan == 2) {
+	}else if(errosimpan == 2) {
 		pesan("PESAN :"+xpesan, "error");
 		// alert("PESAN : " + xpesan);
-	}
-	if (errosimpan == 99) {
+	}else if (errosimpan == 99) {
 		// pesan("PESAN :"+xpesan, "error");
 		alert("PESAN : " + xpesan);
 	}

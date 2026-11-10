@@ -258,6 +258,9 @@ $("#jns_bc").change(function () {
 	updatekolom($("#id_header").val(), "tb_header", "jns_bc", $(this).val());
 	generatekode();
 });
+$("#tujuan_pengeluaran").change(function () {
+	updatekolom($("#id_header").val(), "tb_header", "tujuan_pengeluaran", $(this).val());
+});
 function generatekode() {
 	var nol = "0";
 	var jnsbc =

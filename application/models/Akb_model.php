@@ -1659,4 +1659,9 @@ class Akb_model extends CI_Model
 
         return $this->db->trans_complete();
     }
+    public function gettujukeluar($jns){
+        $this->db->where('jns_bc',$jns);
+        $this->db->order_by('kode');
+        return $this->db->get('ref_tujuan_pengeluaran');
+    }
 }

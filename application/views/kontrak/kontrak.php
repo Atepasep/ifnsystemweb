@@ -249,7 +249,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
         </div>
         <div>
-          <table id="pbtabel" class="table nowrap datatable11 order-column mt-1" style="width: 100% !important;">
+          <table id="pbtabel" class="table datatable11 order-column mt-1" style="width: 100% !important;">
             <thead>
               <tr>
                 <th></th>
@@ -268,6 +268,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
             </thead>
             <tbody class="table-tbody" id="body-table" style="font-size: 13px !important;">
               <?php
+              $nomer = 0;
               foreach ($data->result_array() as $datdet) :
 
                 $tgl_sekarang = new DateTime();
@@ -298,11 +299,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 $warnahuruf = ($datdet['kgs'] < $datdet['total_kgs']) ? 'text-pink' : 'text-primary';
                 $saldo = $datdet['total_kgs'] - $jumlahbcmasuk;
                 $tahap = $datdet['tipe'] == 0 ? '' : ($datdet['tipe'] == 1 ? 'TIPE 1' : 'TIPE 2');
-                $nomer = 0;
+                $nomer++;
               ?>
                 <tr>
-                  <td><?= $nomer++; ?></td>
-                  <td class="line-12"><?= $datdet['nomor']; ?><br><span class="text-pink" style="font-size: 11px"><?= $datdet['nama_supplier']; ?></span></td>
+                  <td><?= $nomer; ?></td>
+                  <td class="line-12 text-nowrap"><?= $datdet['nomor']; ?><br><span class="text-pink" style="font-size: 11px"><?= $datdet['nama_supplier']; ?></span></td>
                   <td class="line-12"><?= $datdet['proses']; ?><br><span class="text-primary" style="font-size: 11px"><?= $tahap ?></span></td>
                   <td><?= tglmysql($datdet['tgl_awal']); ?></td>
                   <td class="<?= $class_tgl_akhir ?>">
@@ -313,7 +314,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                   <td class="text-right <?= $warnahuruf ?> <?= $bold ?>"><?= rupiah($datdet['total_kgs'], 2); ?></td>
                   <td class="text-right"><?= rupiah($jumlahbcmasuk, 2) ?></td>
                   <td class="text-right <?= $warnahuruf ?> "><a href="<?= base_url() . 'kontrak/viewdetail/' . $datdet['id'] ?>" class="" title="View detail" data-bs-toggle="offcanvas" data-bs-target="#canvasdet" data-title="View Detail Realisasi dan Pengembalian"><?= rupiah($saldo, 2)  ?></a></td>
-                  <td>
+                  <td class="text-nowrap">
                     <a href="<?= base_url('kontrak/view/') . $datdet['id']; ?>" data-bs-toggle="offcanvas" data-bs-target="#canvasdet" data-title="View Detail Kontrak" style="padding: 3px 5px !important;" class="btn btn-sm btn-success btn-icon p-0">View</a>
                     <a href="<?= base_url() . 'kontrak/editdata/' . $datdet['id']; ?>" class="onprogress btn btn-sm btn-primary btn-icon p-0" style="padding: 3px 5px !important;">Edit</a>
                     <a href="#" class="btn btn-sm btn-danger btn-icon p-0" data-href="<?= base_url() . 'kontrak/hapuskontrak/' . $datdet['id'] ?>" data-bs-toggle="modal" data-bs-target="#modal-danger" data-message="Hapus Kontrak <br><?= $datdet['nomor']; ?>" style="padding: 3px 5px !important;">Delete</a>

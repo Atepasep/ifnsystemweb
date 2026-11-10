@@ -19,8 +19,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
   <div class="container-xl">
     <div class="card">
       <div class="card-body">
-        <input type="text" id="errorsimpan" class="hilang" value="<?= $this->session->flashdata('errorsimpan'); ?>">
-        <input type="text" id="pesanerror" class="hilang" value="<?= $this->session->flashdata('pesanerror'); ?>">
         <div id="sisipkan" class="sticky-top bg-white">
           <div class="row mb-1 d-flex align-items-between">
             <div class="col-sm-6 mb-1">
@@ -29,8 +27,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 $disab = 'disabled';
               } ?>
               <?php $cekpakaibc = datauser($this->session->userdata('id'), 'cekpakaibc') == 1 ? '' : 'hilang';
-              $tmb = $this->session->userdata('depttuju') == 'FG' ? '/1' : ''; ?>
-              <a href="<?= base_url() . 'ib/tambahdataib' . $tmb; ?>" class="btn btn-primary btn-sm <?= cekclosebook(); ?><?= $disab; ?>" id="adddataib"><i class="fa fa-plus"></i><span class="ml-1">Tambah Data</span></a>
+              $tmb = $this->session->userdata('depttuju') == 'FG' ? '/1' : ''; ?> 
+              <?php if($this->session->userdata('jbc')=='40X' && $this->session->userdata('depttuju') == 'GF'){ ?> <!-- Apabila Jenis BC 40 Return   -->
+                <a href="<?= base_url() . 'ib/adddataibret40'; ?>" class="btn btn-info btn-sm <?= cekclosebook(); ?><?= $disab; ?>" id="adddataibret" data-bs-toggle="modal" data-bs-target="#modal-large" data-title="Add Customer"><i class="fa fa-plus"></i><span class="ml-1">Tambah Data Return</span></a>
+              <?php }else{ ?>
+                <a href="<?= base_url() . 'ib/tambahdataib' . $tmb; ?>" class="btn btn-primary btn-sm <?= cekclosebook(); ?><?= $disab; ?>" id="adddataib"><i class="fa fa-plus"></i><span class="ml-1">Tambah Data</span></a>
+              <?php } ?>
               <a href="<?= base_url() . 'ib/cekbc'; ?>" class="btn btn-cyan btn-sm hilang <?= cekclosebook(); ?><?= $disab; ?><?= $cekpakaibc; ?>" id="adddataib"><i class="fa fa-h-square"></i><span class="ml-1">Cek BC</span></a>
               <a href="<?= base_url() . 'ib/hosttohost/99'; ?>" class="btn btn-yellow btn-sm text-black <?= cekclosebook(); ?><?= $disab; ?>" id="addtoken"><i class="fa fa-cloud"></i><span class="ml-1">H2H Token</span></a>
               <?php $date = date("Y-m-d H:i:s", strtotime("+2 hours", strtotime($datatoken['update_at']))); ?>
@@ -117,6 +119,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 <th>Nomor</th>
                 <?php if ($this->session->userdata('depttuju') == 'FG') { ?>
                   <th>Subkon</th>
+                <?php }else if($this->session->userdata('depttuju') == 'GF') { ?>
+                  <th>Customer</th>
                 <?php } else { ?>
                   <th>Supplier</th>
                 <?php } ?>
@@ -136,6 +140,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 if ($this->session->userdata('depttuju') == 'FG') {
                   $namasup = datadepartemen($datdet['dept_id'], 'nama_subkon');
                   $tmb = '/1';
+                } else if($this->session->userdata('depttuju') == 'GF'){
+                  $namasup = $datdet['nama_customer'] != null ? $datdet['nama_customer']  : 'Not Set';
+                  $tmb = '/1';
                 } else {
                   $namasup = $datdet['namasupplier'] != null ? $datdet['namasupplier']  : 'Not Set';
                 }
@@ -149,7 +156,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                   <td class="line-11"><?= $jmlrek ?><br><?= $jmlkgstot ?></td>
                   <td class="line-12"><?= datauser($datdet['user_ok'], 'name') ?> <br><span style='font-size: 11px;'><?= tglmysql2($datdet['tgl_ok']) ?></span></td>
                   <?php if ($datdet['tanpa_bc'] == 0) {
-                    $ketmakloon = $datdet['bc_makloon'] == 1 ? 'MAKLOON' : $datdet['keterangan']; ?>
+                    $ketmakloon = $datdet['bc_makloon'] == 1 ? 'MAKLOON' : ($datdet['rtn']==1 ? 'Return' : $datdet['keterangan']); ?>
                     <td style="font-size: 17px" class="text-info line-12"><?= $datdet['jns_bc']; ?><br><span class="text-teal" style='font-size: 11px;'><?= $ketmakloon; ?></span></td>
                     <?php if ($datdet['send_ceisa'] == 1) { ?>
                       <td class="line-12"><a href="<?= base_url() . 'ib/isidokbc/' . $datdet['id'] . $tmb; ?>"><?= $isibc; ?></a></td>
@@ -161,8 +168,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
                     <td class="line-12" style='font-size: 11px;'><?= $nomorbc; ?><br><span class="text-teal" style='font-size: 11px;'><?= $datdet['keterangan']; ?></span></td>
                   <?php } ?>
                   <td class="text-right line-12"><span style="color: white;">.</span>
-                    <?php if ($datdet['data_ok'] == 0) { ?>
-                      <a href="<?= base_url() . 'ib/dataib/' . $datdet['id'] ?>" class='btn btn-sm btn-primary <?= cekclosebook(); ?>' style='padding: 3px 5px !important;' title='Lanjutkan Transaksi'>Lanjutkan Transaksi</a>
+                    <?php if ($datdet['data_ok'] == 0) { $lsg = $datdet['rtn']==1 ? ($datdet['jns_bc']=='40' ? 'isidokbc' : 'dataib' ) : 'dataib'; ?>
+                      <a href="<?= base_url() . 'ib/'.$lsg.'/' . $datdet['id'].$tmb ?>" class='btn btn-sm btn-primary <?= cekclosebook(); ?>' style='padding: 3px 5px !important;' title='Lanjutkan Transaksi'>Lanjutkan Transaksi</a>
                       <a href="#" data-href="<?= base_url() . 'ib/hapusib/' . $datdet['id'] ?>" class='btn btn-sm btn-danger' data-bs-toggle="modal" data-bs-target="#modal-danger" data-message="Hapus IB <br><?= $datdet['nomor_dok']; ?>" style='padding: 3px 5px !important;' title='Hapus data Transaksi'>Hapus</a>
                     <?php } else if ($datdet['data_ok'] == 1 && $datdet['ok_valid'] == 0 && $datdet['ok_tuju'] == 0 && $datdet['tanpa_bc'] == 0) { ?>
                       Sedang Dicek Oleh BC /<a href="#" class="text-danger" data-href="<?= base_url() . 'ib/editib/' . $datdet['id'] ?>" style='padding: 3px 8px !important;' data-bs-toggle="modal" data-bs-target="#modal-info" data-message="Edit IB <br><?= $datdet['nomor_dok']; ?>" title='Edit Data'>Edit</a>
