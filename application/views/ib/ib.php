@@ -168,7 +168,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                     <td class="line-12" style='font-size: 11px;'><?= $nomorbc; ?><br><span class="text-teal" style='font-size: 11px;'><?= $datdet['keterangan']; ?></span></td>
                   <?php } ?>
                   <td class="text-right line-12"><span style="color: white;">.</span>
-                    <?php if ($datdet['data_ok'] == 0) { $lsg = $datdet['rtn']==1 ? ($datdet['jns_bc']=='40' ? 'isidokbc' : 'dataib' ) : 'dataib'; ?>
+                    <?php if ($datdet['data_ok'] == 0 && $datdet['send_ceisa']==0) { $lsg = $datdet['rtn']==1 ? ($datdet['jns_bc']=='40' ? 'isidokbc' : 'dataib' ) : 'dataib'; ?>
                       <a href="<?= base_url() . 'ib/'.$lsg.'/' . $datdet['id'].$tmb ?>" class='btn btn-sm btn-primary <?= cekclosebook(); ?>' style='padding: 3px 5px !important;' title='Lanjutkan Transaksi'>Lanjutkan Transaksi</a>
                       <a href="#" data-href="<?= base_url() . 'ib/hapusib/' . $datdet['id'] ?>" class='btn btn-sm btn-danger' data-bs-toggle="modal" data-bs-target="#modal-danger" data-message="Hapus IB <br><?= $datdet['nomor_dok']; ?>" style='padding: 3px 5px !important;' title='Hapus data Transaksi'>Hapus</a>
                     <?php } else if ($datdet['data_ok'] == 1 && $datdet['ok_valid'] == 0 && $datdet['ok_tuju'] == 0 && $datdet['tanpa_bc'] == 0) { ?>

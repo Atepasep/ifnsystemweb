@@ -690,7 +690,14 @@ class Ib_model extends CI_Model
     public function updatesendceisa($id,$aju='000')
     {
         $this->db->where('id', $id);
-        $this->db->update('tb_header', ['send_ceisa' => 1,'prefix_aju' => substr($aju, 0, 3)]);
+        $data = $this->db->get('tb_header')->row_array();
+        if($data['rtn']==1){
+            $this->db->where('id', $id);
+            $this->db->update('tb_header', ['send_ceisa' => 1,'data_ok' => 1,'ok_tuju' => 1,'prefix_aju' => substr($aju, 0, 3)]);
+        }else{
+            $this->db->where('id', $id);
+            $this->db->update('tb_header', ['send_ceisa' => 1,'prefix_aju' => substr($aju, 0, 3)]);
+        }
     }
     public function updatebc11($data)
     {
@@ -1037,6 +1044,10 @@ class Ib_model extends CI_Model
         }
         $url = base_url() . 'ib/isidokbc/' . $id;
         redirect($url);
+    }
+    public function savedokumen($id){
+        $this->db->where('id',$id);
+        return $this->db->update('tb_header',['data_ok' => 1,'ok_tuju' => 1,'user_ok' => $this->session->userdata('id'),'user_tuju' => $this->session->userdata('id')]);
     }
     public function uploaddok()
     {
@@ -1524,6 +1535,23 @@ class Ib_model extends CI_Model
         $this->db->order_by('po ASC, item ASC');
         return $this->db->get('tb_po');
     }
+    public function cariinvreturn($key,$buy=''){
+        $this->db->select("*");
+        $this->db->like('nomor_dok',$key);
+        if($buy!=''){
+            $this->db->where('id_buyer',$buy);
+        }
+        $this->db->where('ok_tuju',1);
+        $this->db->where('dept_tuju','CU');
+        $this->db->order_by('nomor_dok ASC, tgl ASC');
+        return $this->db->get('tb_header');
+    }
+    public function carinomorinv($key){
+        $data = $this->db->get_where('tb_header',['nomor_dok' => $key,'dept_tuju' => 'CU'])->row_array();
+        $this->db->select("*");
+        $this->db->where('id_header',$data['id']);
+        return $this->db->get('tb_detail');
+    }
     public function cariporeturndis($key){
         $this->db->select("*,CONCAT(trim(po),'#',trim(item),IF(dis=0,'',CONCAT(' dis ',dis))) AS sku");
         $this->db->where('po',$key['po']);
@@ -1559,5 +1587,29 @@ class Ib_model extends CI_Model
         $this->db->where('jns_bc',$jns);
         $this->db->order_by('kode');
         return $this->db->get('ref_tujuan_pemasukan');
+    }
+    public function simpaninvoicereturn($id,$key){
+        $this->db->trans_start();
+        foreach($key as $ky){
+            $this->db->where('id',$ky);
+            $get = $this->db->get('tb_detail')->row_array();
+
+            $field = [
+                'po' => $get['po'],
+                'item' => $get['item'],
+                'dis' => $get['dis'],
+                'id_satuan' => $get['id_satuan'],
+                'harga' => $get['harga'],
+                'harga_satuan' => $get['harga_satuan'],
+                'pcs' => $get['pcs'],
+                'kgs' => $get['kgs'],
+                'id_barang' => $get['id_barang'],
+                'id_header' => $id,
+                'id_akb' => $id
+            ];
+
+            $this->db->insert('tb_detail',$field);
+        }
+        return $this->db->trans_complete();
     }
 }
