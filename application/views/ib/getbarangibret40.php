@@ -161,12 +161,12 @@
         </div>
     </div>
     <div id="sectioninvoice" class="row hilang">
+        <input type="text" class="form-control font-kecil hilang" id="id_buyer" name="id_buyer" placeholder="ID Customer" value="<?= $header['id']; ?>">
         <div class="row mt-1 mb-1">
             <label class="col-4 col-form-label font-bold">Nama Pemasok</label>
             <div class="col">
                 <input type="text" class="form-control font-kecil"aria-label="Text input with dropdown" placeholder="Nama Customer" value="<?= $header['nama_customer']; ?>">
             </div>
-
         </div>
         <div class="row mb-1">
             <label class="col-4 col-form-label font-bold">Alamat</label>
@@ -174,46 +174,57 @@
                 <textarea class="form-control font-kecil"><?= $header['alamat']; ?></textarea>
             </div>
         </div>
-        <div class="col-12">
+        <div class="card card-active mb-1" id="cariinv">
+            <div class="card-body p-2">
+                <div class="input-group">
+                    <input type="text" class="form-control font-kecil btn-flat text-uppercase" id="keywordinputinvoice" placeholder="Search for Invoice…">
+                    <button class="btn btn-blue btn-flat font-kecil" type="button" id="cariinputinvoice">Cari !</button>
+                    <button href="#" class="hilang" id="caribarangdouble" data-bs-target="#modal-large" data-bs-toggle="modal" data-title="Pilih">caribarang</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-12" id="tabelcariinvoice">
             <div id="table-default" class="table-responsive mb-1">
                 <table class="table datatable" id="cobasisip">
                     <thead style="background-color: blue !important">
                         <tr>
-                            <th>No PO</th>
-                            <th>Nama Barang</th>
-                            <th>PO Qty</th>
-                            <th>PO Terima</th>
-                            <th>Sisa</th>
+                            <th>No </th>
+                            <th>Customer</th>
+                            <th>Tanggal</th>
                             <th>Pilih</th>
                         </tr>
                     </thead>
-                    <tbody class="table-tbody" id="body-table" style="font-size: 13px !important;">
-                        <?php $no=0; foreach($datadetail->result_array() as $detail){ if(($detail['pcs']+$detail['kgs'])> ($detail['pcssudahterima']+$detail['kgssudahterima'])): $no++; ?>
-                        <?php  
-                            if($detail['kodesatuan']!='KGS'){
-                                $pcs = $detail['pcssudahterima'];
-                                $pcspo = $detail['pcs'];
-                            }else{
-                                $pcs = $detail['kgssudahterima'];
-                                $pcspo = $detail['kgs'];
-                            }
-                        ?>
-                            <tr class="font-kecil">
-                                <td><?= $detail['nodok']; ?></td>
-                                <td><?= $detail['nama_barang']; ?></td>
-                                <td class="text-center"><?= rupiah($pcspo,2); ?></td>
-                                <td class="text-center"><?= rupiah($pcs,2); ?></td>
-                                <td class="text-center text-blue"><?= rupiah($pcspo-$pcs,2); ?></td>
-                                <td>
-                                    <label class="form-check">
-                                        <input class="form-check-input" name="cekpilihbarang" id="cekbok<?= $no; ?>" rel="<?= $detail['iddetbbl']; ?>" type="checkbox">
-                                        <span class="form-check-label">Pilih</span>
-                                    </label>
-                                </td>
-                            </tr>
-                        <?php endif; } ?>
+                    <tbody class="table-tbody" id="body-table-pilihinv" style="font-size: 13px !important;">
+                        <tr>
+                            <td colspan="4" class="text-center">-- Cari Invoice --</td>
+                        </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <div class="col-12 hilang" id="tabelinvoice">
+            <div id="table-default" class="table-responsive mb-1">
+                <table class="table datatable" id="cobasisip">
+                    <thead style="background-color: blue !important">
+                        <tr>
+                            <th>SKU</th>
+                            <th>Spec</th>
+                            <th>Pcs</th>
+                            <th>Kgs</th>
+                            <th>Pilih</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-tbody" id="body-table-invoice" style="font-size: 13px !important;">
+                        <tr>
+                            <td colspan="5" class="text-center">-- Data Kosong --</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <hr class="m-1">
+            <div class="d-flex justify-content-between">
+                <a href="#" class="btn btn-sm btn-ghost-danger btn-flat" id="resetinputinvoice">Reset</a>
+                <a href="#" class="btn btn-sm btn-success btn-flat" id="simpaninputinvoice">Simpan</a>
             </div>
         </div>
     </div>
@@ -240,10 +251,9 @@
                 $("#sectionpo").removeClass('hilang');
                 $("#keywordinputstok").focus();
             }else{
-                // $("#section1").addClass('hilang');
-                // $("#sectioninvoice").removeClass('hilang');
-                pesan('Fasilitas belum ada !','info');
-                return false;
+                $("#section1").addClass('hilang');
+                $("#sectioninvoice").removeClass('hilang');
+                $("#keywordinputinvoice").focus();
             }
         } else {
             alert("Pilih Salah Satu");
@@ -440,4 +450,114 @@
             window.location.reload();
         }
     })
+    $("#keywordinputinvoice").on('keyup', function(e) {
+        if (e.key === 'Enter' || e.keyCode === 13) {
+            $("#keywordinputinvoice").click();
+        }
+    });
+    $(document).off().on('click','#keywordinputinvoice',function(){
+        var isi = $("#keywordinputinvoice").val().trim();
+        if(isi==''){
+            pesan('keyword harus di isi !','error');
+            return false;
+        }else{
+            if(isi.length >= 4){
+                $.ajax({
+                    dataType: "json",
+                    type: "POST",
+                    url: base_url + "ib/cariinvreturn",
+                    data: {
+                        key: $("#keywordinputinvoice").val(),
+                        buy: $("#id_buyer").val()
+                    },
+                    beforeSend: function(){
+                        $("#cariinputinvoice").html('Loading');
+                    },
+                    success: function(data) {
+                        $("#cariinputinvoice").html('Cari!');
+                        // if(data.jmlrek == 1){
+                        //     alert('Invoice ada !');
+                        // }else{
+                            // alert('Invoice ada Banyak !');
+                            $("#cariinv").addClass('hilang');
+                            $("#body-table-pilihinv").html(data.datagroup).show();
+                        // }
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        console.log(xhr.status);
+                        console.log(thrownError);
+                    }
+                });
+            }else{
+                pesan('Keyword minimal 4 huruf atau lebih','info');
+                return false;
+            }
+        }
+    })
+    $(document).on('click','#pilihbr',function(){
+        $.ajax({
+            dataType: "json",
+            type: "POST",
+            url: base_url + "ib/carinomorinv",
+            data: {
+                key: $(this).attr('rel'),
+            },
+            beforeSend: function(){
+                $("#cariinputinv").html('Loading');
+            },
+            success: function(data) {
+                $("#cariinputinv").html('Cari!');
+                $("#cariinv").addClass('hilang');
+                $("#tabelcariinvoice").addClass('hilang');
+                $("#tabelinvoice").removeClass('hilang');
+                $("#body-table-invoice").html(data.datagroup).show();
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                console.log(xhr.status);
+                console.log(thrownError);
+            }
+        });
+    })
+    $("#resetinputinvoice").click(function(){
+        $("#resetinputinvoice").html('Loading ...');
+        window.location.href = base_url + "ib/isidokbc/" + $("#id_header").val()+'/1';
+    });
+    $("#simpaninputinvoice").click(function(){
+        var text = [];
+        // var text2 = [];
+        for (let i = 1; i < 1000; i++) {
+            if($("#cekbok"+i).is(":checked")){
+                text.push($("#cekbok"+i).attr('rel'));
+                // text2.push($("#input"+i).val());
+            }
+        }
+        var idhead = $("#id_header").val();
+        if(text.length > 0){
+            console.log(text);
+            $.ajax({
+                dataType: "json",
+                type: "POST",
+                url: base_url + "ib/simpaninvoicereturn",
+                data: {
+                    id: $("#id_header").val(),
+                    invasal: text,
+                },
+                beforeSend: function(){
+                    $("#simpaninputinvoice").html('Loading ...');
+                },
+                success: function (data) {
+                    // alert(data);
+                    // $('#modal-large-loading').modal('hide');
+                    // $("#jumlahcif"+iddetail).text(data['cif']);
+                    // $("#tomboleditbcasal"+iddetail).removeClass('btn-success');
+                    // $("#tomboleditbcasal"+iddetail).addClass('btn-primary');
+                    window.location.reload();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.log(xhr.status);
+                    console.log(thrownError);
+                },
+            });
+        }
+    });
 </script>

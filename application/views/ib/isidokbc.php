@@ -45,12 +45,19 @@
                             <?php $hilangbc262 = $datheader['jns_bc'] == 262 ? "hilang" : ""; ?>
                             <?php $selectnonaktif = $datheader['send_ceisa'] == 1 ? "disabled" : ""; ?>
                             <?php $selectrtn = $datheader['rtn'] == 1 ? "disabled" : ""; ?>
-                            <a href="<?= base_url() . 'ib/ceisa40excel/' . $datheader['id']; ?>" id="keexcel" style="border-right: 1px solid black;" class="btn btn-sm btn-success mr-0"><i class="fa fa-file-excel-o mr-1"></i> Excel CEISA 4.0</a><a href="<?= base_url() . 'ib/getresponhost/' . $datheader['id']; ?>" style="border-right: 1px solid white;" id="responh2h" class="btn btn-sm btn-info <?= $hilang; ?>"><i class="fa fa-cloud mr-1"></i>Respon H2H</a><a href="#" id="cekdata" class="btn btn-sm btn-yellow text-black <?= $hilang2; ?>"><i class="fa fa-cloud mr-1"></i>Kirim H2H</a><a id="kirimkeceisax" href="<?= base_url() . 'ib/getresponpdf/' . $datheader['id']; ?>" style="border-right: 1px solid white;" class="btn btn-sm btn-danger <?= $hilang3; ?>"><i class="fa fa-file-pdf-o mr-1"></i>GET PDF SPPB</a><a id="kirimkeceisax" href="<?= base_url() . 'ib/getdokbc/' . $datheader['id']; ?>" style="border-right: 1px solid white;" class="btn btn-sm btn-info <?= $hilang3; ?>"><i class="fa fa-file-pdf-o mr-1"></i>GET DOK BC</a>
-                            <!-- <a href="<?= base_url() . 'ib/hosttohost/' . $datheader['id']; ?>" style="border-left: 1px solid black;" class="btn btn-sm btn-yellow"><i class="fa fa-cloud mr-1"></i> H2H Token</a> -->
-                            <?php if ($datheader['send_ceisa'] == 0 || $datheader['nomor_bc'] == '') { ?>
-                                <a class="btn btn-sm btn-primary" style="color: white;" id="simpanhakbc">Verifikasi Data</a>
-                            <?php } else { ?>
-                                <a class="btn btn-sm btn-yellow" href="<?= base_url() . 'ib/uploaddok/' . $datheader['id']; ?>" style="color: white;" id="uploaddok" data-bs-toggle="modal" data-bs-target="#modal-large" data-message="Hapus IB" data-title="Upload Dokumen"><i class="fa fa-file-o mr-1"></i> Upload Dokumen</a>
+                            <?php if($datheader['data_ok']==0){ ?>
+                                <a href="#" data-href="<?= base_url() . 'ib/savedokumen/' . $datheader['id']; ?>" data-bs-toggle="modal" data-bs-target="#modal-info" data-message="Akan Simpan Data" style="border-right: 1px solid black;" class="btn btn-sm btn-success mr-0"><i class="fa fa-file-o mr-1"></i> Simpan Dokumen</a>
+                            <?php }else{ ?>
+                                <a href="<?= base_url() . 'ib/ceisa40excel/' . $datheader['id']; ?>" id="keexcel" style="border-right: 1px solid black;" class="btn btn-sm btn-success mr-0"><i class="fa fa-file-excel-o mr-1"></i> Excel CEISA 4.0</a>
+                                <a href="<?= base_url() . 'ib/getresponhost/' . $datheader['id']; ?>" style="border-right: 1px solid white;" id="responh2h" class="btn btn-sm btn-info <?= $hilang; ?>"><i class="fa fa-cloud mr-1"></i>Respon H2H</a>
+                                <a href="#" id="cekdata" class="btn btn-sm btn-yellow text-black <?= $hilang2; ?>"><i class="fa fa-cloud mr-1"></i>Kirim H2H</a>
+                                <a id="kirimkeceisax" href="<?= base_url() . 'ib/getresponpdf/' . $datheader['id']; ?>" style="border-right: 1px solid white;" class="btn btn-sm btn-danger <?= $hilang3; ?>"><i class="fa fa-file-pdf-o mr-1"></i>GET PDF SPPB</a>
+                                <a id="kirimkeceisax" href="<?= base_url() . 'ib/getdokbc/' . $datheader['id']; ?>" style="border-right: 1px solid white;" class="btn btn-sm btn-info <?= $hilang3; ?>"><i class="fa fa-file-pdf-o mr-1"></i>GET DOK BC</a>
+                                <?php if ($datheader['send_ceisa'] == 0 || $datheader['nomor_bc'] == '') { ?>
+                                    <a class="btn btn-sm btn-primary" style="color: white;" id="simpanhakbc">Verifikasi Data</a>
+                                <?php } else { ?>
+                                    <a class="btn btn-sm btn-yellow" href="<?= base_url() . 'ib/uploaddok/' . $datheader['id']; ?>" style="color: white;" id="uploaddok" data-bs-toggle="modal" data-bs-target="#modal-large" data-message="Hapus IB" data-title="Upload Dokumen"><i class="fa fa-file-o mr-1"></i> Upload Dokumen</a>
+                                <?php } ?>
                             <?php } ?>
                             <a href="<?= base_url() . 'ib'; ?>" class="btn btn-sm btn-primary"><i class="fa fa-arrow-left mr-1"></i> Kembali</a></span>
                     </div>
@@ -745,7 +752,11 @@
                                 foreach ($header as $data) {
                                     $no++;
                                     $jumlah = $data['kodesatuan'] == 'KGS' ? $data['kgs'] : $data['pcs'];
-                                    $sumdetail += $mode == 0 ? round(($data['harga']+$data['additional']) * $jumlah,2) : $data['xcif'] * $data['xndpbm'];
+                                    if($datheader['rtn']==1){
+                                        $sumdetail += $data['harga'];
+                                    }else{
+                                        $sumdetail += $mode == 0 ? round(($data['harga']+$data['additional']) * $jumlah,2) : $data['xcif'] * $data['xndpbm'];
+                                    }
                                     $sumpcs += $mode == 0 ? $data['pcs'] : $data['pcsx'];
                                     $sumkgs += $mode == 0 ? $data['kgs'] : $data['kgsx'];
                                     $spekbarang = trim($data['po']) == '' ? $data['nama_barang'] : spekpo($data['po'], $data['item'], $data['dis']);

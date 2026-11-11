@@ -1374,13 +1374,15 @@ class Ib extends CI_Controller
         foreach ($datadet as $detx) {
             $no++;
             $jumlah = $detx['kodesatuan'] == 'KGS' ? $detx['kgs'] : $detx['pcs'];
+            $idb = trim($detx['po'])!='' ? $detx['sku'] : $detx['brg_id'];
+            $speku = trim($detx['po'])!='' ? trim($detx['spek']) : trim($detx['nama_barang']);
             $arrayke = [
                 "seriBarang" => $no,
                 "asuransi" => 0,
                 "bruto" => 0,
-                "hargaPenyerahan" => round((float) $detx['harga'] * $jumlah, 2),
+                "hargaPenyerahan" => $data['rtn']==1 ? round((float) $detx['harga'], 2) : round((float) $detx['harga'] * $jumlah, 2),
                 "jumlahSatuan" => (int) $jumlah,
-                "kodeBarang" => $detx['brg_id'],
+                "kodeBarang" => $idb,
                 "kodeDokumen" => "40",
                 "kodeJenisKemasan" => $data['kd_kemasan'],
                 "kodeSatuanBarang" => $detx['satbc'],
@@ -1394,7 +1396,7 @@ class Ib extends CI_Controller
                 "uraian" => "",
                 "volume" => 0,
                 "jumlahKemasan" => (int) $data['jml_kemasan'],
-                "uraian" => trim($detx['nama_barang'])
+                "uraian" => $speku
             ];
             $arraytarif = [];
             $barangtarif = [
@@ -1403,14 +1405,18 @@ class Ib extends CI_Controller
                 "kodeFasilitasTarif" => "3",
                 "kodeSatuanBarang" => $detx['kodesatuan'],
                 "nilaiBayar" => 0,
-                "nilaiFasilitas" => round(($detx['harga'] * $jumlah) * 0.11, 0),
+                "nilaiFasilitas" => $data['rtn']==1 ? round((float) $detx['harga'], 2) : round(($detx['harga'] * $jumlah) * 0.11, 0),
                 "nilaiSudahDilunasi" => 0,
                 "tarif" => 11,
                 "tarifFasilitas" => 100,
                 "kodeJenisPungutan" => "PPN",
                 "kodeJenisTarif" => "1"
             ];
-            $jumlahfasilitas += ($detx['harga'] * $jumlah) * 0.11;
+            if($data['rtn']==1){
+                $jumlahfasilitas += $detx['harga'] * 0.11;
+            }else{
+                $jumlahfasilitas += ($detx['harga'] * $jumlah) * 0.11;
+            }
             array_push($arraytarif, $barangtarif);
             $arrayke['barangTarif'] = $arraytarif;
             array_push($arraybarang, $arrayke);
@@ -2204,6 +2210,61 @@ class Ib extends CI_Controller
             echo json_encode(array());
         }
     }
+    public function cariinvreturn(){
+        $key = $_POST['key'];
+        $buy = $_POST['buy'];
+        $cekhasil = $this->ibmodel->cariinvreturn($key,$buy);
+        if($cekhasil->num_rows() > 0){
+            // if($cekhasil->num_rows() == 1){
+            //     $hasil = $cekhasil->row_array();
+            //     $cocok = array('datagroup' => $hasil, 'jmlrek' => $cekhasil->num_rows());
+            //     echo json_encode($cocok);
+            // }else{
+                $html = '';
+                foreach($cekhasil->result_array() as $dt):
+                    $html .= '<tr>';
+                    $html .= '<td>'.$dt['nomor_dok'].'</td>';
+                    $html .= '<td>'.$dt['nomor_dok'].'</td>';
+                    $html .= '<td>-</td>';
+                    $html .= '<td class="text-center"><a href="#" id="pilihbr" rel="'.$dt['nomor_dok'].'" class="btn btn-sm btn-success" style="padding: 0 !important">Pilih</a></td>';
+                    $html .= '</tr>';
+                endforeach;
+                $cocok = array('datagroup' => $html, 'jmlrek' => $cekhasil->num_rows());
+                echo json_encode($cocok);
+            // }
+        }else{
+            echo json_encode(array());
+        }
+    }
+    public function carinomorinv(){
+        $key = $_POST['key'];
+        $cekhasil = $this->ibmodel->carinomorinv($key);
+        if($cekhasil->num_rows() > 0){
+            // if($cekhasil->num_rows() == 1){
+            //     $hasil = $cekhasil->row_array();
+            //     $cocok = array('datagroup' => $hasil, 'jmlrek' => $cekhasil->num_rows());
+            //     echo json_encode($cocok);
+            // }else{
+                $html = '';$no=0;
+                foreach($cekhasil->result_array() as $dt):
+                    $no++;
+                    $html .= '<tr>';
+                    $html .= '<td>'.viewsku($dt['po'],$dt['item'],$dt['dis']).'</td>';
+                    $html .= '<td>'.spekpo($dt['po'],$dt['item'],$dt['dis']).'</td>';
+                    $html .= '<td class="text-right">'.rupiah($dt['pcs'],0).'</td>';
+                    $html .= '<td class="text-right">'.rupiah($dt['kgs'],2).'</td>';
+                    $html .= '<td class="text-center"><label class="form-check mb-0">
+                                <input class="form-check-input pilihcek" name="cekpilihbcasal" id="cekbok'.$no.'" rel="'.$dt['id'].'" type="checkbox" title="cekbok'.$dt['id'].'">
+                            </label></td>';
+                    $html .= '</tr>';
+                endforeach;
+                $cocok = array('datagroup' => $html, 'jmlrek' => $cekhasil->num_rows());
+                echo json_encode($cocok);
+            // }
+        }else{
+            echo json_encode(array());
+        }
+    }
     public function cariporeturndis(){
         $daata = [
             'po' => $_POST['po'],
@@ -2401,6 +2462,14 @@ class Ib extends CI_Controller
     public function simpandokumen()
     {
         $this->ibmodel->updatedok();
+    }
+    public function savedokumen($id){
+        // Simpan dokumen ibbcdok agar bisa diupload ke CEISA 
+        $hasil = $this->ibmodel->savedokumen($id);
+        if($hasil){
+            $url = base_url() . 'ib/isidokbc/' . $id.'/1';
+            redirect($url);
+        }
     }
     public function caripelabuhan()
     {
@@ -2814,5 +2883,13 @@ class Ib extends CI_Controller
         }
 
         redirect('ib/isidokbc/' . $id);
+    }
+    public function simpaninvoicereturn(){
+        $id = $_POST['id'];
+        $invasal = $_POST['invasal'];
+        $hasil = $this->ibmodel->simpaninvoicereturn($id,$invasal);
+        if($hasil){
+            echo 1;
+        }
     }
 }
