@@ -14,8 +14,8 @@
         <div class="card">
             <div class="card-body p-2">
                 <div class="row">
-                    <div class="col-3">
-                        <div class="card btn-flat" style="min-height: 450px;">
+                    <div class="col-12">
+                        <div class="card btn-flat">
                             <div class="card-body p-2">
                                 <h3 class="mb-1">Machine Info</h3>
                                 <hr class="m-0">
@@ -25,11 +25,11 @@
                                     <input type="text" class="hilang" id="minid" name="minid" value="<?= $maxrek['minid'] ?>">
                                     <input type="text" class="hilang" id="maxid" name="maxid" value="<?= $maxrek['maxid'] ?>">
                                     <?php $lokasi = isset($data['lokasi']) ? substr($data['lokasi'],0,3) : '';  ?>
-                                    <div class="col-3 text-center">
+                                    <div class="col-1 text-center">
                                         <div class="bg-red-lt mb-1 mt-1"><?= $lokasi ?></div>
                                         <input type="text" id="captnomormesin" class="form-control text-center font-bold" style="font-size: 17px;" value="<?= $this->uri->segment(4) ?>">
                                     </div>
-                                    <div class="col-9">
+                                    <div class="col-4">
                                         <table class="table table-bordered m-0 mt-1 mb-1">
                                             <thead class="bg-primary-lt">
                                                 <!-- <tr>
@@ -65,10 +65,7 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                </div>
-                                <hr class="m-1">
-                                <div class="row">
-                                    <div class="col-12">
+                                    <div class="col-3 text-center">
                                         <?php 
                                             $filefoto = isset($data['filefoto']) ? $data['filefoto'] : '';  
                                             $foto = FCPATH.'assets/image/dokmesin/foto/'.trim($filefoto); 
@@ -80,31 +77,34 @@
                                             }
                                                 
                                         ?>
-                                        <img src="<?= $inifoto ?>" alt="TES">
+                                        <img src="<?= $inifoto ?>" alt="TES" style="width:181px;object-fit: cover;" class="mt-2">
                                     </div>
-                                </div>
-                                <div class="text-center mt-1">
-                                    <div class="text-center pt-2" style="border-top: 0.5px solid #eaeaea;">
-                                        <button class="btn btn-sm btn-primary" id="firstrec">First</button>
-                                        <button class="btn btn-sm btn-primary" id="prevrec">Prev</button>
-                                        <button class="btn btn-sm btn-primary" id="nextrec">Next</button>
-                                        <button class="btn btn-sm btn-primary" id="lastrec">Last</button>
-                                        <a href="<?= base_url().'ponet/caripo' ?>" class="btn btn-sm btn-teal text-white disabled" id="caridatapo" data-bs-toggle="modal" data-bs-target="#modal-large-loading" data-title="Cari Data PO">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
-                                            Cari Data
-                                        </a>
+                                    <div class="col-4 d-flex ms-auto flex-column" style="margin-top: auto;">
+                                        <div class="text-center pt-2">
+                                            <button class="btn btn-sm btn-primary" id="firstrec">First</button>
+                                            <button class="btn btn-sm btn-primary" id="prevrec">Prev</button>
+                                            <button class="btn btn-sm btn-primary" id="nextrec">Next</button>
+                                            <button class="btn btn-sm btn-primary" id="lastrec">Last</button>
+                                            <a href="<?= base_url().'ponet/caripo' ?>" class="btn btn-sm btn-teal text-white disabled" id="caridatapo" data-bs-toggle="modal" data-bs-target="#modal-large-loading" data-title="Cari Data PO">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                                                Cari Data
+                                            </a>
+                                        </div>
+                                        <div class="bg-red mt-1">
+                                            <a href="#" class="btn btn-sm btn-yellow w-100 text-black"><i class="fa fa-bar-chart mr-2" aria-hidden="true"></i>Graph</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-9">
-                        <h3 class="mb-1">List Instruksi</h3>
-                        <hr class="m-0">
+                    <div class="col-12 mt-2">
+                        <!-- <h3 class="mb-1">List Instruksi</h3>
+                        <hr class="m-0"> -->
                         <div class="overflow-auto">
                             <table id="tabelnya" class="table order-column table-hover table-bordered mt-2 nowrap" style="width: 100% !important; border-collapse: collapse;">
-                                <thead>
-                                    <tr class="text-left">
+                                <thead class="sticky-top">
+                                    <tr class="sticky-top text-left">
                                         <th class="text-center">Urut</th>
                                         <th class="text-center">Tgl Plan</th>
                                         <th class="">SKU</th>

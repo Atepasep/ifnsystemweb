@@ -21,6 +21,7 @@ class Bcwaste extends CI_Controller
         $this->load->model('satuanmodel');
         $this->load->model('userappsmodel', 'usermodel');
         $this->load->model('inv_model', 'invmodel');
+        $this->load->model('bcwastemodel');
 
         $this->load->library('Pdf');
         // $this->load->library('Codeqr');
@@ -30,42 +31,101 @@ class Bcwaste extends CI_Controller
     {
         $header['header'] = 'other';
         $data['level'] = $this->usermodel->getdatalevel();
-        $data['hakdep'] = $this->deptmodel->gethakdeptout($this->session->userdata('arrdep'));
-        $data['dephak'] = $this->deptmodel->getdata();
-        $data['levnow'] = $this->session->userdata['level_user'] == 1 ? 'disabled' : '';
-        $this->session->set_userdata('currdept','GW');
-        $data['repbeac'] = 1;
-        if($this->session->userdata('viewinv')==null){
-            $this->session->set_userdata('viewinv',1);
-        }
-        if ($this->session->userdata('tglawal') == null) {
-            $data['tglawal'] = tglmysql(date('Y-m-d'));
-            $data['tglakhir'] = tglmysql(lastday($this->session->userdata('th') . '-' . $this->session->userdata('bl') . '-01'));
+        $data['getopname'] = $this->bcwastemodel->getopname();
+        if ($this->session->userdata('tglawalbcwaste') == null) {
+            $data['tglawal'] = tglmysql(date('Y-m-01'));
+            $data['tglakhir'] = tglmysql(lastday($this->session->userdata('thbcwaste') . '-' . $this->session->userdata('blbcwaste') . '-01'));
             $data['data'] = null;
-            $data['kat'] = null;
-            $data['katbece'] = null;
-            $data['gbg'] = '';
-            $data['ifndln'] = null;
-            $data['kategoricari'] = 'Cari Barang';
-        } else {
-            $data['tglawal'] = $this->session->userdata('tglawal');
-            $data['tglakhir'] = $this->session->userdata('tglakhir');
-            $data['data'] = $this->invmodel->getdata();
-            $data['kat'] = $this->invmodel->getdatakategori();
-            $data['katbece'] = $this->invmodel->getdatabc();
-            $data['ifndln'] = $this->session->userdata('ifndln');
-            $data['gbg'] = $this->session->userdata('gbg') == 1 ? 'checked' : '';
-            $data['kategoricari'] = $this->session->userdata('kategoricari');
+        }else{
+            $data['tglawal'] = tglmysql($this->session->userdata('tglawalbcwaste'));
+            $data['tglakhir'] = tglmysql($this->session->userdata('tglakhirbcwaste'));
+            $data['data'] = $this->bcwastemodel->getdata();
         }
-        $data['buyer'] = $this->invmodel->getbuyer();
-        $data['currdept'] = "$%";
-        $data['ifndln'] = 'X';
-        $data['req_inv'] = 0;
+        $data['kategori'] = $this->bcwastemodel->getdatakategori();
         $footer['data'] = $this->helpermodel->getdatafooter()->row_array();
-        $footer['fungsi'] = 'inv';
+        $footer['fungsi'] = 'bcwaste';
         $this->load->view('layouts/header', $header);
-        $this->load->view('inv/inv', $data);
+        // $this->load->view('inv/inv', $data);
+        $this->load->view('bcwaste/bcwaste', $data);
         $this->load->view('layouts/footer', $footer);
+    }
+    public function clear(){
+        $this->session->unset_userdata('tglawalbcwaste');
+        $this->session->unset_userdata('tglakhirbcwaste');
+        $this->session->unset_userdata('kepemilikan');
+        $this->session->unset_userdata('katebar');
+        $this->session->set_userdata('thbcwaste',date('Y'));
+        $this->session->set_userdata('blbcwaste',date('m'));
+        $url = base_url().'bcwaste';
+        redirect($url);
+    }
+     public function getdata(){
+        $monthawal = date('m',strtotime(tglmysql($_POST['tga'])));
+        $tahunawal = date('Y',strtotime(tglmysql($_POST['tga'])));
+        $jaditahun = '01-'.$monthawal.'-'.$tahunawal;
+        $this->session->set_userdata('tglawalbcwaste',tglmysql($jaditahun));
+        $this->session->set_userdata('tglakhirbcwaste',tglmysql($_POST['tgk']));
+        $this->session->set_userdata('kepemilikan',$_POST['punya']);
+        $this->session->set_userdata('katebar',$_POST['exdo']);
+        // $this->session->set_userdata('currdeptbcwip',$_POST['curr']);
+        echo 1;
+    }
+    public function getdatabaru($mode=0){
+        $arrayu = [];
+        $filter_kategori = $_POST['filt'];
+        $filter_exdo = $_POST['exdo'];
+        $filter_stok = $_POST['stok'];
+        $filter_buyer = $_POST['buyer'];
+        $filter_exnet = $_POST['exnet'];
+        $filter_aneh = $_POST['dataneh'];
+        if($filter_kategori!='all'){
+            $arrayu['xdln'] = $filter_kategori;
+        }
+        if($filter_exdo!="all"){
+            $arrayu['exdo'] = $filter_exdo;
+        }
+        if($filter_stok!="all"){
+            $arrayu['stok'] = $filter_stok;
+        }
+        if($filter_buyer!='all'){
+            $arrayu['id_buyer'] = $filter_buyer;
+        }
+        if($filter_exnet!='all'){
+            $arrayu['exnet'] = $filter_exnet;
+        }
+        if($filter_aneh=='true'){
+            $arrayu['minus'] = 1;
+        }
+        echo $this->bcwastemodel->getdatabaru($arrayu,$mode);
+    } 
+    public function viewdetail($isi = '',$mode=0)
+    {
+        $split = explode('-', $isi);
+        $array = [
+            'po' => str_replace('%20',' ',str_replace('+','/',str_replace('?','-',rawurldecode($split[1])))),
+            'item' => str_replace('%20',' ',str_replace('+','/',str_replace('?','-',rawurldecode($split[2])))),
+            'dis' => $split[3],
+            'id_barang' => $split[4],
+            'nobontr' => str_replace('%20',' ',str_replace('+','/',str_replace('?','-',rawurldecode($split[5])))),
+            'insno' => str_replace('%20',' ',str_replace('+','/',str_replace('?','-',rawurldecode($split[6])))),
+            // 'insno' => $split[6],
+            'nobale' => str_replace('%20',' ',str_replace('+','/',str_replace('?','-',rawurldecode($split[7])))),
+            'nomor_bc' => $split[8],
+            'dept' => $split[9]
+        ];
+        $array2 = [
+            'id_barang' => $split[4],
+            'nobontr' => str_replace('%20',' ',str_replace('+','/',str_replace('?','-',rawurldecode($split[5])))),
+        ];
+       
+        $data['header'] = $this->bcwastemodel->getdatadetailbaru($array)->row_array();
+        $data['detail'] = $this->bcwastemodel->getdatadetailbaru($array);
+        $data['dok'] = $this->invmodel->getdatadok($array2)->row_array();
+        // $data['detailbom'] = $this->invmodel->getdatadetailbom($data['header']['id_bom']);
+        $data['detailbom'] = $this->invmodel->getdatadetailbom($array);
+        $data['isi'] = $array;
+        $data['dok2'] = NULL;
+        $this->load->view('bcwaste/viewdetail', $data);
     }
     public function tambahdata()
     {

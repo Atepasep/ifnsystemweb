@@ -196,6 +196,35 @@ class Bcgf extends CI_Controller
         ob_end_flush();
         error_log("Finished fetching data");
     }
+    public function viewdetail($isi = '',$mode=0)
+    {
+        $split = explode('-', $isi);
+        $array = [
+            'po' => str_replace('%20',' ',str_replace('+','/',str_replace('?','-',rawurldecode($split[1])))),
+            'item' => str_replace('%20',' ',str_replace('+','/',str_replace('?','-',rawurldecode($split[2])))),
+            'dis' => $split[3],
+            'id_barang' => $split[4],
+            'nobontr' => str_replace('%20',' ',str_replace('+','/',str_replace('?','-',rawurldecode($split[5])))),
+            'insno' => str_replace('%20',' ',str_replace('+','/',str_replace('?','-',rawurldecode($split[6])))),
+            // 'insno' => $split[6],
+            'nobale' => str_replace('%20',' ',str_replace('+','/',str_replace('?','-',rawurldecode($split[7])))),
+            'nomor_bc' => $split[8],
+            'dept' => $split[9]
+        ];
+        $array2 = [
+            'id_barang' => $split[4],
+            'nobontr' => str_replace('%20',' ',str_replace('+','/',str_replace('?','-',rawurldecode($split[5])))),
+        ];
+       
+        $data['header'] = $this->bcgfmodel->getdatadetailbaru($array)->row_array();
+        $data['detail'] = $this->bcgfmodel->getdatadetailbaru($array);
+        $data['dok'] = $this->invmodel->getdatadok($array2)->row_array();
+        // $data['detailbom'] = $this->invmodel->getdatadetailbom($data['header']['id_bom']);
+        $data['detailbom'] = $this->invmodel->getdatadetailbom($array);
+        $data['isi'] = $array;
+        $data['dok2'] = NULL;
+        $this->load->view('bcgf/viewdetail', $data);
+    }
     public function tambahdata()
     {
         $this->load->view('satuan/addsatuan');

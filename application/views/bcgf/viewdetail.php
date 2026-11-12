@@ -2,7 +2,7 @@
     <div class="row mb-1">
         <div class="col-3 font-bold">
             <span class="text-primary">Inventory per Tanggal</span>
-            <h4 class="mb-1 text-teal-green"><?= tgl_indo($this->session->userdata('tglawalbcgf')); ?> s/d <?= tgl_indo($this->session->userdata('tglakhirbcgf')); ?></h4>
+            <h4 class="mb-1 text-teal-green"><?= tgl_indo(tglmysql($this->session->userdata('tglawalbcgf'))); ?> s/d <?= tgl_indo($this->session->userdata('tglakhirbcgf')); ?></h4>
             <div class="line-10"><span class="text-pink font-11">No Bale</span><br><h2><?= $header['nobale'] ?></h2></div>
         </div>
         <div class="col-7 text-primary font-bold">

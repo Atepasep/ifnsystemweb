@@ -804,7 +804,7 @@
                     <a class="dropdown-item <?= cekmenudetail($this->session->userdata('other'), 3); ?>" href="<?= base_url('invmesin/clear'); ?>">
                       Barang Modal & Sparepart
                     </a>
-                    <a class="dropdown-item <?= cekmenudetail($this->session->userdata('other'), 13); ?>" href="<?= base_url('bcwaste'); ?>">
+                    <a class="dropdown-item <?= cekmenudetail($this->session->userdata('other'), 13); ?>" href="<?= base_url('bcwaste/clear'); ?>">
                       Scrap / Waste
                     </a>
                     <a class="dropdown-item <?= cekmenudetail($this->session->userdata('other'), 14); ?>" href="<?= base_url('priceinv'); ?>">

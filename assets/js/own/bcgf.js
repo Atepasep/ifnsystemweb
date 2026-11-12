@@ -29,28 +29,34 @@ $(document).ready(function () {
 			// alert(api2.recordsFiltered);
             if(api2.recordsFiltered > 0){
 				$("#jumlahkgs").text(rupiah(data[0]['totalkgs'],'.',',',2));
-				// $("#jumlahpcs").text(rupiah(data[0]['totalpcs'],'.',',',0));
-				// $("#sawalpcs").text(rupiah(data[0]['sawalpcs'],'.',',',0));
-				// $("#sawalkgs").text(rupiah(data[0]['sawalkgs'],'.',',',2));
-				// $("#inkgs").text(rupiah(data[0]['totalinkgs'],'.',',',2));
-				// $("#outkgs").text(rupiah(data[0]['totaloutkgs'],'.',',',2));
-				// $("#adjkgs").text(rupiah(data[0]['totaladjkgs'],'.',',',2));
-				// $("#inpcs").text(rupiah(data[0]['totalinpcs'],'.',',',0));
-				// $("#outpcs").text(rupiah(data[0]['totaloutpcs'],'.',',',0));
-				// $("#adjpcs").text(rupiah(data[0]['totaladjpcs'],'.',',',0));
-				$("#jumlahpcs").text(rupiah(api2.recordsFiltered,'.',',',0));
+				$("#jumlahpcs").text(rupiah(data[0]['totalpcs'],'.',',',0));
+				$("#awalpcs").html(rupiah(data[0]['sawalpcs'],'.',',',0));
+				$("#awalkgs").html(rupiah(data[0]['sawalkgs'],'.',',',2));
+				$("#inkgs").html(rupiah(data[0]['totalinkgs'],'.',',',2));
+				$("#inpcs").html(rupiah(data[0]['totalinpcs'],'.',',',0));
+				$("#outkgs").html(rupiah(data[0]['totaloutkgs'],'.',',',2));
+				$("#outpcs").html(rupiah(data[0]['totaloutpcs'],'.',',',0));
+				$("#adjkgs").html(rupiah(data[0]['totaladjkgs'],'.',',',2));
+				$("#adjpcs").html(rupiah(data[0]['totaladjpcs'],'.',',',0));
+				$("#xjumlahpcs").html(rupiah(data[0]['totalpcs'],'.',',',0));
+				$("#xjumlahkgs").html(rupiah(data[0]['totalkgs'],'.',',',2));
+				$("#sopcs").html(rupiah(data[0]['sopcs'],'.',',',0));
+				$("#sokgs").html(rupiah(data[0]['sokgs'],'.',',',2));
 			}else{
 				$("#jumlahkgs").text('0');
 				$("#jumlahpcs").text('0');
-				// $("#sawalpcs").text('0');
-				// $("#sawalkgs").text('0');
-				// $("#inkgs").text('0');
-				// $("#outkgs").text('0');
-				// $("#adjkgs").text('0');
-				// $("#inpcs").text('0');
-				// $("#outpcs").text('0');
-				// $("#adjpcs").text('0');
-				// $("#jumlahrekod").text('0');
+				$("#awalpcs").html('0');
+				$("#awalkgs").html('0');
+				$("#inkgs").html('0');
+				$("#inpcs").html('0');
+				$("#outkgs").html('0');
+				$("#outpcs").html('0');
+				$("#adjkgs").html('0');
+				$("#adjpcs").html('0');
+				$("#xjumlahpcs").html('0');
+				$("#xjumlahkgs").html('0');
+				$("#sopcs").html('0');
+				$("#sokgs").html('0');
 			}
 		},
 		"ajax":
@@ -86,7 +92,7 @@ $(document).ready(function () {
 					var spek = row.po.trim() == '' ? row.nama_barang : row.spek ;
 					var idbrg = row.id_barang == null ? 0 : row.id_barang;
 					var ide = 'OME-'+encodeURIComponent(gantislash(row.po.trim()))+'-'+encodeURIComponent(gantislash(row.item.trim()))+'-'+row.dis+'-'+idbrg+'-'+encodeURIComponent(gantislash(row.nobontr.trim()))+'-'+encodeURIComponent(gantislash(row.insno.trim()))+'-'+encodeURIComponent(gantislash(row.nobale.trim()))+'-'+encodeURIComponent(row.nomor_bc.trim())+'-'+row.deptt;
-					return "<span class='hilang'>"+spek+"</span><span class='text-pink font-11'>"+sku+"</span>"+"<br><a href='"+base_url+"bcwip/viewdetail/"+ide+"' data-bs-toggle='offcanvas' data-bs-target='#canvasdet' data-title='View Detail' title='View Detail'>"+spek+"</a>";
+					return "<span class='hilang'>"+spek+"</span><span class='text-pink font-11'>"+sku+"</span>"+"<br><a href='"+base_url+"bcgf/viewdetail/"+ide+"' data-bs-toggle='offcanvas' data-bs-target='#canvasdet' data-title='View Detail' title='View Detail'>"+spek+"</a>";
 				}
 			},
 			{"data": "nobale"},
