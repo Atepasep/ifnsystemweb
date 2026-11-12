@@ -82,7 +82,7 @@ $(document).ready(function () {
 		"deferRender": true,
 		"aLengthMenu": [[5, 10, 25, 50, 100],[ 5, 10, 25, 50, 100]], // Combobox Limit
 		"pageLength": 50,
-		"dom": '<"pull-left"l>t<"bottom-left"i><"bottom-right"p>',
+		"dom": '<"pull-right"f><"pull-left"l>t<"bottom-left"i><"bottom-right"p>',
 		"columns": [
 			{ "data": "urt",
 				"className": "font-kecil",

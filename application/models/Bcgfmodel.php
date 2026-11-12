@@ -473,6 +473,226 @@ class bcgfmodel extends CI_Model
         $query = $this->getdata();
         return $this->db->query($query);
     }
+    public function getdatadetailbaru($array){
+        if($this->session->userdata('tglawalbcgf')==null){
+            $tglawal = '01-01-1970';
+            $tglakhir = '01-01-1970';
+            $dept = '$%';
+        }else{
+            $tglawal = $this->session->userdata('tglawalbcgf');
+            $tglakhir = $this->session->userdata('tglakhirbcgf');
+            $dept = $this->session->userdata('currdept');
+        }
+        $dept = $array['dept'];
+        $periode = cekperiodedaritgl($tglawal);
+        $bl = date('m', strtotime($tglawal));
+        $th = date('Y', strtotime($tglawal));
+        $ada = in_array($dept,daftardeptsubkon());
+
+        // Query untuk CekSaldobarang
+        $this->db->select("0 as kodeinv,'SALDO' as mode,'".tglmysql($tglawal)."' as tgl,stokdept.po,stokdept.item,stokdept.dis,stokdept.id_barang,stokdept.dln as xdln,barang.id_kategori,stokdept.insno,stokdept.nobontr,barang.kode,stokdept.id as idu");
+        $this->db->select("kategori.nama_kategori,barang.safety_stock,'SALDO AWAL' as nomor_dok,satuan.kodesatuan");
+        $this->db->select('sum(pcs_awal) as saldopcs,sum(kgs_awal) as saldokgs,tb_hargamaterial.jns_bc,tb_hargamaterial.tgl_bc');
+        $this->db->select('0 as inpcs,0 as inkgs');
+        $this->db->select('0 as outpcs,0 as outkgs');
+        $this->db->select('0 as adjpcs,0 as adjkgs');
+        $this->db->select('tb_po.spek as spek');
+        $this->db->select('barang.nama_barang as nama_barang');
+        if($dept=='GF' || $dept=='GW'){
+            $this->db->select('stokdept.nobale');
+        }else{
+            $this->db->select('"" as nobale');
+        }
+        if($ada){
+            // $this->db->select('stokdept.nomor_bc as nomor_bc');
+            $this->db->select('trim(stokdept.nomor_bc) as nomor_bc');
+        }else{
+            $this->db->select('"" as nomor_bc');
+        }
+        $this->db->from('stokdept');
+        $this->db->join('barang','barang.id = stokdept.id_barang','left');
+        $this->db->join('tb_po','tb_po.ind_po = concat(stokdept.po,stokdept.item,stokdept.dis)','left');
+        $this->db->join('kategori','barang.id_kategori = kategori.kategori_id','left');
+        $this->db->join('satuan','barang.id_satuan = satuan.id','left');
+        $this->db->join('tb_hargamaterial','stokdept.id_barang = tb_hargamaterial.id_barang AND stokdept.nobontr = tb_hargamaterial.nobontr  AND trim(tb_hargamaterial.nobontr) != "" ','left');
+        $this->db->where('dept_id',$dept);
+        $this->db->where('periode',$periode);
+        $this->db->where('trim(stokdept.po)',trim($array['po']));
+        $this->db->where('trim(stokdept.item)',trim($array['item']));
+        $this->db->where('trim(stokdept.dis)',$array['dis']);
+        // $this->db->where('trim(stokdept.insno)',trim($array['insno']));
+        // $this->db->where('trim(stokdept.nobontr)',trim($array['nobontr']));
+        if($dept=='GF' || $dept=='GW'){
+            $this->db->where('trim(stokdept.nobale)',trim($array['nobale']));
+        }else{
+            $this->db->where('trim(stokdept.id_barang)',$array['id_barang']);
+        }
+        if($ada){
+            // $this->db->where('trim(stokdept.nomor_bc)',trim($array['nomor_bc']));
+        }
+        $this->db->group_by('po,item,dis,id_barang');
+        $query1 = $this->db->get_compiled_select();
+
+        // Query untuk In Barang
+        $this->db->select("1 as kodeinv,'IN' as mode,tb_header.tgl,tb_detail.po,tb_detail.item,tb_detail.dis,tb_detail.id_barang,tb_detail.dln as xdln,barang.id_kategori,tb_detail.insno,tb_detail.nobontr,barang.kode,0 as idu");
+        $this->db->select("kategori.nama_kategori,barang.safety_stock,tb_header.nomor_dok,satuan.kodesatuan");
+        $this->db->select('0 as saldopcs,0 as saldokgs,tb_hargamaterial.jns_bc,tb_hargamaterial.tgl_bc');
+        $this->db->select('sum(pcs) as inpcs,sum(kgs) as inkgs');
+        $this->db->select('0 as outpcs,0 as outkgs');
+        $this->db->select('0 as adjpcs,0 as adjkgs');
+        $this->db->select('tb_po.spek as spek');
+        $this->db->select('barang.nama_barang as nama_barang');
+        if($dept=='GF' || $dept=='GW'){
+            $this->db->select('tb_detail.nobale');
+        }else{
+            $this->db->select('"" as nobale');
+        }
+        if($ada){
+            // $this->db->select('tb_header.nomor_bc as nomor_bc');
+            $this->db->select('(SELECT trim(nomor_bc) FROM tb_header tbhead where id = tb_detail.id_akb) as nomor_bc');
+        }else{
+            $this->db->select('"" as nomor_bc');
+        }
+        $this->db->from('tb_detail');
+        $this->db->join('barang','barang.id = tb_detail.id_barang','left');
+        $this->db->join('tb_po','tb_po.ind_po = concat(tb_detail.po,tb_detail.item,tb_detail.dis)','left');
+        $this->db->join('tb_header','tb_header.id = tb_detail.id_header','left');
+        $this->db->join('kategori','barang.id_kategori = kategori.kategori_id','left');
+        $this->db->join('satuan','barang.id_satuan = satuan.id','left');
+        $this->db->join('tb_hargamaterial','tb_detail.id_barang = tb_hargamaterial.id_barang AND tb_detail.nobontr = tb_hargamaterial.nobontr AND trim(tb_hargamaterial.nobontr) != "" ','left');
+        $this->db->where('dept_tuju',$dept);
+        $this->db->where('month(tb_header.tgl)',$bl);
+        $this->db->where('year(tb_header.tgl)',$th);
+        $this->db->where('tb_header.tgl <= ',tglmysql($tglakhir));
+        $this->db->group_start();
+        $this->db->where('tb_header.kode_dok','IB');
+        $this->db->or_where('tb_header.kode_dok','T');
+        $this->db->group_end();
+        $this->db->where('tb_header.ok_valid',1);
+        $this->db->where('trim(tb_detail.po)',trim($array['po']));
+        $this->db->where('trim(tb_detail.item)',trim($array['item']));
+        $this->db->where('trim(tb_detail.dis)',$array['dis']);
+        // $this->db->where('trim(tb_detail.insno)',trim($array['insno']));
+        // $this->db->where('trim(tb_detail.nobontr)',trim($array['nobontr']));
+        if($dept=='GF' || $dept=='GW'){
+            $this->db->where('trim(tb_detail.nobale)',trim($array['nobale']));
+        }else{
+            $this->db->where('trim(tb_detail.id_barang)',$array['id_barang']);
+        }
+        if($ada){
+            // $this->db->where('(SELECT trim(nomor_bc) FROM tb_header tbhead where id = tb_detail.id_akb) = ',trim($array['nomor_bc']));
+        }
+        $this->db->group_by('po,item,dis,id_barang,nobontr,nomor_dok');
+        $query2 = $this->db->get_compiled_select();
+
+        // Query untuk Out Barang
+        $this->db->select("2 as kodeinv,'OUT' as mode,tb_header.tgl,tb_detailgen.po,tb_detailgen.item,tb_detailgen.dis,tb_detailgen.id_barang,tb_detailgen.dln as xdln,barang.id_kategori,tb_detailgen.insno,tb_detailgen.nobontr,barang.kode,0 as idu");
+        $this->db->select("kategori.nama_kategori,barang.safety_stock,tb_header.nomor_dok,satuan.kodesatuan");
+        $this->db->select('0 as saldopcs,0 as saldokgs,tb_hargamaterial.jns_bc,tb_hargamaterial.tgl_bc');
+        $this->db->select('0 as inpcs,0 as inkgs');
+        $this->db->select('sum(pcs) as outpcs,sum(kgs) as outkgs');
+        $this->db->select('0 as adjpcs,0 as adjkgs');
+        $this->db->select('tb_po.spek as spek');
+        $this->db->select('barang.nama_barang as nama_barang');
+        if($dept=='GF' || $dept=='GW'){
+            $this->db->select('tb_detailgen.nobale');
+        }else{
+            $this->db->select('"" as nobale');
+        }
+        if($ada){
+            // $this->db->select('tb_header.nomor_bc as nomor_bc');
+            $this->db->select('(SELECT trim(nomor_bc) FROM tb_header tbhead where jns_bc = "261" AND TRIM(tbhead.keterangan) = trim(tb_header.keterangan) AND tbhead.dept_id = tb_header.dept_tuju AND tbhead.dept_tuju = tb_header.dept_id ) as nomor_bc');
+        }else{
+            $this->db->select('"" as nomor_bc');
+        }
+        $this->db->from('tb_detailgen');
+        $this->db->join('barang','barang.id = tb_detailgen.id_barang','left');
+        $this->db->join('tb_po','tb_po.ind_po = concat(tb_detailgen.po,tb_detailgen.item,tb_detailgen.dis)','left');
+        $this->db->join('tb_header','tb_header.id = tb_detailgen.id_header','left');
+        $this->db->join('kategori','barang.id_kategori = kategori.kategori_id','left');
+        $this->db->join('satuan','barang.id_satuan = satuan.id','left');
+        $this->db->join('tb_hargamaterial','tb_detailgen.id_barang = tb_hargamaterial.id_barang AND tb_detailgen.nobontr = tb_hargamaterial.nobontr AND trim(tb_hargamaterial.nobontr) != "" ','left');
+        $this->db->where('dept_id',$dept);
+        $this->db->where('month(tb_header.tgl)',$bl);
+        $this->db->where('year(tb_header.tgl)',$th);
+        $this->db->where('tb_header.tgl <= ',tglmysql($tglakhir));
+        $this->db->where('tb_header.kode_dok','T');
+        $this->db->where('tb_header.data_ok',1);
+        $this->db->where('trim(tb_detailgen.po)',trim($array['po']));
+        $this->db->where('trim(tb_detailgen.item)',trim($array['item']));
+        $this->db->where('trim(tb_detailgen.dis)',$array['dis']);
+        // $this->db->where('trim(tb_detailgen.insno)',trim($array['insno']));
+        // $this->db->where('trim(tb_detailgen.nobontr)',trim($array['nobontr']));
+        if($dept=='GF' || $dept=='GW'){
+            $this->db->where('trim(tb_detailgen.nobale)',trim($array['nobale']));
+        }else{
+            $this->db->where('trim(tb_detailgen.id_barang)',$array['id_barang']);
+        }
+        if($ada){
+            // $this->db->where('(SELECT trim(nomor_bc) FROM tb_header tbhead where jns_bc = "261" AND TRIM(tbhead.keterangan) = trim(tb_header.keterangan) AND tbhead.dept_id = tb_header.dept_tuju AND tbhead.dept_tuju = tb_header.dept_id ) =',trim($array['nomor_bc']));
+        }
+        $this->db->group_by('po,item,dis,id_barang,nobontr,nomor_dok');
+        $query3 = $this->db->get_compiled_select();
+
+        // Query untuk ADJ Barang
+        $this->db->select("3 as kodeinv,'ADJ' as mode,tb_header.tgl,tb_detail.po,tb_detail.item,tb_detail.dis,tb_detail.id_barang,tb_detail.dln as xdln,barang.id_kategori,tb_detail.insno,tb_detail.nobontr,barang.kode,0 as idu");
+        $this->db->select("kategori.nama_kategori,barang.safety_stock,tb_header.nomor_dok,satuan.kodesatuan");
+        $this->db->select('0 as saldopcs,0 as saldokgs,tb_hargamaterial.jns_bc,tb_hargamaterial.tgl_bc');
+        $this->db->select('0 as inpcs,0 as inkgs');
+        $this->db->select('0 as outpcs,0 as outkgs');
+        $this->db->select('sum(pcs) as adjpcs,sum(kgs) as adjkgs');
+        $this->db->select('tb_po.spek as spek');
+        $this->db->select('barang.nama_barang as nama_barang');
+        if($dept=='GF' || $dept=='GW'){
+            $this->db->select('tb_detail.nobale');
+        }else{
+            $this->db->select('"" as nobale');
+        }
+        if($ada){
+            $this->db->select('tb_header.nomor_bc as nomor_bc');
+        }else{
+            $this->db->select('" " as nomor_bc');
+        }
+        $this->db->from('tb_detail');
+        $this->db->join('barang','barang.id = tb_detail.id_barang','left');
+        $this->db->join('tb_po','tb_po.ind_po = concat(tb_detail.po,tb_detail.item,tb_detail.dis)','left');
+        $this->db->join('tb_header','tb_header.id = tb_detail.id_header','left');
+        $this->db->join('kategori','barang.id_kategori = kategori.kategori_id','left');
+        $this->db->join('satuan','barang.id_satuan = satuan.id','left');
+        $this->db->join('tb_hargamaterial','tb_detail.id_barang = tb_hargamaterial.id_barang AND tb_detail.nobontr = tb_hargamaterial.nobontr AND trim(tb_hargamaterial.nobontr) != "" ','left');
+        $this->db->where('dept_id',$dept);
+        $this->db->where('month(tb_header.tgl)',$bl);
+        $this->db->where('year(tb_header.tgl)',$th);
+        $this->db->where('tb_header.tgl <= ',tglmysql($tglakhir));
+        $this->db->where('tb_header.kode_dok','ADJ');
+        $this->db->where('tb_header.data_ok',1);
+        $this->db->where('tb_header.ok_valid',1);
+        $this->db->where('trim(tb_detail.po)',trim($array['po']));
+        $this->db->where('trim(tb_detail.item)',trim($array['item']));
+        $this->db->where('trim(tb_detail.dis)',$array['dis']);
+        // $this->db->where('trim(tb_detail.insno)',trim($array['insno']));
+        // $this->db->where('trim(tb_detail.nobontr)',trim($array['nobontr']));
+        if($dept=='GF' || $dept=='GW'){
+            $this->db->where('trim(tb_detail.nobale)',trim($array['nobale']));
+        }else{
+            $this->db->where('trim(tb_detail.id_barang)',$array['id_barang']);
+        }
+        if($ada){
+            // $this->db->where('trim(tb_header.nomor_bc)',trim($array['nomor_bc']));
+        }
+        $this->db->group_by('po,item,dis,id_barang,nobontr');
+        $query4 = $this->db->get_compiled_select();
+
+        $kolom = "Select * from (".$query1." union all ".$query2." union all ".$query3." union all ".$query4.") r1";
+        // $kolom .= " left join barang on barang.id = id_barang";
+        // $kolom .= " left join satuan on barang.id_satuan = satuan.id";
+        // $kolom .= " group by po,item,dis,id_barang,insno,nobontr,nobale,nomor_bc) r2";
+        // $kolom .= " LEFT JOIN tb_po ON CONCAT(tb_po.po,tb_po.item,tb_po.dis) = concat(xpo,xitem,xdis)";
+        $kolom .= " order by tgl,kodeinv";
+        $hasil = $this->db->query($kolom);
+
+        return $hasil;
+    }
 
     public function getdatabarux(){
         $query = $this->getdata();

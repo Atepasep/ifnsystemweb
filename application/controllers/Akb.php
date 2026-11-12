@@ -2246,7 +2246,7 @@ class Akb extends CI_Controller
             "cif" => (float) $data['cif'],
             "disclaimer" => "1",
             "freight" => 0,
-            "hargaPenyerahan" => (float) $data['nilai_serah'],
+            "hargaPenyerahan" => (float) ($data['nilai_serah']),
             "jabatanTtd" => strtoupper($data['jabat_tg_jawab']),
             "jumlahKontainer" => $datakon->num_rows(),
             "kodeDokumen" => $data['jns_bc'],
@@ -2390,11 +2390,12 @@ class Akb extends CI_Controller
             // $hs = trim($detx['po']) == '' ? substr($detx['nohs'], 0, 8) : substr($detx['hsx'], 0, 8);
             // $kodebc = str_contains($detx['nomor_dok'], 'NET/') ? 'KGM' : $detx['kodebc'];
             $kodebarang = trim($detx['po']) != '' ? viewsku($detx['po'], $detx['item'], $detx['dis']) : $detx['kode'];
+            $getdiskon = $this->akbmodel->getdiskon($detx['id']);
             $arraykebarang = [
                 "cif" => (float) round($detx['cifnya'], 2),
                 "cifRupiah" => round($detx['cifnya'] * $detx['ndpbm'], 2),
                 "hargaEkspor" => 0,
-                "hargaPenyerahan" => (float) round($detx['harga'], 2),
+                "hargaPenyerahan" => (float) round($detx['harga']-$getdiskon['totaldisk'], 2),
                 "hargaPerolehan" => 0,
                 "isiPerKemasan" => 0,
                 "jumlahKemasan" => (float) $detx['qty'],

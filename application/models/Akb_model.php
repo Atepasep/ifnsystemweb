@@ -1664,4 +1664,9 @@ class Akb_model extends CI_Model
         $this->db->order_by('kode');
         return $this->db->get('ref_tujuan_pengeluaran');
     }
+    public function getdiskon($id){
+        $this->db->select('*,IFNULL(sp_disc+cash_disc,0) AS totaldisk');
+        $this->db->where('id',$id);
+        return $this->db->get('tb_detail')->row_array();
+    }
 }
