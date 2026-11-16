@@ -331,6 +331,19 @@ class Ponet_model extends CI_Model
         $kolom = "Select * from (Select * from (".$query1.") r1 order by dateplan asc, urt asc) r2";
         return $kolom;
     }
+    public function getnetplangrap($msno){
+        $this->db->select('tb_netinstr.insno,tb_netinstr.dateplan,tb_netinstr.tgnet,tb_netinstr.descx,tb_netinstr.descn,tb_netinstr.noprd,tb_netinstr.desc2,tb_po.*');
+        $this->db->select('tb_netinstr.urt');
+        $this->db->from('tb_netinstr');
+        $this->db->join('tb_po','tb_po.ind_po = concat(tb_netinstr.po,tb_netinstr.item,tb_netinstr.dis)','left');
+        $this->db->where('tb_netinstr.machno',$msno);
+        $this->db->order_by('dateplan desc');
+        $this->db->limit(50);
+        $query1 = $this->db->get_compiled_select();
+
+        $kolom = "Select * from (Select * from (".$query1.") r1 order by dateplan asc, urt asc) r2";
+        return $kolom;
+    }
     public function netplan($array){
         $query = $this->getnetplan($array['mesin']);
         // $cari = array('barang.kode','nama_barang','nama_kategori');
@@ -459,6 +472,143 @@ class Ponet_model extends CI_Model
         );
         // return $query." WHERE (".$cari.")".$order." LIMIT ".$limit." OFFSET ".$start;
         return json_encode($callback); // Convert array $callback ke json
+    }
+    public function netplangrap($array){
+        $query = $this->getnetplangrap($array['mesin']);
+        // $cari = array('barang.kode','nama_barang','nama_kategori');
+        $cari = array('po','insno');
+        $where = $array['filter'];
+        $isWhere = null;
+        // Ambil data yang di ketik user pada textbox pencarian
+        $search = htmlspecialchars($_POST['search']['value']);
+        // Ambil data limit per page
+        $limit = preg_replace("/[^a-zA-Z0-9.]/", '', "{$_POST['length']}");
+        // Ambil data start
+        $start =preg_replace("/[^a-zA-Z0-9.]/", '', "{$_POST['start']}"); 
+
+        if($where != null)
+        {
+            $setWhere = array();
+            foreach ($where as $key => $value)
+            {
+                if($key=='minus'){
+                    $setWhere[] = '(sumkgs < 0 OR sumpcs < 0)';
+                }else{
+                    if($key=='opminus'){
+                        $setWhere[] = '(sumkgs != ifnull(kgs_taking,0) OR sumpcs != ifnull(pcs_taking,0))';
+                    }else{
+                        $setWhere[] = $key."='".$value."'";
+                    }
+                }
+            }
+            $fwhere = implode(' AND ', $setWhere);
+
+            if(!empty($iswhere))
+            {
+                $sql = $this->db->query($query." WHERE  $iswhere AND ".$fwhere);
+            }else{
+                $sql = $this->db->query($query." WHERE ".$fwhere);
+            }
+            $sql_count = $sql->num_rows();
+
+            $cari = implode(" LIKE '%".$search."%' OR ", $cari)." LIKE '%".$search."%'";
+            
+            // Untuk mengambil nama field yg menjadi acuan untuk sorting
+            $order_field = $_POST['order'][0]['column']; 
+
+            // Untuk menentukan order by "ASC" atau "DESC"
+            // $order_ascdesc = $_POST['order'][0]['dir']; 
+            // $order = " ORDER BY ".$_POST['columns'][$order_field]['data']." ".$order_ascdesc;
+            $order = " ";
+
+            if(!empty($iswhere))
+            {
+                $sql_data = $this->db->query($query." WHERE $iswhere AND ".$fwhere." AND (".$cari.")".$order." LIMIT ".$limit." OFFSET ".$start);
+            }else{
+                $sql_data = $this->db->query($query." WHERE ".$fwhere." AND (".$cari.")".$order." LIMIT ".$limit." OFFSET ".$start);
+            }
+            if(isset($search))
+            {
+                if(!empty($iswhere))
+                {
+                    $sql_cari =  $this->db->query($query." WHERE $iswhere AND ".$fwhere." AND (".$cari.")");
+                }else{
+                    $sql_cari =  $this->db->query($query." WHERE ".$fwhere." AND (".$cari.")");
+                }
+                $sql_filter_count = $sql_cari->num_rows();
+            }else{
+                if(!empty($iswhere))
+                {
+                    $sql_filter = $this->db->query($query." WHERE $iswhere AND ".$fwhere);
+                }else{
+                    $sql_filter = $this->db->query($query." WHERE ".$fwhere);
+                }
+                $sql_filter_count = $sql_filter->num_rows();
+            }
+            $data = $sql_data->result_array();
+
+        }else{
+            if(!empty($iswhere))
+            {
+                $sql = $this->db->query($query." WHERE  $iswhere ");
+            }else{
+                $sql = $this->db->query($query);
+            }
+            $sql_count = $sql->num_rows();
+
+            $cari = implode(" LIKE '%".$search."%' OR ", $cari)." LIKE '%".$search."%'";
+            
+            // Untuk mengambil nama field yg menjadi acuan untuk sorting
+            $order_field = $_POST['order'][0]['column']; 
+
+            // Untuk menentukan order by "ASC" atau "DESC"
+            // $order_ascdesc = $_POST['order'][0]['dir']; 
+            // $order = " ORDER BY ".$_POST['columns'][$order_field]['data']." ".$order_ascdesc;
+            $order = " ";
+
+            if(!empty($iswhere))
+            {                
+                $sql_data = $this->db->query($query." WHERE $iswhere AND (".$cari.")".$order." LIMIT ".$limit." OFFSET ".$start);
+            }else{
+                $sql_data = $this->db->query($query." WHERE (".$cari.")".$order." LIMIT ".$limit." OFFSET ".$start);
+            }
+
+            if(isset($search))
+            {
+                if(!empty($iswhere))
+                {     
+                    $sql_cari =  $this->db->query($query." WHERE $iswhere AND (".$cari.")");
+                }else{
+                    $sql_cari =  $this->db->query($query." WHERE (".$cari.")");
+                }
+                $sql_filter_count = $sql_cari->num_rows();
+            }else{
+                if(!empty($iswhere))
+                {
+                    $sql_filter = $this->db->query($query." WHERE $iswhere");
+                }else{
+                    $sql_filter = $this->db->query($query);
+                }
+                $sql_filter_count = $sql_filter->num_rows();
+            }
+            $data = $sql_data->result_array();
+        }
+        $callback = array(    
+            'draw' => $_POST['draw'], // Ini dari datatablenya    
+            'recordsTotal' => $sql_count,    
+            'recordsFiltered'=>$sql_filter_count,    
+            'data'=>$data
+        );
+        // return $query." WHERE (".$cari.")".$order." LIMIT ".$limit." OFFSET ".$start;
+        return json_encode($callback); // Convert array $callback ke json
+    }
+    public function getinstr(){
+        $this->db->select('tb_netinstr.*,tb_po.stat_po');
+        $this->db->join('tb_po','tb_po.ind_po = concat(tb_netinstr.po,tb_netinstr.item,tb_netinstr.dis)','left');
+        $this->db->where('tb_netinstr.machno',98);
+        $this->db->where('year(dateplan)',2026);
+        $this->db->order_by('dateplan');
+        return $this->db->get('tb_netinstr');
     }
     public function uploaddok(){
         $this->load->library('upload');

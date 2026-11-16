@@ -2435,7 +2435,7 @@ class Akb extends CI_Controller
                     "jumlahSatuan" => (float) $bahanbaku['kgs'],
                     "kodeSatuanBarang" => $bahanbaku['kodebc'],
                     "kodeAsalBahanBaku" => $asalbar,
-                    "kodeBarang" => $bahanbaku['kode'],
+                    "kodeBarang" => trim($bahanbaku['po'])=='' ? $bahanbaku['kode'] : viewsku($bahanbaku['po'],$bahanbaku['item'],$bahanbaku['dis']),
                     "kodeDokAsal" => trim($bahanbaku['jns_bc']),
                     "kodeDokumen" => trim($bahanbaku['jns_bc']),
                     "kodeKantor" => "050500",
@@ -2452,7 +2452,7 @@ class Akb extends CI_Controller
                     "tanggalDaftarDokAsal" => $bahanbaku['tgl_bc'],
                     "tipeBarang" => "-",
                     "ukuranBarang" => "-",
-                    "uraianBarang" => $bahanbaku['nama_barang'],
+                    "uraianBarang" => trim($bahanbaku['po'])=='' ? $bahanbaku['nama_barang'] : spekpo($bahanbaku['po'],$bahanbaku['item'],$bahanbaku['dis']),
                 ];
                 $arraybahanbakutarif = [];
                 $tarifbm = 0;
@@ -2940,6 +2940,9 @@ class Akb extends CI_Controller
             'nobontr' => trim(strtoupper($_POST['nobontr'])),
             'id_barang' => $_POST['idbarang'],
             'id_header' => $_POST['idheader'],
+            'po' => $_POST['po'],
+            'item' => $_POST['item'],
+            'dis' => $_POST['dis'],
             'bm' => $_POST['bm'] == 'true' ? 5 : 0,
             'ppn' => $_POST['ppn'] == 'true' ? 11 : 0,
             'pph' => $_POST['pph'] == 'true' ? 2.5 : 0,
@@ -3443,6 +3446,7 @@ class Akb extends CI_Controller
             $sheet->setCellValue('A' . $numrow, $no);
             $sheet->setCellValue('B' . $numrow, $hs);
             $sheet->setCellValue('F' . $numrow, htmlspecialchars_decode($spekbarang));
+            $sheet->setCellValue('G' . $numrow, $sku);
             $sheet->setCellValue('H' . $numrow, $pcs);
             $sheet->setCellValue('I' . $numrow, $sat);
             $sheet->setCellValue('J' . $numrow, round($data['kgs'], 2));

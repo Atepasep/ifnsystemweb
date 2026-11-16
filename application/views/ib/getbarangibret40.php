@@ -260,7 +260,8 @@
         }
     });
      $("#keywordinputstok").on('keyup', function(e) {
-        if (e.key === 'Enter' || e.keyCode === 13) {
+         if (e.key === 'Enter' || e.keyCode === 13) {
+            // alert('masuk');
             $("#cariinputstok").click();
         }
     });
@@ -312,7 +313,7 @@
                 return false;
             }
         }
-    })
+    });
     $("#resetinputstok").click(function(){
         $("#po").val('');
         $("#item").val('');
@@ -450,114 +451,114 @@
             window.location.reload();
         }
     })
-    $("#keywordinputinvoice").on('keyup', function(e) {
-        if (e.key === 'Enter' || e.keyCode === 13) {
-            $("#keywordinputinvoice").click();
-        }
-    });
-    $(document).off().on('click','#keywordinputinvoice',function(){
-        var isi = $("#keywordinputinvoice").val().trim();
-        if(isi==''){
-            pesan('keyword harus di isi !','error');
-            return false;
-        }else{
-            if(isi.length >= 4){
-                $.ajax({
-                    dataType: "json",
-                    type: "POST",
-                    url: base_url + "ib/cariinvreturn",
-                    data: {
-                        key: $("#keywordinputinvoice").val(),
-                        buy: $("#id_buyer").val()
-                    },
-                    beforeSend: function(){
-                        $("#cariinputinvoice").html('Loading');
-                    },
-                    success: function(data) {
-                        $("#cariinputinvoice").html('Cari!');
-                        // if(data.jmlrek == 1){
-                        //     alert('Invoice ada !');
-                        // }else{
-                            // alert('Invoice ada Banyak !');
-                            $("#cariinv").addClass('hilang');
-                            $("#body-table-pilihinv").html(data.datagroup).show();
-                        // }
-                    },
-                    error: function(xhr, ajaxOptions, thrownError) {
-                        console.log(xhr.status);
-                        console.log(thrownError);
-                    }
-                });
-            }else{
-                pesan('Keyword minimal 4 huruf atau lebih','info');
-                return false;
-            }
-        }
-    })
-    $(document).on('click','#pilihbr',function(){
-        $.ajax({
-            dataType: "json",
-            type: "POST",
-            url: base_url + "ib/carinomorinv",
-            data: {
-                key: $(this).attr('rel'),
-            },
-            beforeSend: function(){
-                $("#cariinputinv").html('Loading');
-            },
-            success: function(data) {
-                $("#cariinputinv").html('Cari!');
-                $("#cariinv").addClass('hilang');
-                $("#tabelcariinvoice").addClass('hilang');
-                $("#tabelinvoice").removeClass('hilang');
-                $("#body-table-invoice").html(data.datagroup).show();
-            },
-            error: function(xhr, ajaxOptions, thrownError) {
-                console.log(xhr.status);
-                console.log(thrownError);
-            }
-        });
-    })
-    $("#resetinputinvoice").click(function(){
-        $("#resetinputinvoice").html('Loading ...');
-        window.location.href = base_url + "ib/isidokbc/" + $("#id_header").val()+'/1';
-    });
-    $("#simpaninputinvoice").click(function(){
-        var text = [];
-        // var text2 = [];
-        for (let i = 1; i < 1000; i++) {
-            if($("#cekbok"+i).is(":checked")){
-                text.push($("#cekbok"+i).attr('rel'));
-                // text2.push($("#input"+i).val());
-            }
-        }
-        var idhead = $("#id_header").val();
-        if(text.length > 0){
-            console.log(text);
-            $.ajax({
-                dataType: "json",
-                type: "POST",
-                url: base_url + "ib/simpaninvoicereturn",
-                data: {
-                    id: $("#id_header").val(),
-                    invasal: text,
-                },
-                beforeSend: function(){
-                    $("#simpaninputinvoice").html('Loading ...');
-                },
-                success: function (data) {
-                    // alert(data);
-                    // $('#modal-large-loading').modal('hide');
-                    // $("#jumlahcif"+iddetail).text(data['cif']);
-                    // $("#tomboleditbcasal"+iddetail).removeClass('btn-success');
-                    // $("#tomboleditbcasal"+iddetail).addClass('btn-primary');
-                    window.location.reload();
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    console.log(xhr.status);
-                    console.log(thrownError);
-                },
-            });
-        }
-    });
+    // $("#keywordinputinvoice").on('keyup', function(e) {
+    //     if (e.key === 'Enter' || e.keyCode === 13) {
+    //         $("#keywordinputinvoice").click();
+    //     }
+    // });
+    // $(document).off().on('click','#keywordinputinvoice',function(){
+    //     var isi = $("#keywordinputinvoice").val().trim();
+    //     if(isi==''){
+    //         pesan('keyword harus di isi !','error');
+    //         return false;
+    //     }else{
+    //         if(isi.length >= 4){
+    //             $.ajax({
+    //                 dataType: "json",
+    //                 type: "POST",
+    //                 url: base_url + "ib/cariinvreturn",
+    //                 data: {
+    //                     key: $("#keywordinputinvoice").val(),
+    //                     buy: $("#id_buyer").val()
+    //                 },
+    //                 beforeSend: function(){
+    //                     $("#cariinputinvoice").html('Loading');
+    //                 },
+    //                 success: function(data) {
+    //                     $("#cariinputinvoice").html('Cari!');
+    //                     // if(data.jmlrek == 1){
+    //                     //     alert('Invoice ada !');
+    //                     // }else{
+    //                         // alert('Invoice ada Banyak !');
+    //                         $("#cariinv").addClass('hilang');
+    //                         $("#body-table-pilihinv").html(data.datagroup).show();
+    //                     // }
+    //                 },
+    //                 error: function(xhr, ajaxOptions, thrownError) {
+    //                     console.log(xhr.status);
+    //                     console.log(thrownError);
+    //                 }
+    //             });
+    //         }else{
+    //             pesan('Keyword minimal 4 huruf atau lebih','info');
+    //             return false;
+    //         }
+    //     }
+    // })
+    // $(document).on('click','#pilihbr',function(){
+    //     $.ajax({
+    //         dataType: "json",
+    //         type: "POST",
+    //         url: base_url + "ib/carinomorinv",
+    //         data: {
+    //             key: $(this).attr('rel'),
+    //         },
+    //         beforeSend: function(){
+    //             $("#cariinputinv").html('Loading');
+    //         },
+    //         success: function(data) {
+    //             $("#cariinputinv").html('Cari!');
+    //             $("#cariinv").addClass('hilang');
+    //             $("#tabelcariinvoice").addClass('hilang');
+    //             $("#tabelinvoice").removeClass('hilang');
+    //             $("#body-table-invoice").html(data.datagroup).show();
+    //         },
+    //         error: function(xhr, ajaxOptions, thrownError) {
+    //             console.log(xhr.status);
+    //             console.log(thrownError);
+    //         }
+    //     });
+    // })
+    // $("#resetinputinvoice").click(function(){
+    //     $("#resetinputinvoice").html('Loading ...');
+    //     window.location.href = base_url + "ib/isidokbc/" + $("#id_header").val()+'/1';
+    // });
+    // $("#simpaninputinvoice").click(function(){
+    //     var text = [];
+    //     // var text2 = [];
+    //     for (let i = 1; i < 1000; i++) {
+    //         if($("#cekbok"+i).is(":checked")){
+    //             text.push($("#cekbok"+i).attr('rel'));
+    //             // text2.push($("#input"+i).val());
+    //         }
+    //     }
+    //     var idhead = $("#id_header").val();
+    //     if(text.length > 0){
+    //         console.log(text);
+    //         $.ajax({
+    //             dataType: "json",
+    //             type: "POST",
+    //             url: base_url + "ib/simpaninvoicereturn",
+    //             data: {
+    //                 id: $("#id_header").val(),
+    //                 invasal: text,
+    //             },
+    //             beforeSend: function(){
+    //                 $("#simpaninputinvoice").html('Loading ...');
+    //             },
+    //             success: function (data) {
+    //                 // alert(data);
+    //                 // $('#modal-large-loading').modal('hide');
+    //                 // $("#jumlahcif"+iddetail).text(data['cif']);
+    //                 // $("#tomboleditbcasal"+iddetail).removeClass('btn-success');
+    //                 // $("#tomboleditbcasal"+iddetail).addClass('btn-primary');
+    //                 window.location.reload();
+    //             },
+    //             error: function (xhr, ajaxOptions, thrownError) {
+    //                 console.log(xhr.status);
+    //                 console.log(thrownError);
+    //             },
+    //         });
+    //     }
+    // });
 </script>

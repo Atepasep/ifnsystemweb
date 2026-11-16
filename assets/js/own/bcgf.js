@@ -234,6 +234,9 @@ $("#updatebcgf").click(function () {
 			punya: milik,
 			exdo: $("#exdo").val()
 		},
+		beforeSend: function(){
+			$("#updatebcgf").html('Loading ..');
+		},
 		success: function (data) {
 			// alert(data);
 			window.location.reload();

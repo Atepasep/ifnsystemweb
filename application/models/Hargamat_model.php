@@ -108,9 +108,10 @@ class Hargamat_model extends CI_Model
     }
     public function getdataartikel()
     {
-        $this->db->select('*');
+        $this->db->select('tb_hargamaterial.*,barang.kode,barang.nama_barang,tb_po.spek');
         $this->db->from('tb_hargamaterial');
         $this->db->join('barang', 'barang.id = tb_hargamaterial.id_barang', 'left');
+        $this->db->join('tb_po', 'tb_po.ind_po = concat(tb_hargamaterial.po,tb_hargamaterial.item,tb_hargamaterial.dis)', 'left');
         $this->db->group_by('tb_hargamaterial.id_barang');
         $this->db->order_by('barang.nama_barang', 'ASC');
         return $this->db->get();

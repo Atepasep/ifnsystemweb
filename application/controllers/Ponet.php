@@ -136,15 +136,29 @@ class Ponet extends CI_Controller
     {
         $this->ponetmodel->updatefoto_baru();
     }
-    public function netplan($rekpo=0,$msno=0){
-        $header['header'] = 'other';
-        $data['data'] = $this->ponetmodel->datamesin($msno);
-        $data['maxrek'] = $this->ponetmodel->getmaxminmesin();
-        $footer['data'] = $this->helpermodel->getdatafooter()->row_array();
-        $footer['fungsi'] = 'netplan';
-        $this->load->view('layouts/header', $header);
-        $this->load->view('ponet/netplan',$data);
-        $this->load->view('layouts/footer',$footer);
+    public function netplan($rekpo=0,$msno=0,$mode=''){
+        if($mode==''){
+            $header['header'] = 'other';
+            $data['data'] = $this->ponetmodel->datamesin($msno);
+            $data['maxrek'] = $this->ponetmodel->getmaxminmesin();
+            $data['plan'] = $rekpo.'/'.$msno.'/1';
+            $footer['data'] = $this->helpermodel->getdatafooter()->row_array();
+            $footer['fungsi'] = 'netplan';
+            $this->load->view('layouts/header', $header);
+            $this->load->view('ponet/netplan',$data);
+            $this->load->view('layouts/footer',$footer);
+        }else{
+            $header['header'] = 'other';
+            $data['data'] = $this->ponetmodel->datamesin($msno);
+            $data['maxrek'] = $this->ponetmodel->getmaxminmesin();
+            $data['plan'] = $rekpo.'/'.$msno;
+            $data['master'] = $this->ponetmodel->getinstr();
+            $footer['data'] = $this->helpermodel->getdatafooter()->row_array();
+            $footer['fungsi'] = 'netplangrap';
+            $this->load->view('layouts/header', $header);
+            $this->load->view('ponet/netplangrap',$data);
+            $this->load->view('layouts/footer',$footer);
+        }
     }
     public function getdatainstruksi(){
         $arrayu = [];
@@ -152,6 +166,13 @@ class Ponet extends CI_Controller
         $arrayu['mesin'] = $filter_mesin;
         $arrayu['filter'] = [];
         echo $this->ponetmodel->netplan($arrayu);
+    }
+    public function getdatainstruksigrap(){
+        $arrayu = [];
+        $filter_mesin = $_POST['mesin'];
+        $arrayu['mesin'] = $filter_mesin;
+        $arrayu['filter'] = [];
+        echo $this->ponetmodel->netplangrap($arrayu);
     }
     public function viewdatalab($id){
         $data['ceklab'] = $this->ponetmodel->getlab($id);   

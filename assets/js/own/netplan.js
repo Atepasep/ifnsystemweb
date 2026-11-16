@@ -89,6 +89,12 @@ $(document).ready(function () {
 			 },
 			{ "data": "dateplan",
 				"className": "font-kecil",
+				render: function (data, type, row) {
+					if (row.stat_po != 1) {
+						return `<span class="text-pink">${data}</span>`;
+					}
+					return data;
+				}
 			 },
 			 { "data": "po",
 				"className": "font-kecil text-nowrap",

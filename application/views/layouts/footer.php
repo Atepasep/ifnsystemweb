@@ -67,7 +67,7 @@
 		});
 	</script>
 <?php } ?>
-<?php $updatejs = '1775880165'; ?>
+<?php $updatejs = '1775880167'; ?>
 <!-- Custom JS -->
 <script src="<?= base_url(); ?>assets/js/myscript.js?<?= $updatejs; ?>"></script>
 <!-- <script src="<?= base_url(); ?>assets/js/refresh.js"></script> -->
@@ -172,6 +172,9 @@
 <?php } ?>
 <?php if (isset($fungsi) && $fungsi == 'netplan') { ?>
 	<script src="<?= base_url(); ?>assets/js/own/netplan.js?<?= $updatejs; ?>"></script>
+<?php } ?>
+<?php if (isset($fungsi) && $fungsi == 'netplangrap') { ?>
+	<script src="<?= base_url(); ?>assets/js/own/netplangrap.js?<?= $updatejs; ?>"></script>
 <?php } ?>
 <?php if (isset($fungsi) && $fungsi == 'sublok') { ?>
 <script src="<?= base_url(); ?>assets/js/own/webcam/qrcodelib.js?<?= $updatejs ?>"></script>

@@ -208,6 +208,8 @@ class bcwipmodel extends CI_Model
         $this->db->or_where('tb_header.kode_dok','T');
         $this->db->group_end();
         $this->db->where('tb_header.ok_valid',1);
+        $this->db->where('tb_header.no_inv',0);
+        $this->db->where('tb_header.bc_makloon',0);
         // $this->db->where('tb_detail.po','KI-6391');
         // $this->db->where('tb_detail.nobale','58');
         // $this->db->group_by('po,item,dis,id_barang,insno,nobontr,nobale,xnomor_bc,stok,exnet');
@@ -253,6 +255,8 @@ class bcwipmodel extends CI_Model
         $this->db->where('tb_header.tgl <= ',tglmysql($tglakhir));
         $this->db->where('tb_header.kode_dok','T');
         $this->db->where('tb_header.data_ok',1);
+        $this->db->where('tb_header.no_inv',0);
+        $this->db->where('tb_header.bc_makloon',0);
         // $this->db->where('tb_header.ok_valid',1);
         // $this->db->where('tb_detailgen.po','KI-6391');
         // $this->db->where('tb_detailgen.nobale','58');
@@ -298,6 +302,7 @@ class bcwipmodel extends CI_Model
         $this->db->where('tb_header.kode_dok','ADJ');
         $this->db->where('tb_header.data_ok',1);
         $this->db->where('tb_header.ok_valid',1);
+        $this->db->where('tb_header.no_inv',0);
         // $this->db->where('tb_detail.po','KI-6391');
         // $this->db->where('tb_detail.nobale','58');
         // $this->db->group_by('po,item,dis,id_barang,insno,nobontr,nobale,xnomor_bc,stok,exnet');

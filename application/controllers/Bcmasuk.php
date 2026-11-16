@@ -213,8 +213,13 @@ class Bcmasuk extends CI_Controller
                             $subtotal_idr = 352439;
                             $subtotal_usd = 19.75;   
                         }else{
-                            $subtotal_idr = round(($harga_idr*$pembagi) * ($pengali/$pembagi),2);
-                            $subtotal_usd = round($harga_usd * $pengali,2);
+                            if($data['rtn']==1){
+                                $subtotal_idr = $data['harga_satuan']*$pengali; 
+                                $subtotal_usd = round((empty($data['kurs_usd']) ? 0 : $data['kurs_usd']) * $data['harga'],2);
+                            }else{
+                                $subtotal_idr = round(($harga_idr*$pembagi) * ($pengali/$pembagi),2);
+                                $subtotal_usd = round($harga_usd * $pengali,2);
+                            }
                         }
                     }
                 }else{

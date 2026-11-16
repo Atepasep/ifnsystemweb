@@ -153,8 +153,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                     $jumlahpersen = 0;
                                     foreach ($detail->result_array() as $deta) : $no++;
                                         $jumlahpersen += $deta['persen']; $warna = $deta['id_kategori']!='8189' ? 'text-orange' : ''; ?>
+                                        <?php $spek = trim($deta['po'])!='' ? $deta['spek'] : $deta['nama_barang']; ?>
+                                        <?php $sku = trim($deta['po'])!='' ? viewsku($deta['po'],$deta['item'],$deta['dis']) : $deta['kode']; ?>
                                         <tr>
-                                            <td class="line-11 <?= $warna ?>"><span class="font-kecil text-teal"><?= $deta['kode'] ?></span><br><?= $deta['nama_barang'] ?></td>
+                                            <td class="line-11 <?= $warna ?>"><span class="font-kecil text-teal"><?= $sku ?></span><br><?= $spek ?></td>
                                             <td class="font-11"><?= $deta['nobontr'] ?></td>
                                             <td class="text-right"><?= rupiah($deta['persen'], 6) ?></td>
                                             <td class="text-right"><?= rupiah($deta['persen_sm'], 6) ?></td>

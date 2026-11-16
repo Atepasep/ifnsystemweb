@@ -60,6 +60,9 @@ $("#updatebcmasuk").click(function () {
 			jns: jnsbc,
 			nopen: carinopen,
 		},
+		beforeSend: function(){
+			$("#updatebcmasuk").html('Loading ..');
+		},
 		success: function (data) {
 			// alert(data);
 			window.location.reload();

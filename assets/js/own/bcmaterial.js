@@ -239,6 +239,9 @@ $("#updatebcmaterial").click(function () {
 			punya: milik,
 			katbar: kat
 		},
+		beforeSend: function(){
+			$("#updatebcmaterial").html('Loading ..');
+		},
 		success: function (data) {
 			// alert(data);
 			window.location.reload();

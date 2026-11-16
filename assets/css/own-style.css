@@ -528,6 +528,15 @@
 .kolomproduksi:hover {
   background-color: #f2f2f2 !important;
 }
+.day-cell {
+    width: 11px;
+    height: 11px;
+    border-radius: 2px;
+    outline: 1px solid rgba(27, 31, 36, 0.06);
+    outline-offset: -1px;
+    cursor: pointer;
+    transition: transform 0.1s ease, outline-color 0.1s ease;
+}
 /*
 .kolomproduksi .card #kolomkondisi {
   z-index: 999;

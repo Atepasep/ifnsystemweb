@@ -91,7 +91,7 @@
                                             </a>
                                         </div>
                                         <div class="bg-red mt-1">
-                                            <a href="#" class="btn btn-sm btn-yellow w-100 text-black"><i class="fa fa-bar-chart mr-2" aria-hidden="true"></i>Graph</a>
+                                            <a href="<?= base_url().'ponet/netplan/'.$plan ?>" class="btn btn-sm btn-yellow w-100 text-black"><i class="fa fa-bar-chart mr-2" aria-hidden="true"></i>Graph Plan</a>
                                         </div>
                                     </div>
                                 </div>
