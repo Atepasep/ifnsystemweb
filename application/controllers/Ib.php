@@ -1423,7 +1423,7 @@ class Ib extends CI_Controller
         }
         $arraypungutan = [];
         $pungutanarray = [
-            "kodeFasilitasTarif" => "3",
+            "kodeFasilitasTarif" => $data['rtn']==1 ? "6" : "3",
             "kodeJenisPungutan" => "PPN",
             "nilaiPungutan" => round($jumlahfasilitas, 0)
         ];

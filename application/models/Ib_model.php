@@ -280,7 +280,7 @@ class Ib_model extends CI_Model
             'id_perusahaan' => IDPERUSAHAAN,
             'id_buyer' => $buy,
             'kode_dok' => 'IB',
-            'dept_id' => 'SU',
+            'dept_id' => $this->session->userdata('depttuju')=='GF' ? 'CU' : 'SU',
             'dept_tuju' => $this->session->userdata('depttuju'),
             'nomor_dok' => $nomordok,
             'tgl' => $date,

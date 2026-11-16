@@ -40,10 +40,12 @@
                     </thead>
                     <tbody class="table-tbody" id="body-table" style="font-size: 12px !important;">
                         <?php if(count($hasil['ok']) > 0) { $jumlahpcs=0;$jumlahkgs=0; foreach ($hasil['ok'] as $databom ) { ?>
+                        <?php $kode = trim($databom['po'])=='' ? $databom['id_barang'] : viewsku($databom['po'],$databom['item'],$databom['dis']); ?>
+                        <?php $spek = trim($databom['po'])=='' ? namaspekbarang($databom['id_barang']) : spekpo($databom['po'],$databom['item'],$databom['dis']); ?>
                             <tr>
                                 <td><?= $databom['noe']; ?></td>
-                                <td><?= $databom['id_barang']; ?></td>
-                                <td><?= namaspekbarang($databom['id_barang']); ?></td>
+                                <td><?= $kode; ?></td>
+                                <td><?= $spek; ?></td>
                                 <td><?= $databom['nobontr']; ?></td>
                                 <td class="text-right"><?= rupiah($databom['pcs_asli'],0); ?></td>
                                 <td class="text-right"><?= rupiah($databom['kgs_asli'],5); ?></td>

@@ -924,17 +924,19 @@
                                             $jmppnlokal +=  $detbom['ppn_rupiah'];
                                         }
                                     }
+                                    $spek = trim($detbom['po'])=='' ? $detbom['nama_barang'] : spekpo($detbom['po'],$detbom['item'],$detbom['dis']);
+                                    $sku = trim($detbom['po'])=='' ? $detbom['kode'] : viewsku($detbom['po'],$detbom['item'],$detbom['dis']);
                                 ?>
                                     <tr>
                                         <td><?= $detbom['seri_barang'] . '.' . $no; ?></td>
                                         <td class="line-12">
-                                            <?= $detbom['nama_barang']; ?><br>
+                                            <?= $spek; ?><br>
                                             <span style="font-size:12px;" class="text-pink"><?= $detbom['nobontr']; ?></span>
                                             <span style="font-size:9px;" class="badge bg-blue text-blue-fg <?= $hitungbm; ?>" title="<?= rupiah($detbom['bm_rupiah'], 0) ?>">BM</span>
                                             <span style="font-size:9px;" class="badge bg-yellow text-black <?= $hitungppn; ?>" title="<?= rupiah($detbom['ppn_rupiah'], 0) ?>">PPN <?= $lokal40 ?></span>
                                             <span style="font-size:9px;" class="badge bg-azure text-azure-fg <?= $hitungpph; ?>" title="<?= rupiah($detbom['pph_rupiah'], 0) ?>">PPH</span>
                                         </td>
-                                        <td><?= $detbom['kode']; ?></td>
+                                        <td><?= $sku; ?></td>
                                         <td><?= $detbom['nohs']; ?></td>
                                         <td class="text-teal"><?= $detbom['negarahamat']; ?></td>
                                         <td class="text-right"><?= rupiah($detbom['pcs'], 2); ?></td>

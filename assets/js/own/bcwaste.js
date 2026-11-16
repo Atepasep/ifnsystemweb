@@ -235,6 +235,9 @@ $("#updatebcwaste").click(function () {
 			punya: milik,
 			exdo: kat
 		},
+		beforeSend: function(){
+			$("#updatebcwaste").html('Loading ..');
+		},
 		success: function (data) {
 			// alert(data);
 			window.location.reload();

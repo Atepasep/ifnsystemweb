@@ -983,7 +983,7 @@ class Helper_model extends CI_Model
             $hasil = $this->db->get('ref_bom');
             if ($hasil->num_rows() > 0) {
                 $cekhasil = $hasil->row_array();
-                $this->db->select("id_barang,nobontr,persen");
+                $this->db->select("id_barang,nobontr,persen,po,item,dis");
                 $this->db->from('ref_bom_detail');
                 $this->db->where('id_bom', $cekhasil['id']);
                 $this->db->where('persen >', 0);
@@ -1053,7 +1053,7 @@ class Helper_model extends CI_Model
         $hasil = $this->db->get('ref_bom_cost');
         if ($hasil->num_rows() > 0) {
             $cekhasil = $hasil->row_array();
-            $this->db->select("id_barang,nobontr,persen");
+            $this->db->select("id_barang,nobontr,persen,po,item,dis");
             $this->db->from('ref_bom_detail_cost');
             $this->db->where('id_bom', $cekhasil['id']);
             $this->db->where('persen >', 0);
@@ -1068,9 +1068,9 @@ class Helper_model extends CI_Model
                 if ($nor == $jmlrekdet) {
                     $tambahnya = $kgs - $jmlkgsdet;
                 }
-                $dataxspin['po'] = $po;
-                $dataxspin['item'] = $item;
-                $dataxspin['dis'] = $dis;
+                $dataxspin['po'] = $detbom['po']; //$po;
+                $dataxspin['item'] = $detbom['item']; //$item;
+                $dataxspin['dis'] = $detbom['dis']; //$dis;
                 $dataxspin['id_barang'] =  $detbom['id_barang'];
                 $dataxspin['insno'] = $insno;
                 $dataxspin['nobontr'] = $detbom['nobontr'];

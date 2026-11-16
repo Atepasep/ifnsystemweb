@@ -60,6 +60,9 @@ $("#updatebckeluar").click(function () {
 			jns: jnsbc,
 			nopen: carinopen,
 		},
+		beforeSend: function(){
+			$("#updatebckeluar").html('Loading ..');
+		},
 		success: function (data) {
 			// alert(data);
 			window.location.reload();

@@ -180,7 +180,8 @@ class Hargamat extends CI_Controller
         foreach ($list as $field) {
             // $tampil = $field->weight == 0 ? $field->qty : $field->weight;
             $tampil = $field->id_satuan == 22 ? $field->weight : $field->qty;
-            $barang = $field->id_barang == 0 ? $field->remark . ' (ID not found)' : $field->nama_barang;
+            $barang = $field->id_barang == 0 ? ($field->po !='' ? spekpo($field->po,$field->item,$field->dis) : $field->remark . ' (ID not found)' )  : $field->nama_barang;
+            $sku = trim($field->po) == '' ? $field->kodebarang : viewsku($field->po,$field->item,$field->dis);
             $nobc = '';
             if (trim($field->nomor_bc) !=  '') {
                 $nobc = 'BC ' . trim($field->jns_bc) . '-' . $field->nomor_bc;
@@ -188,7 +189,7 @@ class Hargamat extends CI_Controller
             $idrprice = (float) $field->price + (float) $field->landing_ch; 
             $no++;
             $row = array();
-            $row[] = '<span class="font-kecil text-teal">'.$field->kodebarang.'</span><br>'.$barang;
+            $row[] = '<span class="font-kecil text-teal">'.$sku.'</span><br>'.$barang;
             $row[] = $field->kodesatuan;
             $row[] = tglmysql($field->tgl);
             $row[] = $field->kode_faktur_pajak;

@@ -972,7 +972,7 @@ class Akb_model extends CI_Model
     }
     public function getdetbom($id)
     {
-        $subquery = $this->db->select('*,concat(trim(nobontr),id_barang) as nobar')
+        $subquery = $this->db->select('*,concat(trim(tb_hargamaterial.nobontr),id_barang,trim(po),trim(item),dis) as nobar')
             ->from('tb_hargamaterial')
             ->group_by('id_barang,nobontr')
             ->get_compiled_select();
@@ -981,11 +981,12 @@ class Akb_model extends CI_Model
         $this->db->select('tbhargamat.price as hamat_harga,tbhargamat.weight as hamat_weight,tbhargamat.qty as hamat_qty,tbhargamat.kurs  as hamat_kurs,tbhargamat.cif as hamat_cif,tbhargamat.mt_uang,tbhargamat.kode_negara as negarahamat,barang.nohs as hsbarang');
         $this->db->from('tb_bombc');
         $this->db->join('barang', 'barang.id = tb_bombc.id_barang', 'left');
+        $this->db->join('tb_po', 'tb_po.ind_po = CONCAT(tb_bombc.po,tb_bombc.item,tb_bombc.dis)', 'left');
         $this->db->join('tb_header', 'tb_header.nomor_dok = tb_bombc.nobontr', 'left');
         $this->db->join('satuan', 'satuan.id = barang.id_satuan', 'left');
         $this->db->join('supplier', 'supplier.id = tb_header.id_pemasok', 'left');
         $this->db->join('ref_negara', 'ref_negara.kode_negara = supplier.kode_negara', 'left');
-        $this->db->join("($subquery) as tbhargamat", 'tbhargamat.nobar = concat(trim(tb_bombc.nobontr),tb_bombc.id_barang)', 'left');
+        $this->db->join("($subquery) as tbhargamat", 'tbhargamat.nobar = concat(trim(tb_bombc.nobontr),tb_bombc.id_barang,trim(tb_bombc.po),trim(tb_bombc.item),tb_bombc.dis)', 'left');
         $this->db->where('id_header', $id);
         // $this->db->order_by('id_barang','nobontr ASC');
         $this->db->group_by('tb_bombc.id');
@@ -1168,11 +1169,11 @@ class Akb_model extends CI_Model
     }
     public function getdetailbahanbaku($idheader, $seri)
     {
-        $this->db->select('tb_bombc.*,tb_hargamaterial.cif as hamat_cif,satuan.kodebc,tb_hargamaterial.nomor_aju,tb_hargamaterial.tgl_bc,tb_hargamaterial.nomor_bc,barang.nohs,barang.nama_barang,barang.kode,tb_hargamaterial.seri_barang as hamat_seri');
+        $this->db->select('tb_bombc.*,tb_hargamaterial.cif as hamat_cif,IFNULL(satuan.kodebc,22) as kodebc,tb_hargamaterial.nomor_aju,tb_hargamaterial.tgl_bc,tb_hargamaterial.nomor_bc,barang.nohs,barang.nama_barang,barang.kode,tb_hargamaterial.seri_barang as hamat_seri');
         $this->db->from('tb_bombc');
         $this->db->join('barang', 'barang.id = tb_bombc.id_barang', 'left');
         $this->db->join('satuan', 'satuan.id = barang.id_satuan', 'left');
-        $this->db->join('tb_hargamaterial', 'CONCAT(TRIM(tb_hargamaterial.nobontr),tb_hargamaterial.id_barang) = CONCAT(TRIM(tb_bombc.nobontr),tb_bombc.id_barang)', 'left');
+        $this->db->join('tb_hargamaterial', 'CONCAT(TRIM(tb_hargamaterial.nobontr),tb_hargamaterial.id_barang,trim(tb_hargamaterial.po),trim(tb_hargamaterial.item),tb_hargamaterial.dis) = CONCAT(TRIM(tb_bombc.nobontr),tb_bombc.id_barang,trim(tb_bombc.po),trim(tb_bombc.item),tb_bombc.dis)', 'left');
         $this->db->where('tb_bombc.seri_barang', $seri);
         $this->db->where('tb_bombc.id_header', $idheader);
         return $this->db->get();
@@ -1271,6 +1272,9 @@ class Akb_model extends CI_Model
                     'id_barang' => $detail['id_barang'],
                     'seri_barang' => $no,
                     'nobontr' => $detail['nobontr'],
+                    'po' => $data['po'],
+                    'item' => $tata['item'],
+                    'dis' => $data['dis'],
                     'kgs' => round($detail['kgs'], 2),
                     'pcs' => round($detail['kgs'],)
                 ];
@@ -1285,6 +1289,9 @@ class Akb_model extends CI_Model
                         'id_barang' => $hasilshowbom['id_barang'],
                         'seri_barang' => $hasilshowbom['noe'],
                         'nobontr' => $hasilshowbom['nobontr'],
+                        'po' => $hasilshowbom['po'],
+                        'item' => $hasilshowbom['item'],
+                        'dis' => $hasilshowbom['dis'],
                         'kgs' => round($hasilshowbom['kgs_asli'], 2),
                         'pcs' => $hasilshowbom['pcs_asli']
                     ];

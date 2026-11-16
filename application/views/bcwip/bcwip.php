@@ -80,18 +80,55 @@ defined('BASEPATH') or exit('No direct script access allowed');
                     <input class="form-check-input" type="checkbox" id="dataneh">
                     <span class="form-check-label font-bold">View Data Tidak Sesuai</span>
                   </label>
+                  <hr class="m-1">
+                  <div>
+                    <input type="text" id="paramload" class="hilang" value="<?= $this->session->userdata('currdept'); ?>">
+                    <div class="text-blue font-bold mt-2 ">Jumlah Rec : <span id="jumlahrekod" style="font-weight: normal;">Loading ..</span></div>
+                    <div class="text-blue font-bold">Jumlah Pcs : <span id="jumlahpcs" style="font-weight: normal;"><?= $this->session->userdata('jumlahpc'); ?></span></div>
+                    <div class="text-blue font-bold">Jumlah Kgs : <span id="jumlahkgs" style="font-weight: normal;">Loading ..</span></div>
+                  </div>
                 </div>
                 <div class="col-6 font-kecil">
-                  <input type="text" id="paramload" class="hilang" value="<?= $this->session->userdata('currdept'); ?>">
-                  <div class="text-blue font-bold mt-2 ">Jumlah Rec : <span id="jumlahrekod" style="font-weight: normal;">Loading ..</span></div>
-                  <div class="text-blue font-bold">Jumlah Pcs : <span id="jumlahpcs" style="font-weight: normal;"><?= $this->session->userdata('jumlahpc'); ?></span></div>
-                  <div class="text-blue font-bold">Jumlah Kgs : <span id="jumlahkgs" style="font-weight: normal;">Loading ..</span></div>
                   <div id="rekapopname" class="hilang">
-                  <hr class="m-1">
-                  <h5 class="m-0">Rekap Opname</h5>
-                  <div class="text-secondary font-bold">Jumlah Pcs : <span id="jumlahpcsopname" style="font-weight: normal;">Loading ..</span></div>
-                  <div class="text-secondary font-bold">Jumlah Kgs : <span id="jumlahkgsopname" style="font-weight: normal;">Loading ..</span></div>
+                    <hr class="m-1">
+                    <h5 class="m-0">Rekap Opname</h5>
+                    <div class="text-secondary font-bold">Jumlah Pcs : <span id="jumlahpcsopname" style="font-weight: normal;">Loading ..</span></div>
+                    <div class="text-secondary font-bold">Jumlah Kgs : <span id="jumlahkgsopname" style="font-weight: normal;">Loading ..</span></div>
                   </div>
+                  <label class="bg-red-lt my-0 py-1 px-2 font-bold w-100"><span class="text-black">Rekap Data</span></label>
+                  <table class="table table-bordered m-0">
+                    <thead class="bg-primary-lt">
+                      <tr>
+                        <th class="text-center text-black">Unit</th>
+                        <th class="text-center text-black">S.Awal</th>
+                        <th class="text-center text-black">IN</th>
+                        <th class="text-center text-black">OUT</th>
+                        <th class="text-center text-black">ADJ</th>
+                        <th class="text-center text-black">S.Akhir</th>
+                        <th class="text-center text-black">SO</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-tbody">
+                      <tr class="p-0">
+                        <td class="font-bold">PCS</td>
+                        <td class="text-right" id="awalpcs">Loading..</td>
+                        <td class="text-right" id="inpcs">Loading..</td>
+                        <td class="text-right" id="outpcs">Loading..</td>
+                        <td class="text-right" id="adjpcs">Loading..</td>
+                        <td class="text-right" id="xjumlahpcs">Loading..</td>
+                        <td class="text-right text-cyan" id="sopcs">Loading..</td>
+                      </tr>
+                      <tr>
+                        <td class="font-bold">KGS</td>
+                        <td class="text-right" id="awalkgs">Loading..</td>
+                        <td class="text-right" id="inkgs">Loading..</td>
+                        <td class="text-right" id="outkgs">Loading..</td>
+                        <td class="text-right" id="adjkgs">Loading..</td>
+                        <td class="text-right" id="xjumlahkgs">Loading..</td>
+                        <td class="text-right text-cyan" id="sokgs">Loading..</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
                 <div class="col-3">
                   <div class="mb-0">

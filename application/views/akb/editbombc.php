@@ -3,6 +3,9 @@
         <div class="col-12 mb-1">
             <input type="text" name="id" id="id" class="hilang" value="<?= $detail['id']; ?>">
             <input type="text" name="id_header" id="id_header" class="hilang" value="<?= $detail['id_header']; ?>">
+            <input type="text" name="po" id="po" class="hilang" value="<?= $detail['po']; ?>">
+            <input type="text" name="item" id="item" class="hilang" value="<?= $detail['item']; ?>">
+            <input type="text" name="dis" id="dis" class="hilang" value="<?= $detail['dis']; ?>">
             <div class="row">
                 <div class="col-9">
                     <div class="row mb-1">
@@ -89,6 +92,9 @@
                 id: $("#id").val(),
                 idheader: $("#id_header").val(),
                 nobontr: $("#nobontr").val(),
+                po: $("#po").val(),
+                item: $("#item").val(),
+                dis: $("#dis").val(),
                 idbarang: $("#id_barang").val(),
                 bm: cekbm,
                 bmt: cekbmt,
