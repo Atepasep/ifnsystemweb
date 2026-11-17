@@ -98,19 +98,37 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 mt-2">
+                    <div class="col-12 mb-1">
+                        <div class="row mb-1">
+                            <div class="col-4 mb-1"></div>
+                            <div class="col-6 mb-1"></div>
+                            <div class="col-2 font-kecil mb-1">
+                                <div class="ms-auto">
+                                    <div class="mb-1 font-kecil">
+                                        <!-- <label class="form-label">Input group</label> -->
+                                        <div class="input-group my-1 font-kecil">
+                                            <input type="number" class="form-control font-kecil font-bold" placeholder="Tahun" value="<?= date('Y') ?>">
+                                            <button class="btn btn-success font-kecil" type="button">Apply !</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="m-0">
+                    </div>
+                    <div class="col-12 mt-2 oveflow-auto">
                         <!-- <h3 class="mb-1">List Instruksi</h3>
                         <hr class="m-0"> -->
                         <div class="overflow-auto">
-                            <table id="tabelnya" class="table order-column table-hover table-bordered mt-2 nowrap" style="width: 100% !important; border-collapse: collapse;">
+                            <table id="tabelnya" class="table order-column table-hover table-bordered mt-2">
                                 <thead class="sticky-top">
                                     <tr class="sticky-top text-left">
-                                        <th class="text-center">Plan</th>
-                                        <th class="text-center">SKU</th>
-                                        <th class="text-center">Ins</th>
-                                        <th class="text-center">Stat PP</th>
-                                        <th class="text-center">Stat NT</th>
-                                        <th class="text-center">X</th>
+                                        <th class="text-center text-nowrap">Plan</th>
+                                        <th class="text-center text-nowrap">SKU</th>
+                                        <th class="text-center text-nowrap">Ins</th>
+                                        <th class="text-center text-nowrap">Stat PP</th>
+                                        <th class="text-center text-nowrap">Stat NT</th>
+                                        <th class="text-center text-nowrap">#</th>
                                         <th class="" colspan="4">01-XXXX</th>
                                         <th class="" colspan="4">02-XXXX</th>
                                         <th class="" colspan="4">03-XXXX</th>
@@ -133,8 +151,8 @@
                                         <?php $statdescn = trim($mst['descn'])=='' ? '' : (trim($mst['descn'])=='FINISHED' ? '<span class="badge bg-blue text-blue-fg">'.$mst['descn'].'</span>' : '<span class="badge bg-orange text-black">'.$mst['descn'].'</span>') ?>
                                             <tr>
                                                 <td class="font-kecil <?= $statpo ?>"><?= $mst['dateplan'] ?></td>
-                                                <td class="font-kecil"><?= viewsku($mst['po'],$mst['item'],$mst['dis']) ?></td>
-                                                <td class="font-kecil"><?= $mst['insno'] ?></td>
+                                                <td class="font-kecil text-nowrap"><?= viewsku($mst['po'],$mst['item'],$mst['dis']) ?></td>
+                                                <td class="font-kecil text-nowrap"><?= $mst['insno'] ?></td>
                                                 <td class="font-kecil"><?= $statdesc ?></td>
                                                 <td class="font-kecil"><?= $statdescn ?></td>   
                                                 <?php $persen1 = ceil(date('d', strtotime($mst['dateplan']))/7.75)*1; ?>
@@ -144,9 +162,12 @@
                                                 <?php $bulan2 = date('m', strtotime($tglakhir))*4; ?>
                                                 <?php $awal = ($persen1+$bulan)-4;  ?>
                                                 <?php $akhir = ($persen2+$bulan2)-4;  ?>
-                                                <td class="text-center font-kecil"><?= $mst['day'] ?></td>
+                                                <td class="text-center font-kecil" title="Day Plan NT"><?= $mst['day'] ?></td>
                                                 <?php for ($y=1; $y <= 48 ; $y++) {  ?>
-                                                    <td title="Mg <?= $y%4==0 ? 4 : $y%4 ?> Th XXXX" style="<?= $awal == $y ? 'background-color : green; border-right-color : green;' : ''; ?><?= $akhir == $y ? 'background-color : green; border-right-color : green;' : ''; ?>"></td>
+                                                    <td class="text-center" title="Mg Ke <?= $y%4==0 ? 4 : $y%4 ?>&#10;<?= namabulan($bulan/4                                               ) ?> XXXX" style="padding:0 !important;min-width: 22px;<?= $awal == $y ? 'background-color : green; border-right-color : green;' : ''; ?><?= $awal < $y && $y < $akhir ? 'background-color : green; border-right-color : green;' : ''; ?><?= $akhir == $y ? 'background-color : green; border-right-color : green;' : ''; ?>">
+                                                        <hr class="mt-2 w-100" style="border-top: 5px solid #FF0000; margin-bottom: 4px;">
+                                                        <hr class="m-0" style="border-top: 5px solid blue;">
+                                                    </td>
                                                 <?php } ?>
                                             </tr>
                                         <?php endforeach; ?>

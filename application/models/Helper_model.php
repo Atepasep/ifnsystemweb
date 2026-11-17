@@ -970,14 +970,16 @@ class Helper_model extends CI_Model
             $cekkatbarang = $this->db->get_where('barang',['id' => $idbarang])->row_array();
             //Mengecek kategori barang RAW MATERIAL atau SUB MATERIAL
         }
-        if(trim($cekkatbarang['id_kategori'])!='8189' || trim($cekkatbarang['id_kategori'])!='6319'){
+        $arraylangsung = ['8189','6319','7460'];
+        // if(trim($cekkatbarang['id_kategori'])!='8189' && trim($cekkatbarang['id_kategori'])!='6319' && trim($cekkatbarang['id_kategori'])!='7460'){
+        if(!in_array($cekkatbarang['id_kategori'],$arraylangsung)){
             $datakondisi = [
                 'trim(po)' => trim($po),
                 'trim(item)' => trim($item),
                 'dis' => $dis,
                 'id_barang' => $idbarang,
                 'trim(insno)' => trim($insno),
-                'trim(nobontr)' => trim($nobontr)
+                'Xtrim(nobontr)' => trim($nobontr)
             ];
             $this->db->where($datakondisi);
             $hasil = $this->db->get('ref_bom');
@@ -998,9 +1000,15 @@ class Helper_model extends CI_Model
                     if ($nor == $jmlrekdet) {
                         $tambahnya = $kgs - $jmlkgsdet;
                     }
-                    $dataxspin['po'] = $po;
-                    $dataxspin['item'] = $item;
-                    $dataxspin['dis'] = $dis;
+                    if(trim($detbom['po'])!=''){
+                        $dataxspin['po'] = $po;
+                        $dataxspin['item'] = $item;
+                        $dataxspin['dis'] = $dis;
+                    }else{
+                        $dataxspin['po'] = '';
+                        $dataxspin['item'] = '';
+                        $dataxspin['dis'] = 0;
+                    }
                     $dataxspin['id_barang'] =  $detbom['id_barang'];
                     $dataxspin['insno'] = $insno;
                     $dataxspin['nobontr'] = $detbom['nobontr'];
@@ -1068,9 +1076,15 @@ class Helper_model extends CI_Model
                 if ($nor == $jmlrekdet) {
                     $tambahnya = $kgs - $jmlkgsdet;
                 }
-                $dataxspin['po'] = $detbom['po']; //$po;
-                $dataxspin['item'] = $detbom['item']; //$item;
-                $dataxspin['dis'] = $detbom['dis']; //$dis;
+                if(trim($detbom['po'])!=''){
+                    $dataxspin['po'] = $detbom['po']; //$po;
+                    $dataxspin['item'] = $detbom['item']; //$item;
+                    $dataxspin['dis'] = $detbom['dis']; //$dis;
+                }else{
+                    $dataxspin['po'] = $po;
+                    $dataxspin['item'] = $item;
+                    $dataxspin['dis'] = $dis;
+                }
                 $dataxspin['id_barang'] =  $detbom['id_barang'];
                 $dataxspin['insno'] = $insno;
                 $dataxspin['nobontr'] = $detbom['nobontr'];

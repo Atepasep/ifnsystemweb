@@ -332,7 +332,7 @@ class Ponet_model extends CI_Model
         return $kolom;
     }
     public function getnetplangrap($msno){
-        $this->db->select('tb_netinstr.insno,tb_netinstr.dateplan,tb_netinstr.tgnet,tb_netinstr.descx,tb_netinstr.descn,tb_netinstr.noprd,tb_netinstr.desc2,tb_po.*');
+        $this->db->select('Xtb_netinstr.insno,tb_netinstr.dateplan,tb_netinstr.tgnet,tb_netinstr.descx,tb_netinstr.descn,tb_netinstr.noprd,tb_netinstr.desc2,tb_po.*');
         $this->db->select('tb_netinstr.urt');
         $this->db->from('tb_netinstr');
         $this->db->join('tb_po','tb_po.ind_po = concat(tb_netinstr.po,tb_netinstr.item,tb_netinstr.dis)','left');
@@ -602,10 +602,10 @@ class Ponet_model extends CI_Model
         // return $query." WHERE (".$cari.")".$order." LIMIT ".$limit." OFFSET ".$start;
         return json_encode($callback); // Convert array $callback ke json
     }
-    public function getinstr(){
+    public function getinstr($msno){
         $this->db->select('tb_netinstr.*,tb_po.stat_po');
         $this->db->join('tb_po','tb_po.ind_po = concat(tb_netinstr.po,tb_netinstr.item,tb_netinstr.dis)','left');
-        $this->db->where('tb_netinstr.machno',98);
+        $this->db->where('tb_netinstr.machno',$msno);
         $this->db->where('year(dateplan)',2026);
         $this->db->order_by('dateplan');
         return $this->db->get('tb_netinstr');
