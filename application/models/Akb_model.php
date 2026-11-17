@@ -1076,8 +1076,8 @@ class Akb_model extends CI_Model
                 $kondisi = [
                     'id_akb' => $id,
                     'tb_header.ketprc' => $hsl['ketprc'],
-                    'tb_detail.po' => $hsl['po'],
-                    'tb_detail.item' => $hsl['item'],
+                    'trim(tb_detail.po)' => trim($hsl['po']),
+                    'trim(tb_detail.item)' => trim($hsl['item']),
                     'tb_detail.dis' => $hsl['dis'],
                     'tb_detail.insno' => $hsl['insno'],
                     'barang.kode' => $hsl['kode']
@@ -1272,9 +1272,9 @@ class Akb_model extends CI_Model
                     'id_barang' => $detail['id_barang'],
                     'seri_barang' => $no,
                     'nobontr' => $detail['nobontr'],
-                    'po' => $data['po'],
-                    'item' => $tata['item'],
-                    'dis' => $data['dis'],
+                    'po' => isset($data['po']) ? $data['po'] : '',
+                    'item' => isset($tata['item']) ? $data['item'] : '',
+                    'dis' => isset($data['dis']) ? $data['dis'] : 0,
                     'kgs' => round($detail['kgs'], 2),
                     'pcs' => round($detail['kgs'],)
                 ];

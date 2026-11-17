@@ -152,7 +152,7 @@ class Ponet extends CI_Controller
             $data['data'] = $this->ponetmodel->datamesin($msno);
             $data['maxrek'] = $this->ponetmodel->getmaxminmesin();
             $data['plan'] = $rekpo.'/'.$msno;
-            $data['master'] = $this->ponetmodel->getinstr();
+            $data['master'] = $this->ponetmodel->getinstr($msno);
             $footer['data'] = $this->helpermodel->getdatafooter()->row_array();
             $footer['fungsi'] = 'netplangrap';
             $this->load->view('layouts/header', $header);
