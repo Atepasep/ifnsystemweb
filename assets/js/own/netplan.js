@@ -270,6 +270,7 @@ $("#lastrec").on('click',function(){
 	// 	},
 	// });
 })
+
 function loadnetting(){
 	// alert('Isi data NETTING !');
 	var isi = 0;
@@ -527,4 +528,4 @@ function loadship(){
 			console.log(thrownError);
 		},
 	});
-}
+}	

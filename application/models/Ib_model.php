@@ -1519,12 +1519,18 @@ class Ib_model extends CI_Model
         $this->db->where('id', $id);
         return $this->db->update('tb_header', $data);
     }
-    public function carikurs261($tgl){
+    public function carikurs261($data){
         $hasil = 0;
-        $datakurs = $this->db->get_where('tb_kurs',['tgl' => $tgl]);
-        if($datakurs->num_rows() > 0){
-            $hasilkurs = $datakurs->row_array();
-            $hasil = $hasilkurs['usd'];
+        // $datakurs = $this->db->get_where('tb_kurs',['tgl' => $tgl]);
+        // if($datakurs->num_rows() > 0){
+        //     $hasilkurs = $datakurs->row_array();
+        //     $hasil = $hasilkurs['usd'];
+        // }
+        // return $hasil;
+        $datakurs261 = $this->db->get_where('tb_header',['nomor_bc' => $data['nombc'],'tgl_bc' => $data['tgl']]);
+        if($datakurs261->num_rows() > 0){
+            $hasilkurs = $datakurs261->row_array();
+            $hasil = $hasilkurs['kurs_usd'];
         }
         return $hasil;
     }

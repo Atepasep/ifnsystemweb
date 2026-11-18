@@ -107,8 +107,8 @@
                                     <div class="mb-1 font-kecil">
                                         <!-- <label class="form-label">Input group</label> -->
                                         <div class="input-group my-1 font-kecil">
-                                            <input type="number" class="form-control font-kecil font-bold" placeholder="Tahun" value="<?= date('Y') ?>">
-                                            <button class="btn btn-success font-kecil" type="button">Apply !</button>
+                                            <input type="text" class="form-control font-kecil font-bold" id="texttahungrap" placeholder="Tahun" value="<?= $this->session->userdata('thgrap') ?>">
+                                            <button class="btn btn-success font-kecil" id="btnapplygrap" type="button">Apply !</button>
                                         </div>
                                     </div>
                                 </div>
@@ -129,18 +129,18 @@
                                         <th class="text-center text-nowrap">Stat PP</th>
                                         <th class="text-center text-nowrap">Stat NT</th>
                                         <th class="text-center text-nowrap">#</th>
-                                        <th class="" colspan="4">01-XXXX</th>
-                                        <th class="" colspan="4">02-XXXX</th>
-                                        <th class="" colspan="4">03-XXXX</th>
-                                        <th class="" colspan="4">04-XXXX</th>
-                                        <th class="" colspan="4">05-XXXX</th>
-                                        <th class="" colspan="4">06-XXXX</th>
-                                        <th class="" colspan="4">07-XXXX</th>
-                                        <th class="" colspan="4">08-XXXX</th>
-                                        <th class="" colspan="4">09-XXXX</th>
-                                        <th class="" colspan="4">10-XXXX</th>
-                                        <th class="" colspan="4">11-XXXX</th>
-                                        <th class="" colspan="4">12-XXXX</th>
+                                        <th class="" colspan="4" id="tbheadjan"><?= $this->session->userdata('thgrap') ?>-01</th>
+                                        <th class="" colspan="4" id="tbheadfeb"><?= $this->session->userdata('thgrap') ?>-02</th>
+                                        <th class="" colspan="4" id="tbheadmar"><?= $this->session->userdata('thgrap') ?>-03</th>
+                                        <th class="" colspan="4" id="tbheadjapr"><?= $this->session->userdata('thgrap') ?>-04</th>
+                                        <th class="" colspan="4" id="tbheadmei"><?= $this->session->userdata('thgrap') ?>-05</th>
+                                        <th class="" colspan="4" id="tbheadjun"><?= $this->session->userdata('thgrap') ?>-06</th>
+                                        <th class="" colspan="4" id="tbheadjul"><?= $this->session->userdata('thgrap') ?>-07</th>
+                                        <th class="" colspan="4" id="tbheadagt"><?= $this->session->userdata('thgrap') ?>-08</th>
+                                        <th class="" colspan="4" id="tbheadsep"><?= $this->session->userdata('thgrap') ?>-09</th>
+                                        <th class="" colspan="4" id="tbheadokt"><?= $this->session->userdata('thgrap') ?>-10</th>
+                                        <th class="" colspan="4" id="tbheadnop"><?= $this->session->userdata('thgrap') ?>-11</th>
+                                        <th class="" colspan="4" id="tbheaddes"><?= $this->session->userdata('thgrap') ?>-12</th>
                                     </tr>
                                 </thead>
                                 <tbody class="table-tbody" id="body-table" style="font-size: 13px !important;">
@@ -164,9 +164,10 @@
                                                 <?php $akhir = ($persen2+$bulan2)-4;  ?>
                                                 <td class="text-center font-kecil" title="Day Plan NT"><?= $mst['day'] ?></td>
                                                 <?php for ($y=1; $y <= 48 ; $y++) {  ?>
-                                                    <td class="text-center" title="Mg Ke <?= $y%4==0 ? 4 : $y%4 ?>&#10;<?= namabulan($bulan/4                                               ) ?> XXXX" style="padding:0 !important;min-width: 22px;<?= $awal == $y ? 'background-color : green; border-right-color : green;' : ''; ?><?= $awal < $y && $y < $akhir ? 'background-color : green; border-right-color : green;' : ''; ?><?= $akhir == $y ? 'background-color : green; border-right-color : green;' : ''; ?>">
-                                                        <hr class="mt-2 w-100" style="border-top: 5px solid #FF0000; margin-bottom: 4px;">
-                                                        <hr class="m-0" style="border-top: 5px solid blue;">
+                                                    <td class="text-center" title="Mg Ke <?= $y%4==0 ? 4 : $y%4 ?>&#10;<?= namabulan($bulan/4) ?> XXXX" style="padding:0 !important;min-width: 22px;<?= $awal == $y ? 'background-color : green; border-right-color : green;' : ''; ?><?= $awal < $y && $y < $akhir ? 'background-color : green; border-right-color : green;' : ''; ?><?= $akhir == $y ? 'background-color : green; border-right-color : green;' : ''; ?>">
+                                                        <!-- <hr class="mt-2 w-100" style="border: none;border-top: 5px solid #FF0000; margin-bottom: 4px;z-index:1000;"> -->
+                                                        <!-- <hr class="m-0" style="border-top: 5px solid blue;"> -->
+                                                        <div class="mt-1 bg-red w-100 font-kecil" style="min-height: 4px;">-</div>
                                                     </td>
                                                 <?php } ?>
                                             </tr>

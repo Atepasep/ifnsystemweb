@@ -90,6 +90,7 @@
         var y1 = $(this).attr('rel5');
         var z2 = $(this).attr('rel6');
         var w3 = $(this).attr('rel7');
+        var q3 = $(this).attr('rel9');
         // $("#nama_barang").val(x);
         var spn = w==1 ? " - DLN" : "";
         if(mode==2){
@@ -105,6 +106,7 @@
             $("#id_satuan").val(z);
             $("#dln").val(w);
         }
+        $("#sku").val(q3);
         $("#modal-scroll").modal('hide');
         $("#cont-spek").removeClass('hilang');
     })

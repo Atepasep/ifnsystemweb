@@ -910,7 +910,7 @@ function carikurs261(tgl) {
 		// dataType: "json",
 		type: "POST",
 		url: base_url + "ib/carikurs261",
-		data: { tg: tgl },
+		data: { tg: tgl,nomor_bc: $("#exnomor_bc").val()},
 		success: function (data) {
 			$("#kurs_usd").val(data);
 			hitungdevisa();

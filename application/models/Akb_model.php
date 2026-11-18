@@ -974,7 +974,7 @@ class Akb_model extends CI_Model
     {
         $subquery = $this->db->select('*,concat(trim(tb_hargamaterial.nobontr),id_barang,trim(po),trim(item),dis) as nobar')
             ->from('tb_hargamaterial')
-            ->group_by('id_barang,nobontr')
+            ->group_by('id_barang,nobontr,po,item,dis')
             ->get_compiled_select();
         $this->db->select('tb_bombc.*,barang.nama_barang,barang.kode,barang.nohs,tb_header.nomor_bc,tb_header.jns_bc,satuan.kodesatuan,supplier.kode_negara,tb_header.mtuang');
         $this->db->select('tb_header.netto,tb_header.bruto,tb_header.kurs_yen,tb_header.kurs_usd,tb_header.totalharga,tbhargamat.nomor_bc as hamat_nomorbc,tbhargamat.jns_bc as hamat_jnsbc');

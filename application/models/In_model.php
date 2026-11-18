@@ -131,7 +131,7 @@ class In_model extends CI_Model{
                     'periode' => tambahnol($this->session->userdata('blin')).$this->session->userdata('thin'),
                     'trim(nobontr)' => count($ibnya)==0 ? trim($det['nobontr']) : $ibnya['nomor_dok'],
                     'trim(insno)' => trim($det['insno']),
-                    'id_barang' => $det['id_barang'],
+                    'id_barang' => is_null($det['id_barang']) ? 0 : $det['id_barang'],
                     'trim(po)' => trim($det['po']),
                     'trim(item)' => trim($det['item']),
                     'dis' => $det['dis'],
@@ -151,7 +151,7 @@ class In_model extends CI_Model{
                     'periode' => tambahnol($this->session->userdata('blin')).$this->session->userdata('thin'),
                     'nobontr' => count($ibnya)==0 ? $det['nobontr'] : $ibnya['nomor_dok'],
                     'insno' => $det['insno'],
-                    'id_barang' => $det['id_barang'],
+                    'id_barang' => is_null($det['id_barang']) ? 0 : $det['id_barang'],
                     'po' => $po, //$det['po'],
                     'item' => $item, //$det['item'],
                     'dis' => $dis, //$det['dis'],
@@ -206,18 +206,21 @@ class In_model extends CI_Model{
             $this->helpermodel->isilog($this->db->last_query());
 
             // Add Data to Harga Material 
-            if($dataheader['dept_id']=='SU' && $dataheader['dept_tuju']=='GS'){
+            if(($dataheader['dept_id']=='SU' && $dataheader['dept_tuju']=='GS') || ($dataheader['dept_id']=='CU' && $dataheader['dept_tuju']=='GF')){
                 foreach($detail as $dtl){
                     $arraykateg = ['7470','7460','3265','7032','6909','7032','9272'];
                     if(in_array($dtl['id_kategori'],$arraykateg) && !is_null($dataheader['jns_bc'])){
                         $datacekrekod = [
-                            'id_barang' => $dtl['id_barang'],
-                            'nobontr' => $dataheader['nomor_dok']
+                            'id_barang' => is_null($dtl['id_barang']) ? 0 : $dtl['id_barang'],
+                            'nobontr' => $dataheader['nomor_dok'],
+                            'po' => $dtl['po'],
+                            'item' => $dtl['item'],
+                            'dis' => $dtl['dis']
                         ];
                         $cekrekod = $this->db->get_where('tb_hargamaterial', $datacekrekod);
                         if ($cekrekod->num_rows() == 0) {
                             $datasimpan = [
-                                'id_barang' => $dtl['id_barang'],
+                                'id_barang' => is_null($dtl['id_barang']) ? 0 : $dtl['id_barang'],
                                 'nobontr' => $dataheader['nomor_dok'],
                                 'price' => $dtl['harga'],
                                 'qty' => $dtl['pcs'],
@@ -232,7 +235,10 @@ class In_model extends CI_Model{
                                 'seri_barang' => $dtl['seri_barang'],
                                 'nomor_aju' => $this->ibmodel->getdatanomoraju($id),
                                 'tgl_aju' => $dataheader['tgl_aju'],
-                                'kode_negara' => "ID"
+                                'kode_negara' => "ID",
+                                'po' => $dtl['po'],
+                                'item' => $dtl['item'],
+                                'dis' => $dtl['dis']
                             ];
                             $this->db->insert('tb_hargamaterial', $datasimpan);
                         }

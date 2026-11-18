@@ -137,6 +137,9 @@ class Ponet extends CI_Controller
         $this->ponetmodel->updatefoto_baru();
     }
     public function netplan($rekpo=0,$msno=0,$mode=''){
+        if($this->session->userdata('thgrap')==''){
+            $this->session->set_userdata('thgrap',date('Y'));
+        }
         if($mode==''){
             $header['header'] = 'other';
             $data['data'] = $this->ponetmodel->datamesin($msno);
@@ -584,5 +587,10 @@ class Ponet extends CI_Controller
         $this->load->view('layouts/header', $header);
         $this->load->view('ponet/viewjawabhikiai',$data);
         $this->load->view('layouts/footer',$footer);
+    }
+    public function changeyeargrap(){
+        $th = $_POST['th'];
+        $this->session->set_userdata('thgrap',$th);
+        echo 1;
     }
 }
