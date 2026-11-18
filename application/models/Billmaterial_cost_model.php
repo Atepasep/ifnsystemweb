@@ -67,9 +67,14 @@ class Billmaterial_cost_model extends CI_Model
         $this->db->trans_start();
         // Cek kategori barang 
         $cekbarang = $this->db->get_where('barang',['id' => $data['id_barang']])->row_array();
-        if($cekbarang['id_kategori']!='8189'){
+        if(isset($cekbarang['id_kategori']) && $cekbarang['id_kategori']!='8189'){
             $data['persen_sm'] = $data['persen'];
             unset($data['persen']);
+        }else{
+            if($data['po']!=''){
+                $data['persen'] = $data['persen'];
+                unset($data['persen_sm']);
+            }
         }
         $this->db->insert('ref_bom_detail_cost', $data);
         $this->helpermodel->isilog($this->db->last_query());
@@ -95,11 +100,15 @@ class Billmaterial_cost_model extends CI_Model
         $this->db->trans_start();
         // Cek kategori barang 
         $cekbarang = $this->db->get_where('barang',['id' => $data['id_barang']])->row_array();
-        if($cekbarang['id_kategori']!='8189'){
+        if( isset($cekbarang['id_kategori']) && $cekbarang['id_kategori']!='8189'){
             $data['persen_sm'] = $data['persen'];
             $data['persen'] = 0;
+        }else{
+            if($data['po']!=''){
+                $data['persen'] = $data['persen'];
+                $data['persen_sm'] = 0;
+            }
         }
-
         $this->db->where('id', $data['id']);
         $this->db->update('ref_bom_detail_cost', $data);
         $this->helpermodel->isilog($this->db->last_query());

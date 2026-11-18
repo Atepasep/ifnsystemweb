@@ -134,8 +134,8 @@ $("#resetdetailbarang").click(function(){
 	window.location.reload();
 })
 $("#simpandetailbarang").click(function(){
-	if($("#id_barang").val() == ''){
-		pesan('Barang harus di isi!')
+	if($("#id_barang").val() == '' && $("#po").val() == ''){
+		pesan('Barang / PO harus di isi!')
 		return false;
 	}
 	if($("#nobontr").val() == ''){
@@ -153,6 +153,9 @@ $("#simpandetailbarang").click(function(){
 		data: {
 			idhead: $("#id_header").val(),
 			id: $("#id_barang").val(),
+			po: $("#po").val(),
+			item: $("#item").val(),
+			dis: $("#dis").val(),
 			nobontr: $("#nobontr").val(),
 			persen: $("#persen").val()
 		},
@@ -166,8 +169,8 @@ $("#simpandetailbarang").click(function(){
 	});
 })
 $("#updatedetailbarang").click(function(){
-	if($("#id_barang").val() == ''){
-		pesan('Barang harus di isi!')
+	if($("#id_barang").val() == '' && $("#po").val() == ''){
+		pesan('Barang / PO harus di isi!')
 		return false;
 	}
 	if($("#nobontr").val() == ''){
@@ -186,6 +189,9 @@ $("#updatedetailbarang").click(function(){
 			idhead: $("#id_header").val(),
 			iddet: $("#id_detail").val(),
 			id: $("#id_barang").val(),
+			po: $("#po").val(),
+			item: $("#item").val(),
+			dis: $("#dis").val(),
 			nobontr: $("#nobontr").val(),
 			persen: $("#persen").val()
 		},
@@ -204,11 +210,19 @@ $(document).on("click", "#editdetailbillmaterial", function () {
 	var rel3 = $(this).attr("rel3");
 	var rel4 = $(this).attr("rel4");
 	var rel5 = $(this).attr("rel5");
+	var rel6 = $(this).attr("rel6");
+	var rel7 = $(this).attr("rel7");
+	var rel8 = $(this).attr("rel8");
+	var rel9 = $(this).attr("rel9");
 	$("#id_barang").val(rel2);
 	$("#id_detail").val(rel);
+	$("#po").val(rel6);
+	$("#item").val(rel7);
+	$("#dis").val(rel8);
 	$("#nobontr").val(rel3);
 	$("#persen").val(rel4);
-	$("#spekbarangnya").text(rel5);
+	$("#nama_barang").text(rel5);
+	$("#sku").text(rel9);
 	// $("#nama_barang").val(rel5);
 	$("#simpandetailbarang").addClass('hilang');
 	$("#updatedetailbarang").removeClass('hilang');

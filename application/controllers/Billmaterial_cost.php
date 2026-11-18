@@ -91,6 +91,9 @@ class Billmaterial_cost extends CI_Controller
         $data = [
             'id_bom' => $_POST['idhead'],
             'id_barang' => $_POST['id'],
+            'po' => $_POST['po'],
+            'item' => $_POST['item'],
+            'dis' => $_POST['dis'],
             'nobontr' => strtoupper(trim($_POST['nobontr'])),
             'persen' => toAngka($_POST['persen']),
         ];

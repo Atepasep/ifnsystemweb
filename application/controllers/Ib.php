@@ -2181,8 +2181,13 @@ class Ib extends CI_Controller
         }
     }
     public function carikurs261(){
-        $tgl = tglmysql($_POST['tg']);
-        echo $this->ibmodel->carikurs261($tgl);
+        $data = [
+            'tgl' => tglmysql($_POST['tg']),
+            'nombc' => $_POST['nomor_bc'] 
+        ];
+        // $tgl = tglmysql($_POST['tg']);
+        // $nobc = tglmysql($_POST['tg']);
+        echo $this->ibmodel->carikurs261($data);
     }
     public function cariporeturn(){
         $key = $_POST['key'];

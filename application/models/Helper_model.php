@@ -979,7 +979,7 @@ class Helper_model extends CI_Model
                 'dis' => $dis,
                 'id_barang' => $idbarang,
                 'trim(insno)' => trim($insno),
-                'Xtrim(nobontr)' => trim($nobontr)
+                'trim(nobontr)' => trim($nobontr)
             ];
             $this->db->where($datakondisi);
             $hasil = $this->db->get('ref_bom');
@@ -1076,15 +1076,15 @@ class Helper_model extends CI_Model
                 if ($nor == $jmlrekdet) {
                     $tambahnya = $kgs - $jmlkgsdet;
                 }
-                if(trim($detbom['po'])!=''){
+                // if(trim($detbom['po'])!=''){
                     $dataxspin['po'] = $detbom['po']; //$po;
                     $dataxspin['item'] = $detbom['item']; //$item;
                     $dataxspin['dis'] = $detbom['dis']; //$dis;
-                }else{
-                    $dataxspin['po'] = $po;
-                    $dataxspin['item'] = $item;
-                    $dataxspin['dis'] = $dis;
-                }
+                // }else{
+                //     $dataxspin['po'] = $po;
+                //     $dataxspin['item'] = $item;
+                //     $dataxspin['dis'] = $dis;
+                // }
                 $dataxspin['id_barang'] =  $detbom['id_barang'];
                 $dataxspin['insno'] = $insno;
                 $dataxspin['nobontr'] = $detbom['nobontr'];

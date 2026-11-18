@@ -606,7 +606,7 @@ class Ponet_model extends CI_Model
         $this->db->select('tb_netinstr.*,tb_po.stat_po');
         $this->db->join('tb_po','tb_po.ind_po = concat(tb_netinstr.po,tb_netinstr.item,tb_netinstr.dis)','left');
         $this->db->where('tb_netinstr.machno',$msno);
-        $this->db->where('year(dateplan)',2026);
+        $this->db->where('year(dateplan)',$this->session->userdata('thgrap'));
         $this->db->order_by('dateplan');
         return $this->db->get('tb_netinstr');
     }
