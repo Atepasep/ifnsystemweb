@@ -392,12 +392,14 @@ class Bckeluar extends CI_Controller
             $sheet->setCellValue('L' . $numrow, $nilaiqty);
             $sheet->setCellValue('M' . $numrow, $datakgs);
             $sheet->setCellValue('N' . $numrow, round($subtotal_idr, 2));
-            // $sheet->setCellValue('O' . $numrow, round($subtotal_usd, 2));
             if($data['jns_bc']==25){
                 $sheet->setCellValue('O' . $numrow, round($data['cifusd'], 2));
                 $sheet->setCellValue('P' . $numrow, round($data['cifusd']*$kurs_usd, 2));
             }else if($data['jns_bc']==30){
                 $sheet->setCellValue('O' . $numrow, round($data['harga'], 2));
+            }else if($data['jns_bc']==261){
+                $sheet->setCellValue('O' . $numrow, round($subtotal_usd, 2));
+            // $sheet->setCellValue('O' . $numrow, round($data['harga'], 2));
             }
 
             $ceknomor_bc = $data['nomor_bc'];

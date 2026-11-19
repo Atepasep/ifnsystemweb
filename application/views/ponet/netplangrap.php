@@ -163,18 +163,19 @@
                                                 <?php $awal = ($persen1+$bulan)-4;  ?>
                                                 <?php $akhir = ($persen2+$bulan2)-4;  ?>
                                                 <td class="text-center font-kecil" title="Day Plan NT"><?= $mst['day'] ?></td>
-                                                <?php for ($y=1; $y <= 48 ; $y++) {  ?>
-                                                    <td class="text-center" title="Mg Ke <?= $y%4==0 ? 4 : $y%4 ?>&#10;<?= namabulan($bulan/4) ?> XXXX" style="padding:0 !important;min-width: 22px;<?= $awal == $y ? 'background-color : green; border-right-color : green;' : ''; ?><?= $awal < $y && $y < $akhir ? 'background-color : green; border-right-color : green;' : ''; ?><?= $akhir == $y ? 'background-color : green; border-right-color : green;' : ''; ?>">
+                                                <?php $m=0; for ($y=1; $y <= 48 ; $y++) { if($y%4==1) { $m++; }  ?>
+                                                    <td class="text-center" title="Mg Ke <?= $y%4==0 ? 4 : $y%4 ?>&#10;<?= namabulanpendek($m).' '.$this->session->userdata('thgrap') ?>" style="padding:0 !important;min-width: 22px;<?= $awal == $y ? 'background-color : green; border-right-color : green;' : ''; ?><?= $awal < $y && $y < $akhir ? 'background-color : green; border-right-color : green;' : ''; ?><?= $akhir == $y ? 'background-color : green; border-right-color : green;' : ''; ?>">
                                                         <!-- <hr class="mt-2 w-100" style="border: none;border-top: 5px solid #FF0000; margin-bottom: 4px;z-index:1000;"> -->
                                                         <!-- <hr class="m-0" style="border-top: 5px solid blue;"> -->
-                                                        <div class="mt-1 bg-red w-100 font-kecil" style="min-height: 4px;">-</div>
+                                                        <!-- <div class="mt-1 bg-red w-100 font-kecil text-white" style="height: 9px !important; border-right-color: red;"></div>
+                                                        <div class="mt-0 bg-blue w-100 font-kecil text-white" style="height: 9px !important; border-right-color: red;"></div> -->
                                                     </td>
                                                 <?php } ?>
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php else: ?>
                                         <tr>
-                                            <td colspan="17" class="text-center">Fetching Data</td>
+                                            <td colspan="54" class="text-center">Fetching Data</td>
                                         </tr>
                                     <?php endif; ?>
                                 </tbody>

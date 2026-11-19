@@ -473,7 +473,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                                     </tbody>
                                                 </table>
                                                 <div class="mt-2 text-center">
-                                                  <a href="<?= base_url().'ponet/netplan/'.$data['id'].'/'.$data['machno'] ?>" class="btn btn-sm btn-info form-control">Netting Planning</a>
+                                                  <a href="<?= base_url().'ponet/netplan/'.$data['id'].'/'.$data['machno'] ?>" class="btn btn-sm btn-info form-control <?php if($data['machno'] <= 0) { echo "hilang"; } ?>">Netting Planning</a>
                                                 </div>
                                             </div>
                                         </div>
